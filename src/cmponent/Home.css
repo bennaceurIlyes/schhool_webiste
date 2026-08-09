@@ -1,0 +1,272 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.page-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.navbare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  padding: 32px 64px;
+}
+
+.logo h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #0a0a0a;
+  margin: 0;
+}
+
+.logo h1 span {
+  color: #2f5bff;
+}
+
+.navcontainer {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.navcontainer a {
+  text-decoration: none;
+  color: #9a9a9a;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.navcontainer a.active,
+.navcontainer a:hover {
+  color: #0a0a0a;
+}
+
+.login {
+  background: #2f5bff;
+  color: #ffffff;
+  border: none;
+  padding: 13px 30px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(47, 91, 255, 0.25);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 140px 64px 80px;
+  min-height: 90vh;
+}
+
+.hero-left {
+  max-width: 500px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #9a9a9a;
+  margin-bottom: 18px;
+}
+
+.hero-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 52px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #0a0a0a;
+  margin: 0 0 24px;
+}
+
+.hero-title strong {
+  font-weight: 700;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: #6b6b6b;
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 420px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.join-btn {
+  background: #f5c518;
+  color: #0a0a0a;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(245, 197, 24, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.join-btn:hover {
+  transform: translateY(-2px);
+}
+
+.watch-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: underline;
+  color: #0a0a0a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.play-icon {
+  width: 32px;
+  height: 32px;
+  background: #2f5bff;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.hero-right {
+  position: relative;
+}
+
+.yellow-circle {
+  position: absolute;
+  top: -100px;
+  right: 20px;
+  width: 160px;
+  height: 160px;
+  background: #f5c518;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.img-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  z-index: 1;
+}
+
+.img-grid img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.img-circle {
+  border-radius: 50%;
+}
+
+.img-rounded {
+  border-radius: 28px;
+}
+
+.top-right {
+  margin-top: 60px;
+}
+
+.bottom-left {
+  margin-top: -30px;
+}
+
+.dot {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.dot-yellow {
+  width: 14px;
+  height: 14px;
+  background: #f5c518;
+  top: 10px;
+  left: 48%;
+}
+
+.dot-purple {
+  width: 12px;
+  height: 12px;
+  background: #b18cf5;
+  top: 265px;
+  left: -6px;
+}
+
+.dot-gray {
+  width: 14px;
+  height: 14px;
+  background: #d9d9d9;
+  top: 415px;
+  left: 47%;
+}
+
+.dot-blue {
+  width: 20px;
+  height: 20px;
+  background: #4bb4e6;
+  bottom: -10px;
+  left: -10px;
+}
+
+@media (max-width: 1024px) {
+  .navcontainer {
+    display: none;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 120px;
+    text-align: center;
+  }
+
+  .hero-left {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .hero-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+}
