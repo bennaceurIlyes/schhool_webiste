@@ -1,6 +1,7 @@
 import React from 'react'
 import './Home.css'
 import { Link } from 'react-router'
+import { BookOpen, MessagesSquare, Hammer } from 'lucide-react'
 import girlStudying from '../assets/smiling-girl-studying-home.jpg'
 import boyCurly from '../assets/full-shot-kid-cheating-school.jpg'
 import girlBook from '../assets/students-knowing-right-answer.jpg'
@@ -54,6 +55,44 @@ function Home() {
           </div>
         </div>
       </div>
+
+      <section className='formations'>
+        <div className='formations-head'>
+          <p className='eyebrow'>What We Offer</p>
+          <h2 className='section-title'>
+            Our <strong>Formations</strong>
+          </h2>
+          <p className='section-sub'>
+            A few focused paths built around how kids actually learn.
+          </p>
+        </div>
+
+        <div className='formation-row'>
+          <div className='formation-card card-a'>
+            <div className='formation-icon icon-yellow'>
+              <BookOpen size={22} strokeWidth={2} />
+            </div>
+            <h3>Support Lessons</h3>
+            <p>Personalized help across every subject and every grade level, at each child's own pace.</p>
+          </div>
+
+          <div className='formation-card card-b'>
+            <div className='formation-icon icon-blue'>
+              <MessagesSquare size={22} strokeWidth={2} />
+            </div>
+            <h3>Language Learning</h3>
+            <p>Playful, conversation-first lessons that build real confidence in a new language.</p>
+          </div>
+
+          <div className='formation-card card-c'>
+            <div className='formation-icon icon-purple'>
+              <Hammer size={22} strokeWidth={2} />
+            </div>
+            <h3>Work Formation</h3>
+            <p>Hands-on skills and early habits that prepare kids for what comes next.</p>
+          </div>
+        </div>
+      </section>
     </>
   )
 }

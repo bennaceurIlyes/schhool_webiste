@@ -245,6 +245,120 @@ body {
   left: -10px;
 }
 
+/* ===== Formations section ===== */
+
+.formations {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 64px 160px;
+}
+
+.formations-head {
+  max-width: 580px;
+  margin: 0 auto 72px;
+  text-align: center;
+}
+
+.formations-head .eyebrow {
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 38px;
+  font-weight: 400;
+  color: #0a0a0a;
+  margin: 0 0 14px;
+}
+
+.section-title strong {
+  font-weight: 700;
+  color: #2f5bff;
+}
+
+.section-sub {
+  font-size: 15px;
+  color: #6b6b6b;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.formation-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.formation-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  padding: 32px 28px 36px;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.formation-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px rgba(10, 10, 10, 0.08);
+  border-color: transparent;
+}
+
+/* stagger for an asymmetric, non-grid feel */
+.card-a {
+  margin-top: 36px;
+}
+
+.card-b {
+  margin-top: 0;
+}
+
+.card-c {
+  margin-top: 56px;
+}
+
+.formation-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 22px;
+}
+
+.icon-yellow {
+  background: #f5c518;
+  color: #0a0a0a;
+}
+
+.icon-blue {
+  background: #2f5bff;
+  color: #ffffff;
+}
+
+.icon-purple {
+  background: #b18cf5;
+  color: #ffffff;
+}
+
+.formation-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0a0a0a;
+  margin: 0 0 10px;
+}
+
+.formation-card p {
+  font-size: 14px;
+  color: #6b6b6b;
+  line-height: 1.65;
+  margin: 0;
+}
+
 @media (max-width: 1024px) {
   .navcontainer {
     display: none;
@@ -268,5 +382,26 @@ body {
 
   .hero-actions {
     justify-content: center;
+  }
+
+  .formation-row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .card-a,
+  .card-b,
+  .card-c {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .formations {
+    padding: 20px 24px 100px;
+  }
+
+  .formations-head {
+    margin-bottom: 48px;
   }
 }
