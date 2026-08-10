@@ -6,6 +6,10 @@ import girlStudying from '../assets/smiling-girl-studying-home.jpg'
 import boyCurly from '../assets/full-shot-kid-cheating-school.jpg'
 import girlBook from '../assets/students-knowing-right-answer.jpg'
 import girlPainting from '../assets/book-day-with-group-younf-childre.jpg'
+import teacherSarah from '../assets/teacher-sarah.jpg'
+import teacherDavid from '../assets/teacher-david.jpg'
+import teacherElena from '../assets/teacher-elena.jpg'
+import teacherMarcus from '../assets/teacher-marcus.jpg'
 
 function Home() {
   return (
@@ -48,10 +52,10 @@ function Home() {
           <div className='dot dot-blue'></div>
 
           <div className='img-grid'>
-            <img src={girlStudying} alt="Girl studying" className='img-circle top-left' />
-            <img src={boyCurly} alt="Boy smiling" className='img-rounded top-right' />
-            <img src={girlBook} alt="Girl with book on head" className='img-rounded bottom-left' />
-            <img src={girlPainting} alt="Girl painting" className='img-rounded bottom-right' />
+            <img src={girlStudying} alt="Girl studying" className='img-circle top-left' decoding="async" fetchPriority="high" />
+            <img src={boyCurly} alt="Boy smiling" className='img-rounded top-right' decoding="async" fetchPriority="high" />
+            <img src={girlBook} alt="Girl with book on head" className='img-rounded bottom-left' decoding="async" />
+            <img src={girlPainting} alt="Girl painting" className='img-rounded bottom-right' decoding="async" />
           </div>
         </div>
       </div>
@@ -90,6 +94,54 @@ function Home() {
             </div>
             <h3>Work Formation</h3>
             <p>Hands-on skills and early habits that prepare kids for what comes next.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className='teachers'>
+        <div className='teachers-container'>
+          <div className='teachers-head'>
+            <p className='eyebrow'>Our Team</p>
+            <h2 className='section-title'>
+              Meet the <strong>Teachers</strong>
+            </h2>
+            <p className='section-sub'>
+              Passionate educators dedicated to inspiring curiosity and guiding every child to succeed.
+            </p>
+          </div>
+
+          <div className='teacher-row'>
+            <div className='teacher-card card-a'>
+              <img src={teacherSarah} alt="Sarah Jenkins" className='teacher-photo' loading="lazy" decoding="async" />
+              <h3>Sarah Jenkins</h3>
+              <span className='teacher-subject tag-yellow'>Early Literacy</span>
+              <p>Specializes in creative storytelling and interactive reading strategies for young minds.</p>
+              <Link to="/About#sarah-jenkins" className='teacher-link'>View profile</Link>
+            </div>
+
+            <div className='teacher-card card-b'>
+              <img src={teacherDavid} alt="David Chen" className='teacher-photo' loading="lazy" decoding="async" />
+              <h3>David Chen</h3>
+              <span className='teacher-subject tag-blue'>STEM & Science</span>
+              <p>Empowers kids to explore the world through exciting hands-on experiments and logic.</p>
+              <Link to="/About#david-chen" className='teacher-link'>View profile</Link>
+            </div>
+
+            <div className='teacher-card card-c'>
+              <img src={teacherElena} alt="Elena Rostova" className='teacher-photo' loading="lazy" decoding="async" />
+              <h3>Elena Rostova</h3>
+              <span className='teacher-subject tag-purple'>Arts & Languages</span>
+              <p>Fosters creative expression and multilingual confidence in a joyful environment.</p>
+              <Link to="/About#elena-rostova" className='teacher-link'>View profile</Link>
+            </div>
+
+            <div className='teacher-card card-d'>
+              <img src={teacherMarcus} alt="Marcus Vance" className='teacher-photo' loading="lazy" decoding="async" />
+              <h3>Marcus Vance</h3>
+              <span className='teacher-subject tag-lightblue'>Mathematics</span>
+              <p>Makes complex problem solving intuitive, engaging, and fun for all learning styles.</p>
+              <Link to="/About#marcus-vance" className='teacher-link'>View profile</Link>
+            </div>
           </div>
         </div>
       </section>

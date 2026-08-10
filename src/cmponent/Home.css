@@ -5,6 +5,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #0a0a0a;
 }
 
 .page-wrap {
@@ -12,6 +13,7 @@ body {
   overflow: hidden;
 }
 
+/* ===== Navbar ===== */
 .navbare {
   position: absolute;
   top: 0;
@@ -68,8 +70,15 @@ body {
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(47, 91, 255, 0.25);
+  transition: transform 0.2s ease;
+  will-change: transform;
 }
 
+.login:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== Hero Section ===== */
 .hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -77,8 +86,9 @@ body {
   gap: 40px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 140px 64px 80px;
-  min-height: 90vh;
+  padding: 140px 64px 96px;
+  min-height: 85vh;
+  contain: content;
 }
 
 .hero-left {
@@ -132,6 +142,7 @@ body {
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(245, 197, 24, 0.35);
   transition: transform 0.2s ease;
+  will-change: transform;
 }
 
 .join-btn:hover {
@@ -189,6 +200,8 @@ body {
   height: 260px;
   object-fit: cover;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .img-circle {
@@ -245,22 +258,23 @@ body {
   left: -10px;
 }
 
-/* ===== Formations section ===== */
-
+/* ===== Formations Section ===== */
 .formations {
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 64px 160px;
+  padding: 0 64px 96px;
 }
 
-.formations-head {
-  max-width: 580px;
-  margin: 0 auto 72px;
-  text-align: center;
+.formations-head,
+.teachers-head {
+  max-width: 520px;
+  margin-bottom: 64px;
+  text-align: left;
 }
 
-.formations-head .eyebrow {
+.formations-head .eyebrow,
+.teachers-head .eyebrow {
   margin-bottom: 14px;
 }
 
@@ -270,6 +284,7 @@ body {
   font-weight: 400;
   color: #0a0a0a;
   margin: 0 0 14px;
+  line-height: 1.2;
 }
 
 .section-title strong {
@@ -288,7 +303,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .formation-card {
@@ -296,28 +311,21 @@ body {
   background: #ffffff;
   border: 1px solid #ececec;
   border-radius: 20px;
-  padding: 32px 28px 36px;
-  text-align: center;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .formation-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 24px 48px rgba(10, 10, 10, 0.08);
   border-color: transparent;
-}
-
-/* stagger for an asymmetric, non-grid feel */
-.card-a {
-  margin-top: 36px;
-}
-
-.card-b {
-  margin-top: 0;
-}
-
-.card-c {
-  margin-top: 56px;
 }
 
 .formation-icon {
@@ -327,7 +335,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 22px;
+  margin-bottom: 22px;
+  flex-shrink: 0;
 }
 
 .icon-yellow {
@@ -357,8 +366,189 @@ body {
   color: #6b6b6b;
   line-height: 1.65;
   margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* ===== Teachers Section (Full Bleed Background) ===== */
+.teachers {
+  position: relative;
+  background: #fafafa;
+  width: 100%;
+  border-top: 1px solid #f0f0f0;
+}
+
+.teachers-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 96px 64px 120px;
+}
+
+.teacher-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+.teacher-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Top accent bar matching subject color */
+.teacher-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.teacher-card.card-a::before {
+  background: #f5c518;
+}
+
+.teacher-card.card-b::before {
+  background: #2f5bff;
+}
+
+.teacher-card.card-c::before {
+  background: #b18cf5;
+}
+
+.teacher-card.card-d::before {
+  background: #4bb4e6;
+}
+
+.teacher-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px rgba(10, 10, 10, 0.08);
+  border-color: transparent;
+}
+
+.teacher-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.teacher-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0a0a0a;
+  margin: 0 0 6px;
+}
+
+.teacher-subject {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.tag-yellow {
+  background: rgba(245, 197, 24, 0.18);
+  color: #a88100;
+}
+
+.tag-blue {
+  background: rgba(47, 91, 255, 0.12);
+  color: #2f5bff;
+}
+
+.tag-purple {
+  background: rgba(177, 140, 245, 0.2);
+  color: #7b43d4;
+}
+
+.tag-lightblue {
+  background: rgba(75, 180, 230, 0.18);
+  color: #1a7aa7;
+}
+
+.teacher-card p {
+  font-size: 14px;
+  color: #6b6b6b;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.teacher-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0a0a0a;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  margin-top: auto;
+}
+
+.teacher-link:hover {
+  color: #2f5bff;
+}
+
+/* ===== Intentional Staggered Offsets ===== */
+/* Formations: 0px / 40px / 20px */
+.formation-card.card-a {
+  margin-top: 0;
+}
+
+.formation-card.card-b {
+  margin-top: 40px;
+}
+
+.formation-card.card-c {
+  margin-top: 20px;
+}
+
+/* Teachers: alternate 0px / 48px / 0px / 48px (rhythmic zigzag) */
+.teacher-card.card-a {
+  margin-top: 0;
+}
+
+.teacher-card.card-b {
+  margin-top: 48px;
+}
+
+.teacher-card.card-c {
+  margin-top: 0;
+}
+
+.teacher-card.card-d {
+  margin-top: 48px;
+}
+
+/* ===== Responsive Breakpoints ===== */
 @media (max-width: 1024px) {
   .navcontainer {
     display: none;
@@ -367,6 +557,7 @@ body {
   .hero {
     grid-template-columns: 1fr;
     padding-top: 120px;
+    padding-bottom: 60px;
     text-align: center;
   }
 
@@ -384,24 +575,56 @@ body {
     justify-content: center;
   }
 
-  .formation-row {
+  .formations {
+    padding: 0 32px 60px;
+  }
+
+  .teachers-container {
+    padding: 60px 32px 80px;
+  }
+
+  .formation-row,
+  .teacher-row {
     grid-template-columns: 1fr;
     gap: 24px;
   }
 
-  .card-a,
-  .card-b,
-  .card-c {
-    margin-top: 0;
+  .formation-card.card-a,
+  .formation-card.card-b,
+  .formation-card.card-c,
+  .teacher-card.card-a,
+  .teacher-card.card-b,
+  .teacher-card.card-c,
+  .teacher-card.card-d {
+    margin-top: 0 !important;
   }
 }
 
 @media (max-width: 640px) {
-  .formations {
-    padding: 20px 24px 100px;
+  .navbare {
+    padding: 24px 32px;
   }
 
-  .formations-head {
-    margin-bottom: 48px;
+  .hero {
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 48px;
+  }
+
+  .hero-title {
+    font-size: 38px;
+  }
+
+  .formations {
+    padding: 0 24px 48px;
+  }
+
+  .teachers-container {
+    padding: 48px 24px 80px;
+  }
+
+  .formations-head,
+  .teachers-head {
+    margin-bottom: 40px;
   }
 }
