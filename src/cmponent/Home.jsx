@@ -1,151 +1,151 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import './Home.css'
 import { Link } from 'react-router'
-import { BookOpen, MessagesSquare, Hammer } from 'lucide-react'
-import girlStudying from '../assets/smiling-girl-studying-home.jpg'
-import boyCurly from '../assets/full-shot-kid-cheating-school.jpg'
-import girlBook from '../assets/students-knowing-right-answer.jpg'
-import girlPainting from '../assets/book-day-with-group-younf-childre.jpg'
-import teacherSarah from '../assets/teacher-sarah.jpg'
-import teacherDavid from '../assets/teacher-david.jpg'
-import teacherElena from '../assets/teacher-elena.jpg'
-import teacherMarcus from '../assets/teacher-marcus.jpg'
+import studentImg from '../assets/image.png'
 
 function Home() {
+  const heroRef = useRef(null)
+
+  useEffect(() => {
+    const el = heroRef.current
+    if (!el) return
+    const items = el.querySelectorAll('[data-animate]')
+    items.forEach((item, i) => {
+      item.style.animationDelay = `${i * 0.13}s`
+      item.classList.add('anim-ready')
+    })
+    const cards = document.querySelectorAll('.service-card[data-animate]')
+    cards.forEach((card, i) => {
+      card.style.animationDelay = `${0.55 + i * 0.12}s`
+      card.classList.add('anim-ready')
+    })
+  }, [])
+
   return (
-    <>
-      <nav className='navbare'>
-        <div className='logo'><h1>KIDS <span>SCHOOL.</span></h1></div>
-        <div className='navcontainer'>
-          <Link to="/" className="active">Home</Link>
-          <Link to="/About">About</Link>
-          <Link to="/Classes">Activites</Link>
-          <Link to="/Contact">Contact</Link>
+    <div className="page-wrapper">
+
+      {/* ===== Navbar ===== */}
+      <nav className="navbar">
+        <div className="nav-logo">
+          <div className="nav-logo-icon">
+            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+              <circle cx="17" cy="17" r="17" fill="#8BC4F0" fillOpacity="0.25" />
+              <circle cx="17" cy="17" r="17" stroke="#8BC4F0" strokeWidth="1.5" />
+              <path d="M9 21 L17 11 L25 21" stroke="#172033" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <path d="M12 21 L12 25" stroke="#172033" strokeWidth="2.2" strokeLinecap="round" />
+              <path d="M22 21 L22 25" stroke="#172033" strokeWidth="2.2" strokeLinecap="round" />
+              <path d="M14.5 18 L19.5 18" stroke="#172033" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </div>
+          <span className="nav-logo-text">Académie Al-Khwarizmi</span>
         </div>
-        <button className='login'>Login</button>
+
+        <div className="nav-links">
+          <Link to="/" className="nav-link active" id="nav-home">Home</Link>
+          <Link to="/Classes" className="nav-link" id="nav-programs">Programs</Link>
+          <Link to="/About" className="nav-link" id="nav-about">About Us</Link>
+          <Link to="/Contact" className="nav-link" id="nav-contact">Contact</Link>
+        </div>
+
+        <Link to="/Classes" className="nav-cta" id="nav-get-started">Get Started</Link>
+
+        <button className="hamburger" aria-label="Open navigation menu" id="hamburger-btn">
+          <span /><span /><span />
+        </button>
       </nav>
 
-      <div className='container hero'>
-        <div className='hero-left'>
-          <p className='eyebrow'>100% Satisfaction Guarantee</p>
-          <h1 className='hero-title'>
-            Unlock <strong>Your</strong><br />
-            <strong>Child's</strong> Potential
+      {/* ===== Hero Section ===== */}
+      <section className="hero" ref={heroRef} id="hero">
+        <div className="hero-content">
+          <div className="hero-eyebrow" data-animate>
+            <span className="eyebrow-dot" aria-hidden="true" />
+            Trusted by families &amp; professionals
+          </div>
+
+          <h1 className="hero-title" data-animate>
+            Empowering Every Learner<br />
+            to Reach Their{' '}
+            <span className="title-accent">Full Potential</span>
           </h1>
-          <p className='hero-desc'>
-            We believe every child has unique talents and abilities waiting to be discovered.
+
+          <p className="hero-desc" data-animate>
+            Quality education, academic support, language learning, and practical training
+            for learners of every age — children, students, and adults.
           </p>
-          <div className='hero-actions'>
-            <button className='join-btn'>Join For Free</button>
-            <a href="#" className='watch-link'>
-              <span className='play-icon'>&#9658;</span>
-              See how it works
-            </a>
+
+          <div className="hero-actions" data-animate>
+            <Link to="/Classes" className="btn-primary" id="hero-cta-programs">
+              Explore Our Programs
+            </Link>
+            <Link to="/Contact" className="btn-secondary" id="hero-cta-contact">
+              Contact Us
+            </Link>
           </div>
         </div>
 
-        <div className='hero-right'>
-          <div className='yellow-circle'></div>
-          <div className='dot dot-yellow'></div>
-          <div className='dot dot-purple'></div>
-          <div className='dot dot-gray'></div>
-          <div className='dot dot-blue'></div>
-
-          <div className='img-grid'>
-            <img src={girlStudying} alt="Girl studying" className='img-circle top-left' decoding="async" fetchPriority="high" />
-            <img src={boyCurly} alt="Boy smiling" className='img-rounded top-right' decoding="async" fetchPriority="high" />
-            <img src={girlBook} alt="Girl with book on head" className='img-rounded bottom-left' decoding="async" />
-            <img src={girlPainting} alt="Girl painting" className='img-rounded bottom-right' decoding="async" />
+        <div className="hero-visual" data-animate>
+          <div className="hero-blob" aria-hidden="true" />
+          <img
+            src={studentImg}
+            alt="A student at Académie Al-Khwarizmi"
+            className="hero-student-img"
+            loading="eager"
+            decoding="async"
+            id="hero-student-image"
+          />
+          <div className="hero-badge hero-badge-top" aria-hidden="true">
+            <span className="badge-icon">🎓</span>
+            <span className="badge-text">Academic Support</span>
           </div>
-        </div>
-      </div>
-
-      <section className='formations'>
-        <div className='formations-head'>
-          <p className='eyebrow'>What We Offer</p>
-          <h2 className='section-title'>
-            Our <strong>Formations</strong>
-          </h2>
-          <p className='section-sub'>
-            A few focused paths built around how kids actually learn.
-          </p>
-        </div>
-
-        <div className='formation-row'>
-          <div className='formation-card card-a'>
-            <div className='formation-icon icon-yellow'>
-              <BookOpen size={22} strokeWidth={2} />
-            </div>
-            <h3>Support Lessons</h3>
-            <p>Personalized help across every subject and every grade level, at each child's own pace.</p>
-          </div>
-
-          <div className='formation-card card-b'>
-            <div className='formation-icon icon-blue'>
-              <MessagesSquare size={22} strokeWidth={2} />
-            </div>
-            <h3>Language Learning</h3>
-            <p>Playful, conversation-first lessons that build real confidence in a new language.</p>
-          </div>
-
-          <div className='formation-card card-c'>
-            <div className='formation-icon icon-purple'>
-              <Hammer size={22} strokeWidth={2} />
-            </div>
-            <h3>Work Formation</h3>
-            <p>Hands-on skills and early habits that prepare kids for what comes next.</p>
+          <div className="hero-badge hero-badge-bottom" aria-hidden="true">
+            <span className="badge-icon">📜</span>
+            <span className="badge-text">Certified Training</span>
           </div>
         </div>
       </section>
 
-      <section className='teachers'>
-        <div className='teachers-container'>
-          <div className='teachers-head'>
-            <p className='eyebrow'>Our Team</p>
-            <h2 className='section-title'>
-              Meet the <strong>Teachers</strong>
-            </h2>
-            <p className='section-sub'>
-              Passionate educators dedicated to inspiring curiosity and guiding every child to succeed.
+      {/* ===== Services Section ===== */}
+      <section className="services" id="services">
+        <div className="services-inner">
+
+          {/* Featured card — larger visual weight */}
+          <div className="service-card service-card--featured" data-animate id="service-academic">
+            <span className="service-num">01</span>
+            <h3 className="service-title">Academic Support</h3>
+            <p className="service-desc">
+              Students who struggle in class go from failing grades to passing — in the same term.
+              We work on the exact subjects your child needs, not a generic programme.
             </p>
+            <div className="service-tag">All school levels</div>
           </div>
 
-          <div className='teacher-row'>
-            <div className='teacher-card card-a'>
-              <img src={teacherSarah} alt="Sarah Jenkins" className='teacher-photo' loading="lazy" decoding="async" />
-              <h3>Sarah Jenkins</h3>
-              <span className='teacher-subject tag-yellow'>Early Literacy</span>
-              <p>Specializes in creative storytelling and interactive reading strategies for young minds.</p>
-              <Link to="/About#sarah-jenkins" className='teacher-link'>View profile</Link>
+          {/* Two stacked cards on the right */}
+          <div className="service-stack">
+            <div className="service-card service-card--stacked" data-animate id="service-language">
+              <span className="service-num">02</span>
+              <h3 className="service-title">Language Courses</h3>
+              <p className="service-desc">
+                Arabic, French, or English — spoken confidently after one semester.
+                Structured for children, teens, and adult beginners.
+              </p>
+              <div className="service-tag">3 languages</div>
             </div>
 
-            <div className='teacher-card card-b'>
-              <img src={teacherDavid} alt="David Chen" className='teacher-photo' loading="lazy" decoding="async" />
-              <h3>David Chen</h3>
-              <span className='teacher-subject tag-blue'>STEM & Science</span>
-              <p>Empowers kids to explore the world through exciting hands-on experiments and logic.</p>
-              <Link to="/About#david-chen" className='teacher-link'>View profile</Link>
-            </div>
-
-            <div className='teacher-card card-c'>
-              <img src={teacherElena} alt="Elena Rostova" className='teacher-photo' loading="lazy" decoding="async" />
-              <h3>Elena Rostova</h3>
-              <span className='teacher-subject tag-purple'>Arts & Languages</span>
-              <p>Fosters creative expression and multilingual confidence in a joyful environment.</p>
-              <Link to="/About#elena-rostova" className='teacher-link'>View profile</Link>
-            </div>
-
-            <div className='teacher-card card-d'>
-              <img src={teacherMarcus} alt="Marcus Vance" className='teacher-photo' loading="lazy" decoding="async" />
-              <h3>Marcus Vance</h3>
-              <span className='teacher-subject tag-lightblue'>Mathematics</span>
-              <p>Makes complex problem solving intuitive, engaging, and fun for all learning styles.</p>
-              <Link to="/About#marcus-vance" className='teacher-link'>View profile</Link>
+            <div className="service-card service-card--stacked service-card--accent" data-animate id="service-training">
+              <span className="service-num">03</span>
+              <h3 className="service-title">Practical Training</h3>
+              <p className="service-desc">
+                Computer skills, sewing, and applied trades. Each course ends with a
+                recognised certificate you can present to an employer.
+              </p>
+              <div className="service-tag">Certificate included</div>
             </div>
           </div>
+
         </div>
       </section>
-    </>
+
+    </div>
   )
 }
 
