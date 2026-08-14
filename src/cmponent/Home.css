@@ -7,20 +7,24 @@
 
 /* ===== CSS Variables ===== */
 :root {
-  --bg:         #F6F0E8;
-  --bg-card:    #FFFFFF;
-  --text:       #172033;
-  --text-muted: #667085;
-  --accent:     #8BC4F0;
-  --accent-dim: #DCEFFF;
-  --border:     rgba(23, 32, 51, 0.08);
-  --shadow-sm:  0 2px 8px rgba(23, 32, 51, 0.06);
-  --shadow-md:  0 8px 28px rgba(23, 32, 51, 0.09);
-  --shadow-lg:  0 20px 56px rgba(23, 32, 51, 0.11);
-  --radius-sm:  10px;
-  --radius-md:  16px;
-  --radius-lg:  24px;
-  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --bg:              #F6F0E8;
+  --bg-card:         #FFFFFF;
+  --bg-card-tinted:  #FAF7F2;
+  --text:            #172033;
+  --text-muted:      #667085;
+  --accent:          #8BC4F0;
+  --accent-dim:      #DCEFFF;
+  --accent-badge-bg: rgba(139, 196, 240, 0.22);
+  --border:          rgba(23, 32, 51, 0.08);
+  --shadow-sm:       0 2px 8px rgba(23, 32, 51, 0.06);
+  --shadow-md:       0 8px 28px rgba(23, 32, 51, 0.09);
+  --shadow-lg:       0 20px 56px rgba(23, 32, 51, 0.11);
+  --radius-sm:       10px;
+  --radius-md:       16px;
+  --radius-lg:       24px;
+  --transition:      0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --card-gap:        16px;
+  --card-padding:    1.25rem;
 }
 
 /* ===== Reset & Base ===== */
@@ -385,7 +389,7 @@ a {
 }
 
 /* ============================================================
-   SERVICES SECTION — Asymmetric Numbered Layout
+   SERVICES SECTION — Structured 3-Card Layout
    ============================================================ */
 .services {
   max-width: 1180px;
@@ -393,148 +397,137 @@ a {
   padding: 0 48px 96px;
 }
 
-/* 2-column: featured (left) + stack (right) */
-.services-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: stretch;
-}
-
-/* Stack of two cards */
-.service-stack {
+.services-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--card-gap);
 }
 
-/* ---- Base card ---- */
+/* Base Service Card */
 .service-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 32px 36px;
+  padding: var(--card-padding);
   display: flex;
   flex-direction: column;
-  gap: 14px;
   position: relative;
-  overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   will-change: transform;
 }
 
 .service-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(23, 32, 51, 0.14);
 }
 
-/* ---- Featured card (01) — left border accent, full height ---- */
+/* Icon Badge (44x44px, ~10px radius, soft tinted background) */
+.service-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-badge-bg);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.service-icon {
+  color: var(--text);
+}
+
+/* Featured Card: Full-width Horizontal Layout */
 .service-card--featured {
-  height: 100%;
-  border-left: 4px solid var(--accent);
-  background: var(--bg-card);
+  background: var(--bg-card-tinted);
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
 
-/* Subtle dot-grid texture behind featured card */
-.service-card--featured::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(139,196,240,0.18) 1px, transparent 1px);
-  background-size: 22px 22px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.service-card--featured > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* ---- Stacked cards (02, 03) ---- */
-.service-card--stacked {
+.service-card--featured .service-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   flex: 1;
 }
 
-/* Card 03 — dark accent background */
-.service-card--accent {
-  background: var(--text);
-  border-color: transparent;
-  color: #fff;
+.service-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.service-card--accent .service-title {
-  color: #fff;
+/* Bottom Row: Two Equal-width Cards */
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--card-gap);
 }
 
-.service-card--accent .service-desc {
-  color: rgba(255,255,255,0.68);
+.services-grid .service-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-.service-card--accent .service-num {
-  color: var(--accent);
+.services-grid .service-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 
-.service-card--accent .service-tag {
-  background: rgba(139,196,240,0.18);
-  color: var(--accent);
-  border-color: rgba(139,196,240,0.3);
-}
-
-/* ---- Number (01 / 02 / 03) ---- */
-.service-num {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
-  display: block;
-}
-
-/* ---- Card titles ---- */
+/* Typography */
 .service-title {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 19px;
+  font-weight: 700;
   color: var(--text);
-  line-height: 1.25;
+  line-height: 1.3;
   letter-spacing: -0.2px;
 }
 
 .service-card--featured .service-title {
-  font-size: 22px;
+  font-size: 21px;
 }
 
-/* ---- Card descriptions ---- */
 .service-desc {
-  font-size: 14px;
+  font-size: 14.5px;
   color: var(--text-muted);
-  line-height: 1.72;
-  flex: 1;
+  line-height: 1.6;
 }
 
-/* ---- Tag pill ---- */
-.service-tag {
+/* Badges (Pills) */
+.service-badge {
   display: inline-flex;
-  align-self: flex-start;
+  align-items: center;
   font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--text);
   background: var(--accent-dim);
-  border: 1px solid rgba(139,196,240,0.4);
+  border: 1px solid rgba(139, 196, 240, 0.4);
   border-radius: 999px;
-  padding: 4px 12px;
-  margin-top: auto;
+  padding: 5px 12px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
-
+.services-grid .service-badge {
+  margin-top: auto;
+}
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 
-/* Tablet (â‰¤ 1024px) */
+/* Tablet (≤ 1024px) */
 @media (max-width: 1024px) {
   .navbar {
     padding: 0 32px;
@@ -596,17 +589,9 @@ a {
   .services {
     padding: 0 32px 60px;
   }
-
-  .services-inner {
-    grid-template-columns: 1fr;
-  }
-
-  .service-card--featured {
-    height: auto;
-  }
 }
 
-/* Small Tablet (â‰¤ 768px) */
+/* Small Tablet (≤ 768px) */
 @media (max-width: 768px) {
   .nav-links,
   .nav-cta {
@@ -658,7 +643,26 @@ a {
   }
 }
 
-/* Mobile (â‰¤ 480px) */
+/* Mobile (≤ 640px) */
+@media (max-width: 640px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card--featured {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .service-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* Mobile Small (≤ 480px) */
 @media (max-width: 480px) {
   .navbar {
     padding: 0 20px;

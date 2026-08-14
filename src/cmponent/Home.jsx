@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import './Home.css'
 import { Link } from 'react-router'
+import { GraduationCap, Languages, Award } from 'lucide-react'
 import studentImg from '../assets/image.png'
 
 function Home() {
@@ -106,39 +107,53 @@ function Home() {
 
       {/* ===== Services Section ===== */}
       <section className="services" id="services">
-        <div className="services-inner">
+        <div className="services-container">
 
-          {/* Featured card — larger visual weight */}
+          {/* Top Featured Card: Full-width Horizontal Layout */}
           <div className="service-card service-card--featured" data-animate id="service-academic">
-            <span className="service-num">01</span>
-            <h3 className="service-title">Academic Support</h3>
-            <p className="service-desc">
-              Students who struggle in class go from failing grades to passing — in the same term.
-              We work on the exact subjects your child needs, not a generic programme.
-            </p>
-            <div className="service-tag">All school levels</div>
+            <div className="service-icon-badge" aria-hidden="true">
+              <GraduationCap className="service-icon" size={22} strokeWidth={2} />
+            </div>
+            <div className="service-content">
+              <div className="service-header">
+                <h3 className="service-title">Academic Support</h3>
+                <span className="service-badge">All School Levels</span>
+              </div>
+              <p className="service-desc">
+                Students who struggle in class go from failing grades to passing — in the same term.
+                We work on the exact subjects your child needs, not a generic programme.
+              </p>
+            </div>
           </div>
 
-          {/* Two stacked cards on the right */}
-          <div className="service-stack">
-            <div className="service-card service-card--stacked" data-animate id="service-language">
-              <span className="service-num">02</span>
-              <h3 className="service-title">Language Courses</h3>
-              <p className="service-desc">
-                Arabic, French, or English — spoken confidently after one semester.
-                Structured for children, teens, and adult beginners.
-              </p>
-              <div className="service-tag">3 languages</div>
+          {/* Bottom Row: Two Equal-width Cards */}
+          <div className="services-grid">
+            <div className="service-card" data-animate id="service-language">
+              <div className="service-icon-badge" aria-hidden="true">
+                <Languages className="service-icon" size={20} strokeWidth={2} />
+              </div>
+              <div className="service-content">
+                <h3 className="service-title">Language Courses</h3>
+                <p className="service-desc">
+                  Arabic, French, or English — spoken confidently after one semester.
+                  Structured for children, teens, and adult beginners.
+                </p>
+              </div>
+              <span className="service-badge">3 Languages</span>
             </div>
 
-            <div className="service-card service-card--stacked service-card--accent" data-animate id="service-training">
-              <span className="service-num">03</span>
-              <h3 className="service-title">Practical Training</h3>
-              <p className="service-desc">
-                Computer skills, sewing, and applied trades. Each course ends with a
-                recognised certificate you can present to an employer.
-              </p>
-              <div className="service-tag">Certificate included</div>
+            <div className="service-card" data-animate id="service-training">
+              <div className="service-icon-badge" aria-hidden="true">
+                <Award className="service-icon" size={20} strokeWidth={2} />
+              </div>
+              <div className="service-content">
+                <h3 className="service-title">Practical Training</h3>
+                <p className="service-desc">
+                  Computer skills, sewing, and applied trades. Each course ends with a
+                  recognised certificate you can present to an employer.
+                </p>
+              </div>
+              <span className="service-badge">Certificate Included</span>
             </div>
           </div>
 
