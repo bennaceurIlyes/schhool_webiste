@@ -57,14 +57,14 @@ function Home({
         stats={statsData}
       />
 
-      {/* ===== 4. Our Classes Section (Matching Reference Design) ===== */}
+      {/* ===== 4. Our Teachers Marquee Section ===== */}
+      <TeachersSection teachers={teachersData} />
+
+      {/* ===== 5. Our Classes Section (Matching Reference Design) ===== */}
       <ClassesSection
         headerData={classesHeaderData}
         classes={classesData}
       />
-
-      {/* ===== 5. Our Teachers Marquee Section ===== */}
-      <TeachersSection teachers={teachersData} />
     </div>
   )
 }
