@@ -1,6 +1,6 @@
 import React from 'react'
 import Home from './cmponent/Home'
-import { BrowserRouter, Link, Route, Routes } from 'react-router'
+import { BrowserRouter, Route, Routes } from 'react-router'
 import About from './cmponent/About'
 import Contact from './cmponent/Contact'
 import Classes from './cmponent/Classes'
