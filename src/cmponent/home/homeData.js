@@ -6,6 +6,13 @@ import teacherDavid from '../../assets/teacher-david.jpg'
 import teacherElena from '../../assets/teacher-elena.jpg'
 import teacherMarcus from '../../assets/teacher-marcus.jpg'
 
+// Class images
+import classMathImg from '../../assets/class-math.jpg'
+import classEnglishImg from '../../assets/class-english.jpg'
+import classArabicImg from '../../assets/class-arabic.jpg'
+import classPhysicsImg from '../../assets/class-physics.jpg'
+import classComputerImg from '../../assets/class-computer.jpg'
+
 export const heroData = {
   eyebrow: 'Trusted by families & professionals',
   title: 'Empowering Every Learner\nto Reach Their ',
@@ -130,6 +137,82 @@ export const statsData = [
     label: 'Quality Programs',
     iconType: 'check-circle',
     iconClass: 'stat-icon--teal',
+  },
+]
+
+export const classesHeaderData = {
+  badgeIcon: 'graduation',
+  title: 'Our Classes',
+  subtitle: 'Discover our high-quality classes taught by experienced teachers',
+  ctaText: 'See more classes',
+  ctaLink: '/Classes',
+}
+
+export const classesData = [
+  {
+    id: 'class-math',
+    title: 'Mathématiques',
+    level: '2ème Année Secondaire (2S)',
+    description: 'Cours complet pour le niveau lycée',
+    teacher: 'Prof. Beanli',
+    hours: '36 heures',
+    category: 'Mathématiques',
+    categoryTheme: 'blue',
+    iconType: 'math',
+    image: classMathImg,
+    ribbonColor: '#3B82F6',
+  },
+  {
+    id: 'class-english',
+    title: 'Anglais',
+    level: '2ème Année Secondaire (2S)',
+    description: 'Cours complet pour le niveau lycée',
+    teacher: 'Prof. Mr. Haddad',
+    hours: '30 heures',
+    category: 'Langue',
+    categoryTheme: 'green',
+    iconType: 'english',
+    image: classEnglishImg,
+    ribbonColor: '#10B981',
+  },
+  {
+    id: 'class-arabic',
+    title: 'Arabe',
+    level: '2ème Année Secondaire (2S)',
+    description: 'Cours complet pour le niveau lycée',
+    teacher: 'Prof. Mme. Belkacem',
+    hours: '32 heures',
+    category: 'Langue',
+    categoryTheme: 'rose',
+    iconType: 'arabic',
+    image: classArabicImg,
+    ribbonColor: '#F43F5E',
+  },
+  {
+    id: 'class-physics',
+    title: 'Physique',
+    level: '2ème Année Secondaire (2S)',
+    description: 'Cours complet pour le niveau lycée',
+    teacher: 'Prof. Mr. Kara',
+    hours: '34 heures',
+    category: 'Sciences',
+    categoryTheme: 'purple',
+    iconType: 'physics',
+    image: classPhysicsImg,
+    ribbonColor: '#8B5CF6',
+  },
+  {
+    id: 'class-computer',
+    title: 'Informatique',
+    level: '2ème Année Secondaire (2S)',
+    description: 'Cours complet pour le niveau lycée',
+    teacher: 'Prof. Mr. Ouadah',
+    hours: '40 heures',
+    category: 'Technologie',
+    categoryTheme: 'amber',
+    iconType: 'computer',
+    image: classComputerImg,
+    ribbonColor: '#F59E0B',
   },
 ]
 

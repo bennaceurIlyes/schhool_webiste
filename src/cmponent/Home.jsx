@@ -3,6 +3,7 @@ import './Home.css'
 import Navbar from './common/Navbar'
 import HeroSection from './home/HeroSection'
 import GrowthSection from './home/GrowthSection'
+import ClassesSection from './home/ClassesSection'
 import TeachersSection from './home/TeachersSection'
 
 function Home({
@@ -11,10 +12,12 @@ function Home({
   programsData,
   growthVisualData,
   statsData,
+  classesHeaderData,
+  classesData,
   teachersData,
 }) {
   useEffect(() => {
-    // Scroll-triggered animations for growth section elements
+    // Scroll-triggered animations for elements across sections
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -28,10 +31,10 @@ function Home({
     )
 
     const allAnimated = document.querySelectorAll(
-      '.growth-section [data-animate], .growth-card, .growth-header, .growth-stats-bar, .growth-center-child'
+      '.growth-section [data-animate], .growth-card, .growth-header, .growth-stats-bar, .growth-center-child, .classes-section [data-animate], .class-card, .classes-header, .classes-action-wrap'
     )
     allAnimated.forEach((el, index) => {
-      el.style.animationDelay = `${(index % 4) * 0.12}s`
+      el.style.animationDelay = `${(index % 4) * 0.1}s`
       observer.observe(el)
     })
 
@@ -54,7 +57,13 @@ function Home({
         stats={statsData}
       />
 
-      {/* ===== 4. Our Teachers Marquee Section ===== */}
+      {/* ===== 4. Our Classes Section (Matching Reference Design) ===== */}
+      <ClassesSection
+        headerData={classesHeaderData}
+        classes={classesData}
+      />
+
+      {/* ===== 5. Our Teachers Marquee Section ===== */}
       <TeachersSection teachers={teachersData} />
     </div>
   )
