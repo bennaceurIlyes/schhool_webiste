@@ -23,6 +23,7 @@ import {
   isValidPhone,
   isValidEmail,
 } from '../../utils/security'
+import { studentService } from '../../utils/studentService'
 
 const ALLOWED_GROUPS = ['weekend', 'weekday', 'morning']
 
@@ -166,14 +167,27 @@ export default function ClassEnrollModal({ classItem, isOpen, onClose }) {
       notes: sanitizeInput(formData.notes, 500),
     }
 
-    // Simulate backend submission safely
+    // Simulate backend submission safely and queue into Admin Dashboard
     setTimeout(() => {
       const randomCode = `AK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
+      
+      // Add to unified student management store as Pending Approval
+      studentService.addOnlineEnrollment({
+        studentName: cleanSubmission.studentName,
+        parentName: cleanSubmission.parentName,
+        phone: cleanSubmission.phone,
+        email: cleanSubmission.email,
+        courseName: classItem?.title || 'Cours Spécialisé',
+        teacherName: classItem?.teacher || 'Professeur Principal',
+        monthlyPrice: parseInt(classItem?.price?.replace(/\D/g, '')) || 3000,
+        sessionsPerMonth: 4,
+      })
+
       setRegistrationCode(randomCode)
       setSubmittedData(cleanSubmission)
       setIsSubmitting(false)
       setIsSubmitted(true)
-    }, 600)
+    }, 500)
   }
 
   const handlePrint = () => {

@@ -1,6 +1,6 @@
 /* ============================================================
-   Nawafid Éducation - Full Dashboard Styles
-   Pages: Home, Statistique, Student
+   Nawafid Éducation - Full Dashboard Unified Styles
+   Complete Styles for: Home, Statistique, Student, Teacher, Annonces
    ============================================================ */
 
 .dashboard-page-canvas {
@@ -20,8 +20,8 @@
 /* Main Dashboard Outer Card */
 .dashboard-app-container {
   width: 100%;
-  max-width: 1280px;
-  min-height: 840px;
+  max-width: 1340px;
+  min-height: 860px;
   background: #FFFFFF;
   border-radius: 32px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
@@ -49,7 +49,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
   text-decoration: none;
   cursor: pointer;
 }
@@ -89,20 +89,20 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   flex: 1;
 }
 
 .sidebar-nav-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 18px;
+  gap: 12px;
+  padding: 13px 16px;
   border-radius: 16px;
   border: none;
   background: transparent;
   color: #4B5563;
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -133,17 +133,35 @@
 }
 
 .nav-active-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #2563EB;
   position: absolute;
-  right: 18px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
 }
 
-/* Profile / Admin Card at bottom of sidebar */
+.sidebar-badge-count {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+.badge-amber-bg {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.badge-red-bg {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+/* Profile / Admin Card at bottom */
 .sidebar-profile-card {
   display: flex;
   align-items: center;
@@ -206,19 +224,19 @@
    MAIN CONTENT AREA
    ============================================================ */
 .dashboard-main-content {
-  padding: 36px 44px;
+  padding: 32px 40px;
   background: #FAFAF8;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 26px;
   overflow-y: auto;
-  min-height: 840px;
+  min-height: 860px;
 }
 
 .tab-view-container {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
   animation: fadeTabIn 0.28s ease-out;
 }
 
@@ -235,7 +253,7 @@
 }
 
 .dashboard-welcome-heading {
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 800;
   color: #111827;
   letter-spacing: -0.02em;
@@ -245,10 +263,10 @@
 }
 
 .dashboard-welcome-subtext {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
   color: #6B7280;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .topbar-actions {
@@ -258,8 +276,8 @@
 }
 
 .topbar-circle-btn {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: #FFFFFF;
   border: 1px solid #F3F4F6;
@@ -285,13 +303,13 @@
   border-radius: 50%;
   background: #EF4444;
   position: absolute;
-  top: 11px;
-  right: 12px;
+  top: 10px;
+  right: 11px;
   border: 1.5px solid #FFFFFF;
 }
 
 /* ============================================================
-   CARD PANELS COMMON
+   CARD PANELS (HOME & GENERAL USE)
    ============================================================ */
 .dashboard-card-panel {
   background: #FFFFFF;
@@ -367,9 +385,7 @@
   border-color: #D1D5DB;
 }
 
-/* ============================================================
-   HOME TAB (Overview Grid & Bar Chart)
-   ============================================================ */
+/* Overview Layout (Chart Left, Metric Right) */
 .overview-grid-layout {
   display: grid;
   grid-template-columns: 1.4fr 0.95fr;
@@ -788,28 +804,508 @@
 }
 
 /* ============================================================
-   STUDENT TAB STYLES
+   SUMMARY KPI CARDS (STUDENT & ANNOUNCEMENTS)
+   ============================================================ */
+.summary-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.summary-kpi-card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 18px 16px;
+  border: 1.5px solid #F3F4F6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.summary-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.summary-kpi-card.active-filter {
+  border-color: #2563EB;
+  background: #F8FAFF;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.1);
+}
+
+.summary-kpi-card.card-danger.active-filter {
+  border-color: #EF4444;
+  background: #FEF2F2;
+}
+
+.summary-kpi-card.card-warning.active-filter {
+  border-color: #F59E0B;
+  background: #FFFBEB;
+}
+
+.kpi-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-label-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.kpi-icon-square {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-number-display {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.kpi-sub-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9CA3AF;
+}
+
+/* ============================================================
+   ANNOUNCEMENT SYSTEM STYLES (FULL PROMINENCE)
+   ============================================================ */
+.announcements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+}
+
+.announcement-card-box {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 22px 24px;
+  border: 1.5px solid #F3F4F6;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.22s ease;
+  position: relative;
+}
+
+.announcement-card-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.announcement-card-box.pinned-card {
+  border-color: #FDE68A;
+  background: linear-gradient(180deg, #FFFDF5 0%, #FFFFFF 100%);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.06);
+}
+
+.ann-card-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ann-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ann-category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.cat-badge-payments {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.cat-badge-pedagogique {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+.cat-badge-events {
+  background: #ECFDF5;
+  color: #047857;
+}
+
+.cat-badge-general {
+  background: #F3F4F6;
+  color: #4B5563;
+}
+
+.ann-pinned-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FEF3C7;
+  color: #D97706;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.ann-card-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.35;
+  margin-top: 10px;
+}
+
+.ann-card-content-preview {
+  font-size: 13px;
+  color: #4B5563;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.ann-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #F3F4F6;
+  padding-top: 14px;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.ann-author-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.ann-actions-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Home Page Announcement Ticker */
+.announcements-home-banner {
+  background: linear-gradient(135deg, #EEF4FF 0%, #E0E7FF 100%);
+  border: 1.5px solid #BFDBFE;
+  border-radius: 20px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ann-home-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ann-home-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #2563EB;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ann-home-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1E3A8A;
+}
+
+.ann-home-text {
+  font-size: 13px;
+  color: #3B82F6;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   DEDICATED "PAYMENTS DUE" HIGHLIGHT SECTION
+   ============================================================ */
+.payments-due-banner-section {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1.5px solid #FDE68A;
+  border-radius: 22px;
+  padding: 22px 24px;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.payments-due-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.payments-due-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.payments-due-icon-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #F59E0B;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payments-due-heading {
+  font-size: 16px;
+  font-weight: 800;
+  color: #92400E;
+}
+
+.payments-due-subtext {
+  font-size: 12.5px;
+  color: #B45309;
+  margin-top: 1px;
+}
+
+.payments-due-cards-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.payment-due-item-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 18px 20px;
+  border: 1px solid #FDE68A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  transition: transform 0.2s ease;
+}
+
+.payment-due-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.12);
+}
+
+.due-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.due-student-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.due-course-tag {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4B5563;
+  margin-top: 3px;
+}
+
+.due-amount-pill {
+  font-size: 15px;
+  font-weight: 800;
+  color: #B45309;
+  background: #FEF3C7;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.due-message-callout {
+  font-size: 12px;
+  color: #92400E;
+  background: #FFFBEB;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #F59E0B;
+  line-height: 1.4;
+}
+
+.due-actions-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-record-payment-primary {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: #2563EB;
+  color: #FFFFFF;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-record-payment-primary:hover {
+  background: #1D4ED8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-send-reminder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 12px;
+  background: #FEF3C7;
+  color: #92400E;
+  border-radius: 10px;
+  border: 1px solid #FDE68A;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-send-reminder:hover {
+  background: #FDE68A;
+}
+
+.btn-whatsapp-reminder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: #25D366;
+  color: #FFFFFF;
+  border-radius: 10px;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);
+}
+
+.btn-whatsapp-reminder:hover {
+  background: #128C7E;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(18, 140, 126, 0.35);
+}
+
+.btn-whatsapp-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #BBF7D0;
+  background: #F0FDF4;
+  color: #15803D;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-whatsapp-outline:hover {
+  background: #25D366;
+  color: #FFFFFF;
+  border-color: #25D366;
+}
+
+/* ============================================================
+   PENDING ENROLLMENTS BANNER
+   ============================================================ */
+.pending-enrollment-banner {
+  background: #EFF6FF;
+  border: 1.5px solid #BFDBFE;
+  border-radius: 18px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.pending-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ============================================================
+   STUDENTS TABLE & TOOLBAR
    ============================================================ */
 .students-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .student-search-box {
   position: relative;
   flex: 1;
-  max-width: 380px;
-  min-width: 240px;
+  max-width: 360px;
+  min-width: 220px;
 }
 
 .student-search-input {
   width: 100%;
   padding: 10px 14px 10px 38px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1.5px solid #E5E7EB;
   font-size: 13.5px;
   background: #FFFFFF;
@@ -832,8 +1328,8 @@
 }
 
 .student-filter-select {
-  padding: 10px 16px;
-  border-radius: 14px;
+  padding: 9px 14px;
+  border-radius: 12px;
   border: 1.5px solid #E5E7EB;
   background: #FFFFFF;
   font-size: 13px;
@@ -847,10 +1343,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 10px 18px;
   background: #2563EB;
   color: #FFFFFF;
-  border-radius: 14px;
+  border-radius: 12px;
   border: none;
   font-size: 13.5px;
   font-weight: 700;
@@ -862,7 +1358,6 @@
 .btn-add-student-primary:hover {
   background: #1D4ED8;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
 }
 
 /* Students Data Table */
@@ -887,17 +1382,18 @@
 
 .students-table th {
   background: #F9FAFB;
-  padding: 14px 20px;
-  font-size: 12px;
-  font-weight: 700;
+  padding: 14px 18px;
+  font-size: 11.5px;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #6B7280;
   border-bottom: 1px solid #E5E7EB;
+  white-space: nowrap;
 }
 
 .students-table td {
-  padding: 16px 20px;
+  padding: 14px 18px;
   font-size: 13.5px;
   border-bottom: 1px solid #F3F4F6;
   vertical-align: middle;
@@ -907,7 +1403,7 @@
   background: #FAFAFA;
 }
 
-/* Table Elements */
+/* Student Avatar Cell */
 .student-avatar-cell {
   display: flex;
   align-items: center;
@@ -951,6 +1447,45 @@
   display: inline-block;
 }
 
+/* Sessions Completion Progress Indicator */
+.session-counter-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 90px;
+}
+
+.session-number-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.session-progress-track {
+  width: 100%;
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.session-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.fill-progress-complete {
+  background: #F59E0B;
+}
+
+.fill-progress-active {
+  background: #10B981;
+}
+
+/* Status Badges */
 .badge-status-pill {
   display: inline-flex;
   align-items: center;
@@ -959,31 +1494,97 @@
   border-radius: 999px;
   font-size: 11.5px;
   font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-paid {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.status-due {
+  background: #FFFBEB;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.status-overdue {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
+.status-pending {
+  background: #EFF6FF;
+  color: #2563EB;
+  border: 1px solid #BFDBFE;
+}
+
+.status-suspended {
+  background: #F3F4F6;
+  color: #4B5563;
+  border: 1px solid #E5E7EB;
 }
 
 .status-validated {
   background: #ECFDF5;
   color: #059669;
+  border: 1px solid #A7F3D0;
 }
 
-.status-pending {
-  background: #FFFBEB;
-  color: #D97706;
-}
-
-.status-completed {
-  background: #EFF6FF;
-  color: #2563EB;
-}
-
-/* Row Action Buttons */
+/* Action Buttons in Table */
 .table-action-btns {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-.action-btn-sm {
+.btn-action-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.btn-action-outline:hover {
+  background: #F3F4F6;
+  color: #111827;
+  border-color: #D1D5DB;
+}
+
+.btn-action-outline.btn-action-pay {
+  background: #EEF4FF;
+  border-color: #BFDBFE;
+  color: #2563EB;
+  font-weight: 700;
+}
+
+.btn-action-outline.btn-action-pay:hover {
+  background: #DBEAFE;
+}
+
+.btn-action-outline.btn-action-approve {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+  color: #059669;
+  font-weight: 700;
+}
+
+.btn-action-outline.btn-action-approve:hover {
+  background: #D1FAE5;
+}
+
+.btn-action-icon-sm {
   width: 30px;
   height: 30px;
   border-radius: 8px;
@@ -997,16 +1598,132 @@
   transition: all 0.18s ease;
 }
 
-.action-btn-sm:hover {
+.btn-action-icon-sm:hover {
   background: #F3F4F6;
   color: #111827;
-  border-color: #D1D5DB;
 }
 
-.action-btn-sm.btn-delete:hover {
+.btn-action-icon-sm.btn-delete:hover {
   background: #FEE2E2;
   color: #DC2626;
   border-color: #FCA5A5;
+}
+
+/* ============================================================
+   MODALS: PROFILE, APPROVAL, AND RECORD PAYMENT
+   ============================================================ */
+.dashboard-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.dashboard-modal-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 30px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.15);
+  animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Profile Details Tabs inside Modal */
+.profile-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #F3F4F6;
+  margin-bottom: 20px;
+}
+
+.profile-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.modal-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.profile-info-box {
+  background: #F9FAFB;
+  border-radius: 14px;
+  padding: 14px 16px;
+  border: 1px solid #F3F4F6;
+}
+
+.profile-info-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.profile-info-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Highlight Current Cycle Card */
+.profile-current-cycle-card {
+  background: #F0F6FF;
+  border: 1.5px solid #BFDBFE;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 18px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Payment History Table */
+.payment-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 12.5px;
+}
+
+.payment-history-table th {
+  background: #F9FAFB;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6B7280;
+  border-bottom: 1px solid #E5E7EB;
+  text-align: left;
+}
+
+.payment-history-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #F3F4F6;
 }
 
 /* Table Footer Pagination */
@@ -1043,45 +1760,13 @@
 }
 
 /* ============================================================
-   MODAL: Add Student Modal
+   RESPONSIVE DESIGN (PROPERLY CLOSED MEDIA QUERIES)
    ============================================================ */
-.dashboard-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 9999;
-  animation: fadeIn 0.2s ease-out;
-}
+@media (max-width: 1200px) {
+  .summary-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-.dashboard-modal-card {
-  background: #FFFFFF;
-  border-radius: 24px;
-  padding: 32px;
-  width: 100%;
-  max-width: 520px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.15);
-  animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes zoomIn {
-  from { opacity: 0; transform: scale(0.95) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* ============================================================
-   RESPONSIVE DESIGN
-   ============================================================ */
-@media (max-width: 1180px) {
   .stats-kpi-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1107,13 +1792,17 @@
     flex-wrap: wrap;
   }
 
+  .summary-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .overview-grid-layout {
     grid-template-columns: 1fr;
     gap: 24px;
   }
 
   .dashboard-main-content {
-    padding: 24px 20px;
+    padding: 20px 16px;
   }
 }
 
@@ -1126,14 +1815,28 @@
     border-radius: 20px;
   }
 
+  .summary-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
   .stats-kpi-grid {
     grid-template-columns: 1fr;
   }
 
-  .panel-header-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .profile-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .payments-due-cards-row {
+    grid-template-columns: 1fr;
+  }
+
+  .announcements-grid {
+    grid-template-columns: 1fr;
   }
 
   .chart-bars-stage {
@@ -1144,214 +1847,7 @@
     width: 36px;
   }
 
-/* ============================================================
-   TEACHER & APPROVAL WORKFLOW STYLES
-   ============================================================ */
-
-.approval-banner-alert {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
-  padding: 16px 20px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-}
-
-.approval-banner-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.approval-badge-count {
-  background: #F59E0B;
-  color: #FFFFFF;
-  font-size: 12px;
-  font-weight: 800;
-  padding: 3px 9px;
-  border-radius: 999px;
-}
-
-.approval-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
-}
-
-.approval-card-item {
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 22px;
-  border: 1px solid #F3F4F6;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.22s ease;
-}
-
-.approval-card-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-}
-
-.approval-card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.approval-card-title {
-  font-size: 16px;
-  font-weight: 800;
-  color: #111827;
-  margin-bottom: 4px;
-}
-
-.approval-card-teacher {
-  font-size: 13px;
-  font-weight: 600;
-  color: #4B5563;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.approval-specs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 0;
-  border-top: 1px solid #F3F4F6;
-  border-bottom: 1px solid #F3F4F6;
-  margin: 12px 0 16px;
-  font-size: 12.5px;
-  color: #6B7280;
-}
-
-.approval-spec-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.approval-actions-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.btn-approve-action {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px 16px;
-  background: #10B981;
-  color: #FFFFFF;
-  border-radius: 12px;
-  border: none;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-approve-action:hover {
-  background: #059669;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
-
-.btn-reject-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px 14px;
-  background: #FEE2E2;
-  color: #DC2626;
-  border-radius: 12px;
-  border: none;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-reject-action:hover {
-  background: #FECACA;
-}
-
-.badge-status-approved {
-  background: #ECFDF5;
-  color: #059669;
-  border: 1px solid #A7F3D0;
-}
-
-.badge-status-pending {
-  background: #FFFBEB;
-  color: #D97706;
-  border: 1px solid #FDE68A;
-}
-
-.badge-status-rejected {
-  background: #FEF2F2;
-  color: #DC2626;
-  border: 1px solid #FECACA;
-}
-
-/* Secondary Tab Sub-nav for Teachers / Classes */
-.sub-tabs-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #F3F4F6;
-  padding-bottom: 12px;
-}
-
-.sub-tab-btn {
-  padding: 8px 18px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  background: transparent;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #6B7280;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.sub-tab-btn:hover {
-  background: #F9FAFB;
-  color: #111827;
-}
-
-.sub-tab-btn.active {
-  background: #EEF4FF;
-  color: #2563EB;
-  font-weight: 700;
-  border-color: #DBEAFE;
-}
-
-/* Modal form grid 2 cols */
-.modal-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.modal-form-full {
-  grid-column: 1 / -1;
-}
-
-@media (max-width: 640px) {
-  .modal-form-grid {
-    grid-template-columns: 1fr;
+  .bar-pill {
+    width: 24px;
   }
 }
-

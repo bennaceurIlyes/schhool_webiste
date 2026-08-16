@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Dashboard.css'
 import {
   Home,
@@ -32,458 +32,365 @@ import {
   MapPin,
   Layers,
   Sparkles,
+  CreditCard,
+  Send,
+  RotateCcw,
+  FileText,
+  AlertTriangle,
+  Megaphone,
+  Pin,
+  Tag,
+  Phone,
+  MessageSquare,
 } from 'lucide-react'
-
-// Initial Teachers Data
-const INITIAL_TEACHERS = [
-  {
-    id: 'T-101',
-    name: 'Prof. Sarah Benali',
-    subject: 'Mathématiques',
-    subjectTheme: 'blue',
-    phone: '0550 12 34 56',
-    email: 'sarah.benali@ecole.dz',
-    classesCount: 4,
-    status: 'Actif',
-    initials: 'SB',
-    avatarColor: 'avatar-blue',
-  },
-  {
-    id: 'T-102',
-    name: 'Prof. David Moreau',
-    subject: 'Langues (Anglais)',
-    subjectTheme: 'green',
-    phone: '0661 44 55 66',
-    email: 'david.moreau@ecole.dz',
-    classesCount: 3,
-    status: 'Actif',
-    initials: 'DM',
-    avatarColor: 'avatar-green',
-  },
-  {
-    id: 'T-103',
-    name: 'Prof. Amira Al-Mansour',
-    subject: 'Sciences & Physique',
-    subjectTheme: 'purple',
-    phone: '0770 88 99 11',
-    email: 'amira.almansour@ecole.dz',
-    classesCount: 5,
-    status: 'Actif',
-    initials: 'AM',
-    avatarColor: 'avatar-purple',
-  },
-  {
-    id: 'T-104',
-    name: 'Prof. Marcus Chen',
-    subject: 'Informatique & Web',
-    subjectTheme: 'amber',
-    phone: '0555 77 88 99',
-    email: 'marcus.chen@ecole.dz',
-    classesCount: 2,
-    status: 'Actif',
-    initials: 'MC',
-    avatarColor: 'avatar-amber',
-  },
-]
-
-// Initial Classes & Proposed Lessons Data with Approval Status
-const INITIAL_PROPOSED_CLASSES = [
-  {
-    id: 'CLS-201',
-    title: 'Mathématiques Avancées - Préparation BAC',
-    teacher: 'Prof. Sarah Benali',
-    subject: 'Mathématiques',
-    level: '3ème Année Secondaire (BAC)',
-    schedule: 'Samedi & Mardi : 14h00 - 16h30',
-    room: 'Salle B2 - Sciences',
-    price: '5,500 DZD / mois',
-    maxStudents: 25,
-    status: 'En attente',
-    dateProposed: '15 Août 2026',
-    theme: 'blue',
-  },
-  {
-    id: 'CLS-202',
-    title: 'Atelier de Programmation Python & IA',
-    teacher: 'Prof. Marcus Chen',
-    subject: 'Informatique',
-    level: 'Lycée & Débutants',
-    schedule: 'Vendredi : 09h00 - 12h00',
-    room: 'Lab Info 1',
-    price: '6,000 DZD / mois',
-    maxStudents: 18,
-    status: 'En attente',
-    dateProposed: '16 Août 2026',
-    theme: 'amber',
-  },
-  {
-    id: 'CLS-203',
-    title: 'Physique Pratique - Manipulations & Chimie',
-    teacher: 'Prof. Amira Al-Mansour',
-    subject: 'Sciences',
-    level: '2ème Année Secondaire (2S)',
-    schedule: 'Mercredi : 15h00 - 18h00',
-    room: 'Laboratoire Lab-01',
-    price: '4,800 DZD / mois',
-    maxStudents: 20,
-    status: 'Approuvé',
-    dateProposed: '12 Août 2026',
-    theme: 'purple',
-  },
-  {
-    id: 'CLS-204',
-    title: 'Anglais Intensif - Expression Orale & TOEFL',
-    teacher: 'Prof. David Moreau',
-    subject: 'Langues',
-    level: 'Tous Niveaux',
-    schedule: 'Dimanche : 16h00 - 19h00',
-    room: 'Salle L1 - Langues',
-    price: '4,500 DZD / mois',
-    maxStudents: 22,
-    status: 'Approuvé',
-    dateProposed: '10 Août 2026',
-    theme: 'green',
-  },
-]
-
-// Initial Students
-const INITIAL_STUDENTS = [
-  {
-    id: 'AK-2026-1042',
-    name: 'Yacine Benali',
-    level: '2S Mathématiques',
-    classTheme: 'blue',
-    phone: '0555 12 34 56',
-    parent: 'Mohamed Benali',
-    status: 'Validé',
-    date: '12 Août 2026',
-    initials: 'YB',
-    avatarColor: 'avatar-blue',
-  },
-  {
-    id: 'AK-2026-1088',
-    name: 'Amina Mansouri',
-    level: '2S Sciences',
-    classTheme: 'purple',
-    phone: '0661 98 76 54',
-    parent: 'Fatima Mansouri',
-    status: 'Validé',
-    date: '14 Août 2026',
-    initials: 'AM',
-    avatarColor: 'avatar-green',
-  },
-  {
-    id: 'AK-2026-1120',
-    name: 'Rayane Haddad',
-    level: 'Langues (Anglais)',
-    classTheme: 'green',
-    phone: '0770 45 67 89',
-    parent: 'Karim Haddad',
-    status: 'En attente',
-    date: '15 Août 2026',
-    initials: 'RH',
-    avatarColor: 'avatar-amber',
-  },
-  {
-    id: 'AK-2026-1156',
-    name: 'Sarah Belkacem',
-    level: '2S Mathématiques',
-    classTheme: 'blue',
-    phone: '0550 33 22 11',
-    parent: 'Samir Belkacem',
-    status: 'Validé',
-    date: '15 Août 2026',
-    initials: 'SB',
-    avatarColor: 'avatar-rose',
-  },
-  {
-    id: 'AK-2026-1204',
-    name: 'Mehdi Ouadah',
-    level: 'Informatique',
-    classTheme: 'amber',
-    phone: '0663 88 99 00',
-    parent: 'Noureddine Ouadah',
-    status: 'Validé',
-    date: '16 Août 2026',
-    initials: 'MO',
-    avatarColor: 'avatar-purple',
-  },
-  {
-    id: 'AK-2026-1232',
-    name: 'Ines Kara',
-    level: '2S Sciences',
-    classTheme: 'purple',
-    phone: '0772 11 22 33',
-    parent: 'Meriem Kara',
-    status: 'En attente',
-    date: '16 Août 2026',
-    initials: 'IK',
-    avatarColor: 'avatar-blue',
-  },
-]
+import { studentService } from '../../utils/studentService'
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState('home')
+  const ADMIN_PHONE = '0667158842' // User's admin phone number
+  const [activeTab, setActiveTab] = useState('student')
   const [selectedPeriod, setSelectedPeriod] = useState('Cette semaine')
   const [periodMenuOpen, setPeriodMenuOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
-
-  // Teachers State
-  const [teachers, setTeachers] = useState(INITIAL_TEACHERS)
-  const [isAddTeacherOpen, setIsAddTeacherOpen] = useState(false)
-  const [newTeacher, setNewTeacher] = useState({
-    name: '',
-    subject: 'Mathématiques',
-    phone: '',
-    email: '',
-  })
-  const [teacherSuccess, setTeacherSuccess] = useState(false)
-
-  // Classes & Approval State
-  const [proposedClasses, setProposedClasses] = useState(INITIAL_PROPOSED_CLASSES)
-  const [classApprovalFilter, setClassApprovalFilter] = useState('all')
-  const [isAddClassOpen, setIsAddClassOpen] = useState(false)
-  const [newClass, setNewClass] = useState({
-    title: '',
-    teacher: 'Prof. Sarah Benali',
-    subject: 'Mathématiques',
-    level: '2ème Année Secondaire (2S)',
-    schedule: 'Samedi : 14h00 - 17h00',
-    room: 'Salle B2 - Sciences',
-    price: '4,500 DZD / mois',
-    maxStudents: '25',
-  })
-  const [classSuccess, setClassSuccess] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
 
-  // Students State
-  const [students, setStudents] = useState(INITIAL_STUDENTS)
+  // Students Live State
+  const [students, setStudents] = useState(() => studentService.getStudents())
   const [studentSearch, setStudentSearch] = useState('')
+  const [selectedFilterCategory, setSelectedFilterCategory] = useState('all')
   const [selectedClassFilter, setSelectedClassFilter] = useState('all')
-  const [selectedStatusFilter, setSelectedStatusFilter] = useState('all')
-  const [isAddStudentOpen, setIsAddStudentOpen] = useState(false)
-  const [newStudent, setNewStudent] = useState({
-    name: '',
-    level: '2S Mathématiques',
-    phone: '',
-    parent: '',
-  })
-  const [studentAddedSuccess, setStudentAddedSuccess] = useState(false)
 
-  // Trigger temporary toast
+  // Announcements Live State
+  const [announcements, setAnnouncements] = useState(() => studentService.getAnnouncements())
+  const [announcementSearch, setAnnouncementSearch] = useState('')
+  const [selectedAnnCategory, setSelectedAnnCategory] = useState('all')
+  const [isAddAnnouncementOpen, setIsAddAnnouncementOpen] = useState(false)
+  const [viewingAnnouncement, setViewingAnnouncement] = useState(null)
+  const [newAnnForm, setNewAnnForm] = useState({
+    title: '',
+    content: '',
+    category: 'Important',
+    targetAudience: 'Tous les élèves & parents',
+    isPinned: true,
+  })
+
+  // WhatsApp Reminder Modal State
+  const [whatsappModalStudent, setWhatsappModalStudent] = useState(null)
+  const [whatsappCustomMessage, setWhatsappCustomMessage] = useState('')
+
+  // Selected Student for View Profile Modal
+  const [viewingStudent, setViewingStudent] = useState(null)
+
+  // Selected Student for Physical Approval Modal
+  const [approvingStudent, setApprovingStudent] = useState(null)
+  const [approvalForm, setApprovalForm] = useState({
+    paymentAmount: 2500,
+    paymentMethod: 'Espèces (Cash)',
+    sessionsPerMonth: 4,
+    cycle: 'Septembre 2026',
+    notes: '',
+  })
+
+  // Selected Student for Next Month Payment Modal
+  const [payingStudent, setPayingStudent] = useState(null)
+  const [paymentForm, setPaymentForm] = useState({
+    amount: 2500,
+    paymentMethod: 'Espèces (Cash)',
+    cycle: 'Octobre 2026',
+    notes: '',
+  })
+
+  // New Student Modal
+  const [isAddStudentOpen, setIsAddStudentOpen] = useState(false)
+  const [newStudentForm, setNewStudentForm] = useState({
+    studentName: '',
+    parentName: '',
+    phone: '',
+    email: '',
+    address: '',
+    courseName: 'Mathématiques Approfondies (2S & BAC)',
+    teacherName: 'Prof. Sarah Benali',
+    monthlyPrice: 3000,
+    sessionsPerMonth: 4,
+  })
+
+  // Subscribe to live state updates
+  useEffect(() => {
+    const unsubscribe = studentService.subscribe((updated) => {
+      setStudents([...updated])
+      setAnnouncements([...studentService.getAnnouncements()])
+    })
+    return () => unsubscribe()
+  }, [])
+
+  // Show Toast
   const showToast = (msg) => {
     setToastMessage(msg)
-    setTimeout(() => setToastMessage('') , 3000)
+    setTimeout(() => setToastMessage(''), 3800)
   }
 
-  // Count pending approvals
-  const pendingApprovalsCount = proposedClasses.filter((c) => c.status === 'En attente').length
+  // Derived KPI Counts
+  const totalStudentsCount = students.length
+  const activeStudentsCount = students.filter((s) => s.status === 'Active').length
+  const pendingEnrollmentsCount = students.filter((s) => s.status === 'Pending Approval').length
+  const paymentsDueCount = students.filter((s) => s.paymentStatus === 'Payment Required').length
+  const overduePaymentsCount = students.filter((s) => s.paymentStatus === 'Overdue' || s.status === 'Payment Overdue').length
 
-  // Handle Approve Class to Teacher
-  const handleApproveClass = (classId) => {
-    setProposedClasses((prev) =>
-      prev.map((c) => (c.id === classId ? { ...c, status: 'Approuvé' } : c))
-    )
-    const approvedItem = proposedClasses.find((c) => c.id === classId)
-    showToast(`✓ Le cours "${approvedItem?.title}" a été approuvé et assigné avec succès à ${approvedItem?.teacher} !`)
-  }
+  // Students whose payment is required (Completed 4/4 sessions)
+  const studentsWithPaymentDue = students.filter((s) => s.paymentStatus === 'Payment Required')
 
-  // Handle Reject Class
-  const handleRejectClass = (classId) => {
-    setProposedClasses((prev) =>
-      prev.map((c) => (c.id === classId ? { ...c, status: 'Rejeté' } : c))
-    )
-    showToast(`Le cours a été rejeté.`)
-  }
-
-  // Handle Add Teacher
-  const handleAddTeacherSubmit = (e) => {
-    e.preventDefault()
-    if (!newTeacher.name.trim()) return
-
-    const randomId = `T-${Math.floor(100 + Math.random() * 900)}`
-    const initials = newTeacher.name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2) || 'PR'
-
-    const created = {
-      id: randomId,
-      name: newTeacher.name.startsWith('Prof.') ? newTeacher.name : `Prof. ${newTeacher.name}`,
-      subject: newTeacher.subject,
-      subjectTheme: newTeacher.subject.includes('Math') ? 'blue' : newTeacher.subject.includes('Lang') ? 'green' : 'purple',
-      phone: newTeacher.phone || '0555 00 11 22',
-      email: newTeacher.email || 'prof@ecole.dz',
-      classesCount: 1,
-      status: 'Actif',
-      initials,
-      avatarColor: 'avatar-blue',
-    }
-
-    setTeachers([created, ...teachers])
-    setTeacherSuccess(true)
-    setTimeout(() => {
-      setTeacherSuccess(false)
-      setIsAddTeacherOpen(false)
-      setNewTeacher({ name: '', subject: 'Mathématiques', phone: '', email: '' })
-      showToast(`L'enseignant "${created.name}" a été ajouté avec succès !`)
-    }, 600)
-  }
-
-  // Handle Add Class / Propose Lesson
-  const handleAddClassSubmit = (e) => {
-    e.preventDefault()
-    if (!newClass.title.trim()) return
-
-    const randomId = `CLS-${Math.floor(200 + Math.random() * 800)}`
-    const createdClass = {
-      id: randomId,
-      title: newClass.title,
-      teacher: newClass.teacher,
-      subject: newClass.subject,
-      level: newClass.level,
-      schedule: newClass.schedule,
-      room: newClass.room,
-      price: newClass.price,
-      maxStudents: Number(newClass.maxStudents) || 20,
-      status: 'En attente', // Needs admin / teacher approval!
-      dateProposed: "Aujourd'hui",
-      theme: newClass.subject.includes('Math') ? 'blue' : newClass.subject.includes('Info') ? 'amber' : 'green',
-    }
-
-    setProposedClasses([createdClass, ...proposedClasses])
-    setClassSuccess(true)
-    setTimeout(() => {
-      setClassSuccess(false)
-      setIsAddClassOpen(false)
-      setNewClass({
-        title: '',
-        teacher: teachers[0]?.name || 'Prof. Sarah Benali',
-        subject: 'Mathématiques',
-        level: '2ème Année Secondaire (2S)',
-        schedule: 'Samedi : 14h00 - 17h00',
-        room: 'Salle B2 - Sciences',
-        price: '4,500 DZD / mois',
-        maxStudents: '25',
-      })
-      showToast(`Le cours a été soumis et est en attente d'approbation !`)
-    }, 600)
-  }
-
-  // Handle Add Student
-  const handleAddStudentSubmit = (e) => {
-    e.preventDefault()
-    if (!newStudent.name.trim()) return
-
-    const randomId = `AK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
-    const initials = newStudent.name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2) || 'ET'
-
-    const created = {
-      id: randomId,
-      name: newStudent.name.trim(),
-      level: newStudent.level,
-      classTheme: 'blue',
-      phone: newStudent.phone.trim() || '0555 00 00 00',
-      parent: newStudent.parent.trim() || 'Parent Tuteur',
-      status: 'Validé',
-      date: "Aujourd'hui",
-      initials,
-      avatarColor: 'avatar-blue',
-    }
-
-    setStudents([created, ...students])
-    setStudentAddedSuccess(true)
-    setTimeout(() => {
-      setStudentAddedSuccess(false)
-      setIsAddStudentOpen(false)
-      setNewStudent({ name: '', level: '2S Mathématiques', phone: '', parent: '' })
-      showToast(`L'étudiant "${created.name}" a été inscrit avec succès !`)
-    }, 600)
-  }
-
-  // Chart datasets
-  const chartDatasets = {
-    'Cette semaine': [
-      { day: 'Lun', value: 120, max: 200 },
-      { day: 'Mar', value: 170, max: 200 },
-      { day: 'Mer', value: 200, max: 200 },
-      { day: 'Jeu', value: 150, max: 200 },
-    ],
-    'Ce mois': [
-      { day: 'Sem 1', value: 140, max: 200 },
-      { day: 'Sem 2', value: 165, max: 200 },
-      { day: 'Sem 3', value: 195, max: 200 },
-      { day: 'Sem 4', value: 180, max: 200 },
-    ],
-    'Cette année': [
-      { day: 'T1', value: 130, max: 200 },
-      { day: 'T2', value: 180, max: 200 },
-      { day: 'T3', value: 200, max: 200 },
-      { day: 'T4', value: 160, max: 200 },
-    ],
-  }
-
-  const currentData = chartDatasets[selectedPeriod] || chartDatasets['Cette semaine']
-
-  // Filtered classes by approval status
-  const filteredProposedClasses = proposedClasses.filter((c) => {
-    if (classApprovalFilter === 'all') return true
-    return c.status === classApprovalFilter
-  })
-
-  // Filtered Students
+  // Filtered Students List
   const filteredStudents = students.filter((s) => {
     const matchesSearch =
-      s.name.toLowerCase().includes(studentSearch.toLowerCase()) ||
+      s.fullName.toLowerCase().includes(studentSearch.toLowerCase()) ||
       s.id.toLowerCase().includes(studentSearch.toLowerCase()) ||
-      s.phone.includes(studentSearch)
-    const matchesClass = selectedClassFilter === 'all' || s.level.includes(selectedClassFilter)
-    const matchesStatus = selectedStatusFilter === 'all' || s.status === selectedStatusFilter
-    return matchesSearch && matchesClass && matchesStatus
+      s.phone.includes(studentSearch) ||
+      s.parentName.toLowerCase().includes(studentSearch.toLowerCase()) ||
+      s.courseName.toLowerCase().includes(studentSearch.toLowerCase())
+
+    let matchesCategory = true
+    if (selectedFilterCategory === 'active') {
+      matchesCategory = s.status === 'Active'
+    } else if (selectedFilterCategory === 'pending') {
+      matchesCategory = s.status === 'Pending Approval'
+    } else if (selectedFilterCategory === 'due') {
+      matchesCategory = s.paymentStatus === 'Payment Required'
+    } else if (selectedFilterCategory === 'overdue') {
+      matchesCategory = s.paymentStatus === 'Overdue' || s.status === 'Payment Overdue'
+    } else if (selectedFilterCategory === 'suspended') {
+      matchesCategory = s.status === 'Suspended'
+    }
+
+    const matchesClass =
+      selectedClassFilter === 'all' || s.courseName.includes(selectedClassFilter)
+
+    return matchesSearch && matchesCategory && matchesClass
   })
+
+  // Filtered Announcements List
+  const filteredAnnouncements = announcements.filter((ann) => {
+    const matchesSearch =
+      ann.title.toLowerCase().includes(announcementSearch.toLowerCase()) ||
+      ann.content.toLowerCase().includes(announcementSearch.toLowerCase()) ||
+      ann.targetAudience.toLowerCase().includes(announcementSearch.toLowerCase())
+
+    const matchesCat =
+      selectedAnnCategory === 'all' || ann.category === selectedAnnCategory
+
+    return matchesSearch && matchesCat
+  })
+
+  // Top Pinned Announcement for Home ticker
+  const topPinnedAnnouncement = announcements.find((a) => a.isPinned) || announcements[0]
+
+  // Submit New Announcement
+  const handleAddAnnouncementSubmit = (e) => {
+    e.preventDefault()
+    if (!newAnnForm.title.trim() || !newAnnForm.content.trim()) return
+
+    studentService.addAnnouncement({
+      title: newAnnForm.title,
+      content: newAnnForm.content,
+      category: newAnnForm.category,
+      targetAudience: newAnnForm.targetAudience,
+      isPinned: newAnnForm.isPinned,
+    })
+
+    showToast(`📢 Annonce "${newAnnForm.title}" publiée avec succès !`)
+    setIsAddAnnouncementOpen(false)
+    setNewAnnForm({
+      title: '',
+      content: '',
+      category: 'Important',
+      targetAudience: 'Tous les élèves & parents',
+      isPinned: true,
+    })
+    setAnnouncements([...studentService.getAnnouncements()])
+  }
+
+  // Toggle Pin Announcement
+  const handleTogglePin = (id) => {
+    studentService.togglePinAnnouncement(id)
+    setAnnouncements([...studentService.getAnnouncements()])
+    showToast(`Statut d'épinglage mis à jour.`)
+  }
+
+  // Delete Announcement
+  const handleDeleteAnnouncement = (id) => {
+    if (confirm('Voulez-vous supprimer cette annonce ?')) {
+      studentService.deleteAnnouncement(id)
+      setAnnouncements([...studentService.getAnnouncements()])
+      showToast(`Annonce supprimée.`)
+    }
+  }
+
+  // Open WhatsApp Reminder Modal
+  const handleOpenWhatsAppModal = (student) => {
+    setWhatsappModalStudent(student)
+    setWhatsappCustomMessage(
+      studentService.generateWhatsAppReminderText({
+        studentName: student.fullName,
+        parentName: student.parentName,
+        courseName: student.courseName,
+        teacherName: student.teacherName,
+        monthlyPrice: student.monthlyPrice,
+        sessionsCompleted: student.sessionsCompleted || 4,
+        sessionsPerMonth: student.sessionsPerMonth || 4,
+        adminPhone: ADMIN_PHONE,
+      })
+    )
+  }
+
+  // Direct 1-Click WhatsApp Simulation
+  const handleDirectWhatsAppSend = (student) => {
+    showToast(`✓ Rappel WhatsApp envoyé (Mode simulation) pour ${student.fullName} (${student.phone})`)
+  }
+
+  // Send WhatsApp from Modal (Frontend Mode)
+  const handleSendWhatsAppFromModal = () => {
+    if (!whatsappModalStudent) return
+    showToast(`✓ Rappel WhatsApp envoyé avec succès (Mode simulation) pour ${whatsappModalStudent.fullName} (${whatsappModalStudent.phone}) !`)
+    setWhatsappModalStudent(null)
+  }
+
+  // Open Physical Approval Modal
+  const handleOpenApproveModal = (student) => {
+    setApprovingStudent(student)
+    setApprovalForm({
+      paymentAmount: student.monthlyPrice || 2500,
+      paymentMethod: 'Espèces (Cash)',
+      sessionsPerMonth: student.sessionsPerMonth || 4,
+      cycle: 'Septembre 2026',
+      notes: 'Inscription confirmée sur place à l’école',
+    })
+  }
+
+  // Submit Physical Approval
+  const handleSubmitApproval = (e) => {
+    e.preventDefault()
+    if (!approvingStudent) return
+
+    studentService.approveEnrollment(approvingStudent.id, {
+      paymentAmount: approvalForm.paymentAmount,
+      paymentMethod: approvalForm.paymentMethod,
+      sessionsPerMonth: approvalForm.sessionsPerMonth,
+      cycle: approvalForm.cycle,
+      notes: approvalForm.notes,
+    })
+
+    showToast(`✓ Inscription approuvée avec succès ! ${approvingStudent.fullName} est maintenant Actif.`)
+    setApprovingStudent(null)
+  }
+
+  // Open Record Payment Modal
+  const handleOpenPaymentModal = (student) => {
+    setPayingStudent(student)
+    setPaymentForm({
+      amount: student.monthlyPrice || 2500,
+      paymentMethod: 'Espèces (Cash)',
+      cycle: student.currentCycle.includes('Septembre') ? 'Octobre 2026' : 'Nouveau Mois',
+      notes: 'Paiement mensuel enregistré par l’administrateur',
+    })
+  }
+
+  // Submit Next Month Payment
+  const handleSubmitPayment = (e) => {
+    e.preventDefault()
+    if (!payingStudent) return
+
+    studentService.recordMonthlyPayment(payingStudent.id, {
+      amount: paymentForm.amount,
+      paymentMethod: paymentForm.paymentMethod,
+      cycle: paymentForm.cycle,
+      notes: paymentForm.notes,
+    })
+
+    showToast(`✓ Paiement de ${paymentForm.amount} DA enregistré pour ${payingStudent.fullName}. Nouveau cycle démarré (0/${payingStudent.sessionsPerMonth} séances) !`)
+    setPayingStudent(null)
+    if (viewingStudent && viewingStudent.id === payingStudent.id) {
+      const refreshed = studentService.getStudents().find((s) => s.id === payingStudent.id)
+      setViewingStudent(refreshed)
+    }
+  }
+
+  // Add Student Manually
+  const handleAddStudentSubmit = (e) => {
+    e.preventDefault()
+    if (!newStudentForm.studentName.trim()) return
+
+    studentService.addOnlineEnrollment({
+      studentName: newStudentForm.studentName,
+      parentName: newStudentForm.parentName || 'Tuteur',
+      phone: newStudentForm.phone,
+      email: newStudentForm.email,
+      address: newStudentForm.address,
+      courseName: newStudentForm.courseName,
+      teacherName: newStudentForm.teacherName,
+      monthlyPrice: Number(newStudentForm.monthlyPrice),
+      sessionsPerMonth: Number(newStudentForm.sessionsPerMonth),
+    })
+
+    showToast(`Nouvelle demande d'inscription créée pour ${newStudentForm.studentName} (En attente d'approbation).`)
+    setIsAddStudentOpen(false)
+    setNewStudentForm({
+      studentName: '',
+      parentName: '',
+      phone: '',
+      email: '',
+      address: '',
+      courseName: 'Mathématiques Approfondies (2S & BAC)',
+      teacherName: 'Prof. Sarah Benali',
+      monthlyPrice: 3000,
+      sessionsPerMonth: 4,
+    })
+  }
+
+  // Financial calculations
+  const totalRevenueCollected = students.reduce((acc, s) => {
+    const studentTotal = (s.paymentHistory || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
+    return acc + studentTotal
+  }, 0)
+
+  const expectedMonthlyRevenue = students
+    .filter((s) => s.status === 'Active')
+    .reduce((sum, s) => sum + (Number(s.monthlyPrice) || 0), 0)
 
   return (
     <div className="dashboard-page-canvas">
       {/* Real-time Toast Alert */}
       {toastMessage && (
-        <div style={{
-          position: 'fixed',
-          top: '24px',
-          right: '24px',
-          background: '#111827',
-          color: '#FFFFFF',
-          padding: '14px 22px',
-          borderRadius: '14px',
-          boxShadow: '0 10px 28px rgba(0,0,0,0.2)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          zIndex: 10000,
-          fontSize: '13.5px',
-          fontWeight: '600',
-          animation: 'fadeIn 0.25s ease-out',
-        }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: '24px',
+            right: '24px',
+            background: '#111827',
+            color: '#FFFFFF',
+            padding: '14px 22px',
+            borderRadius: '14px',
+            boxShadow: '0 10px 28px rgba(0,0,0,0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            zIndex: 10000,
+            fontSize: '13.5px',
+            fontWeight: '600',
+            animation: 'fadeIn 0.25s ease-out',
+            border: '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
           <CheckCircle2 size={18} color="#10B981" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       <div className="dashboard-app-container">
-        
         {/* ========================================================
             LEFT SIDEBAR
             ======================================================== */}
         <aside className="dashboard-sidebar">
           <div>
             {/* Brand Logo */}
-            <div className="sidebar-brand" onClick={() => setActiveTab('home')}>
+            <div className="sidebar-brand" onClick={() => setActiveTab('student')}>
               <div className="brand-logo-icon">
                 <svg width="40" height="40" viewBox="0 0 44 44" fill="none">
                   <path d="M22 6C20.5 9 17 11 13 11C13 15 16 18 20 18C22 15 22 10 22 6Z" fill="#10B981" />
@@ -508,20 +415,9 @@ export default function Dashboard() {
                 type="button"
                 id="tab-btn-home"
               >
-                <Home size={20} className="nav-item-icon" />
+                <Home size={19} className="nav-item-icon" />
                 <span>Home</span>
                 {activeTab === 'home' && <span className="nav-active-dot" />}
-              </button>
-
-              <button
-                className={`sidebar-nav-item ${activeTab === 'statistique' ? 'active' : ''}`}
-                onClick={() => setActiveTab('statistique')}
-                type="button"
-                id="tab-btn-statistique"
-              >
-                <BarChart2 size={20} className="nav-item-icon" />
-                <span>Statistique</span>
-                {activeTab === 'statistique' && <span className="nav-active-dot" />}
               </button>
 
               <button
@@ -530,47 +426,50 @@ export default function Dashboard() {
                 type="button"
                 id="tab-btn-student"
               >
-                <GraduationCap size={20} className="nav-item-icon" />
+                <GraduationCap size={19} className="nav-item-icon" />
                 <span>Student</span>
+                {paymentsDueCount > 0 && (
+                  <span className="sidebar-badge-count badge-amber-bg">
+                    {paymentsDueCount} dues
+                  </span>
+                )}
                 {activeTab === 'student' && <span className="nav-active-dot" />}
               </button>
 
-              {/* NEW: Teacher Tab */}
+              <button
+                className={`sidebar-nav-item ${activeTab === 'announcements' ? 'active' : ''}`}
+                onClick={() => setActiveTab('announcements')}
+                type="button"
+                id="tab-btn-announcements"
+              >
+                <Megaphone size={19} className="nav-item-icon" />
+                <span>Annonces</span>
+                <span className="sidebar-badge-count" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                  {announcements.length}
+                </span>
+                {activeTab === 'announcements' && <span className="nav-active-dot" />}
+              </button>
+
+              <button
+                className={`sidebar-nav-item ${activeTab === 'statistique' ? 'active' : ''}`}
+                onClick={() => setActiveTab('statistique')}
+                type="button"
+                id="tab-btn-statistique"
+              >
+                <BarChart2 size={19} className="nav-item-icon" />
+                <span>Statistique</span>
+                {activeTab === 'statistique' && <span className="nav-active-dot" />}
+              </button>
+
               <button
                 className={`sidebar-nav-item ${activeTab === 'teacher' ? 'active' : ''}`}
                 onClick={() => setActiveTab('teacher')}
                 type="button"
                 id="tab-btn-teacher"
               >
-                <Users size={20} className="nav-item-icon" />
+                <Users size={19} className="nav-item-icon" />
                 <span>Teacher</span>
                 {activeTab === 'teacher' && <span className="nav-active-dot" />}
-              </button>
-
-              {/* NEW: Classes & Approval Tab */}
-              <button
-                className={`sidebar-nav-item ${activeTab === 'classes' ? 'active' : ''}`}
-                onClick={() => setActiveTab('classes')}
-                type="button"
-                id="tab-btn-classes"
-              >
-                <ClipboardCheck size={20} className="nav-item-icon" />
-                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                  <span>Classes &amp; Cours</span>
-                  {pendingApprovalsCount > 0 && (
-                    <span style={{
-                      background: '#EF4444',
-                      color: '#FFFFFF',
-                      fontSize: '11px',
-                      fontWeight: '800',
-                      padding: '2px 7px',
-                      borderRadius: '999px',
-                    }}>
-                      {pendingApprovalsCount}
-                    </span>
-                  )}
-                </span>
-                {activeTab === 'classes' && <span className="nav-active-dot" />}
               </button>
             </nav>
           </div>
@@ -579,10 +478,10 @@ export default function Dashboard() {
           <div className="sidebar-profile-card">
             <div className="profile-avatar-wrap">
               <div className="profile-avatar">
-                <User size={20} />
+                <User size={19} />
               </div>
               <div className="profile-info">
-                <span className="profile-name">Admin</span>
+                <span className="profile-name">Admin ({ADMIN_PHONE})</span>
                 <span className="profile-role">Administrateur</span>
               </div>
             </div>
@@ -594,14 +493,35 @@ export default function Dashboard() {
             MAIN CONTENT AREA
             ======================================================== */}
         <main className="dashboard-main-content">
-          
           {/* Topbar Header */}
           <header className="dashboard-topbar">
             <div>
+              {activeTab === 'student' && (
+                <>
+                  <h1 className="dashboard-welcome-heading">
+                    Gestion des Élèves &amp; Paiements Mensuels 🎓
+                  </h1>
+                  <p className="dashboard-welcome-subtext">
+                    Suivi du cycle de 4 séances, rappels WhatsApp automatiques et validation physique des inscriptions.
+                  </p>
+                </>
+              )}
+
+              {activeTab === 'announcements' && (
+                <>
+                  <h1 className="dashboard-welcome-heading">
+                    Tableau d'Affichage &amp; Annonces Scolaires 📢
+                  </h1>
+                  <p className="dashboard-welcome-subtext">
+                    Publiez des avis importants, des rappels de paiement et des événements pour toute l'école.
+                  </p>
+                </>
+              )}
+
               {activeTab === 'home' && (
                 <>
                   <h1 className="dashboard-welcome-heading">
-                    Bienvenue, Admin <span role="img" aria-label="wave">👋</span>
+                    Bienvenue, Admin ({ADMIN_PHONE}) <span role="img" aria-label="wave">👋</span>
                   </h1>
                   <p className="dashboard-welcome-subtext">
                     Voici un aperçu général de votre plateforme.
@@ -612,21 +532,10 @@ export default function Dashboard() {
               {activeTab === 'statistique' && (
                 <>
                   <h1 className="dashboard-welcome-heading">
-                    Statistiques &amp; Rapports 📈
+                    Statistiques Financières &amp; Pédagogiques 📈
                   </h1>
                   <p className="dashboard-welcome-subtext">
-                    Analyse des inscriptions, de la présence et des performances académiques.
-                  </p>
-                </>
-              )}
-
-              {activeTab === 'student' && (
-                <>
-                  <h1 className="dashboard-welcome-heading">
-                    Gestion des Étudiants 🎓
-                  </h1>
-                  <p className="dashboard-welcome-subtext">
-                    Liste complète des élèves inscrits, coordonnées et suivi des dossiers.
+                    Revenus collectés, assiduité aux cours et suivi des cycles mensuels.
                   </p>
                 </>
               )}
@@ -637,18 +546,7 @@ export default function Dashboard() {
                     Corps Enseignant &amp; Professeurs 👨‍🏫
                   </h1>
                   <p className="dashboard-welcome-subtext">
-                    Gestion des enseignants, assignation des matières et suivi des cours.
-                  </p>
-                </>
-              )}
-
-              {activeTab === 'classes' && (
-                <>
-                  <h1 className="dashboard-welcome-heading">
-                    Gestion des Cours &amp; Approbations ✅
-                  </h1>
-                  <p className="dashboard-welcome-subtext">
-                    Proposer de nouveaux cours, ajouter des leçons et valider les demandes des enseignants.
+                    Gestion des enseignants, cours dispensés et suivi des présences.
                   </p>
                 </>
               )}
@@ -663,49 +561,846 @@ export default function Dashboard() {
                   type="button"
                 >
                   <Bell size={20} />
-                  {pendingApprovalsCount > 0 && <span className="notification-badge-dot" />}
+                  {(pendingEnrollmentsCount > 0 || paymentsDueCount > 0) && (
+                    <span className="notification-badge-dot" />
+                  )}
                 </button>
 
                 {notificationsOpen && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '52px',
-                    right: '0',
-                    width: '300px',
-                    background: '#FFFFFF',
-                    borderRadius: '16px',
-                    boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
-                    border: '1px solid #F3F4F6',
-                    padding: '16px',
-                    zIndex: 100,
-                  }}>
-                    <h4 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>Notifications &amp; Alertes</h4>
-                    {pendingApprovalsCount > 0 && (
-                      <div style={{ background: '#FFFBEB', padding: '8px 10px', borderRadius: '8px', fontSize: '12px', color: '#92400E', marginBottom: '8px', fontWeight: '600' }}>
-                        ⚠️ {pendingApprovalsCount} cours en attente d'approbation
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '50px',
+                      right: '0',
+                      width: '320px',
+                      background: '#FFFFFF',
+                      borderRadius: '16px',
+                      boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
+                      border: '1px solid #F3F4F6',
+                      padding: '16px',
+                      zIndex: 100,
+                    }}
+                  >
+                    <h4 style={{ fontSize: '14px', fontWeight: '800', marginBottom: '10px' }}>
+                      Alertes &amp; Annonces Récentes
+                    </h4>
+                    {paymentsDueCount > 0 && (
+                      <div
+                        style={{
+                          background: '#FFFBEB',
+                          padding: '10px 12px',
+                          borderRadius: '10px',
+                          fontSize: '12px',
+                          color: '#92400E',
+                          marginBottom: '8px',
+                          fontWeight: '600',
+                          border: '1px solid #FDE68A',
+                        }}
+                      >
+                        ⚠️ {paymentsDueCount} élève(s) ont terminé leur 4ème séance et doivent payer le mois prochain.
                       </div>
                     )}
-                    <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '6px' }}>• 3 nouveaux étudiants inscrits aujourd'hui</p>
-                    <p style={{ fontSize: '12px', color: '#6B7280' }}>• Emploi du temps mis à jour avec succès</p>
+                    {topPinnedAnnouncement && (
+                      <div
+                        style={{
+                          background: '#EFF6FF',
+                          padding: '10px 12px',
+                          borderRadius: '10px',
+                          fontSize: '12px',
+                          color: '#1D4ED8',
+                          marginBottom: '8px',
+                          fontWeight: '600',
+                          border: '1px solid #BFDBFE',
+                        }}
+                      >
+                        📢 <strong>{topPinnedAnnouncement.title}</strong>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
-              <button
-                className="topbar-circle-btn"
-                aria-label="Menu"
-                type="button"
-              >
+              <button className="topbar-circle-btn" aria-label="Menu" type="button">
                 <Menu size={20} />
               </button>
             </div>
           </header>
 
           {/* ========================================================
-              PAGE 1: HOME TAB
+              PAGE: ANNOUNCEMENTS
+              ======================================================== */}
+          {activeTab === 'announcements' && (
+            <div className="tab-view-container">
+              {/* Summary Cards */}
+              <div className="summary-kpi-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('all')}>
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text">Total Annonces</span>
+                    <div className="kpi-icon-square" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                      <Megaphone size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display">{announcements.length}</div>
+                  <span className="kpi-sub-badge">Toutes les publications</span>
+                </div>
+
+                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('Important')}>
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text" style={{ color: '#DC2626' }}>Urgentes &amp; Épinglées</span>
+                    <div className="kpi-icon-square" style={{ background: '#FEE2E2', color: '#DC2626' }}>
+                      <Pin size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display" style={{ color: '#DC2626' }}>
+                    {announcements.filter((a) => a.isPinned).length}
+                  </div>
+                  <span className="kpi-sub-badge" style={{ color: '#DC2626' }}>En tête d'affiche</span>
+                </div>
+
+                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('Paiements')}>
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text" style={{ color: '#D97706' }}>Avis de Paiement</span>
+                    <div className="kpi-icon-square" style={{ background: '#FEF3C7', color: '#D97706' }}>
+                      <CreditCard size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display" style={{ color: '#D97706' }}>
+                    {announcements.filter((a) => a.category === 'Paiements').length}
+                  </div>
+                  <span className="kpi-sub-badge" style={{ color: '#D97706' }}>Rappels de mensualités</span>
+                </div>
+
+                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('Événements')}>
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text" style={{ color: '#059669' }}>Événements &amp; Ateliers</span>
+                    <div className="kpi-icon-square" style={{ background: '#ECFDF5', color: '#10B981' }}>
+                      <Sparkles size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display" style={{ color: '#059669' }}>
+                    {announcements.filter((a) => a.category === 'Événements').length}
+                  </div>
+                  <span className="kpi-sub-badge" style={{ color: '#059669' }}>Activités &amp; Formations</span>
+                </div>
+              </div>
+
+              {/* Toolbar */}
+              <div className="students-toolbar">
+                <div className="student-search-box">
+                  <Search size={16} className="student-search-icon" />
+                  <input
+                    type="text"
+                    className="student-search-input"
+                    placeholder="Rechercher une annonce par mot-clé ou titre..."
+                    value={announcementSearch}
+                    onChange={(e) => setAnnouncementSearch(e.target.value)}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '6px', background: '#FFFFFF', padding: '4px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                    {['all', 'Paiements', 'Pédagogique', 'Événements'].map((cat) => (
+                      <button
+                        key={cat}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          fontSize: '12.5px',
+                          fontWeight: '700',
+                          cursor: 'pointer',
+                          background: selectedAnnCategory === cat ? '#2563EB' : 'transparent',
+                          color: selectedAnnCategory === cat ? '#FFFFFF' : '#4B5563',
+                        }}
+                        onClick={() => setSelectedAnnCategory(cat)}
+                        type="button"
+                      >
+                        {cat === 'all' ? 'Toutes' : cat}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    className="btn-add-student-primary"
+                    onClick={() => setIsAddAnnouncementOpen(true)}
+                    type="button"
+                  >
+                    <Plus size={16} />
+                    <span>+ Créer une Annonce</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Announcements Grid */}
+              <div className="announcements-grid">
+                {filteredAnnouncements.length > 0 ? (
+                  filteredAnnouncements.map((ann) => (
+                    <div
+                      key={ann.id}
+                      className={`announcement-card-box ${ann.isPinned ? 'pinned-card' : ''}`}
+                    >
+                      <div>
+                        <div className="ann-card-top-row">
+                          <div className="ann-badge-group">
+                            <span
+                              className={`ann-category-badge ${
+                                ann.category === 'Paiements'
+                                  ? 'cat-badge-payments'
+                                  : ann.category === 'Pédagogique'
+                                  ? 'cat-badge-pedagogique'
+                                  : ann.category === 'Événements'
+                                  ? 'cat-badge-events'
+                                  : 'cat-badge-general'
+                              }`}
+                            >
+                              <Tag size={11} />
+                              <span>{ann.category}</span>
+                            </span>
+
+                            {ann.isPinned && (
+                              <span className="ann-pinned-tag">
+                                <Pin size={11} />
+                                <span>Épinglé</span>
+                              </span>
+                            )}
+                          </div>
+
+                          <span style={{ fontSize: '11.5px', color: '#9CA3AF', fontWeight: '600' }}>
+                            {ann.date}
+                          </span>
+                        </div>
+
+                        <h3 className="ann-card-title">{ann.title}</h3>
+                        <p className="ann-card-content-preview">{ann.content}</p>
+
+                        <div style={{ marginTop: '10px', fontSize: '12px', color: '#6B7280', fontWeight: '600' }}>
+                          🎯 Destinataires : <span style={{ color: '#1E293B' }}>{ann.targetAudience}</span>
+                        </div>
+                      </div>
+
+                      <div className="ann-card-footer">
+                        <div className="ann-author-info">
+                          <User size={13} color="#2563EB" />
+                          <span>{ann.author}</span>
+                        </div>
+
+                        <div className="ann-actions-btns">
+                          <button
+                            className="btn-action-icon-sm"
+                            title={ann.isPinned ? 'Désépingler' : 'Épingler en haut'}
+                            onClick={() => handleTogglePin(ann.id)}
+                            style={{ color: ann.isPinned ? '#D97706' : '#6B7280' }}
+                            type="button"
+                          >
+                            <Pin size={14} />
+                          </button>
+                          <button
+                            className="btn-action-icon-sm"
+                            title="Lire l'annonce complète"
+                            onClick={() => setViewingAnnouncement(ann)}
+                            type="button"
+                          >
+                            <Eye size={14} />
+                          </button>
+                          <button
+                            className="btn-action-icon-sm btn-delete"
+                            title="Supprimer"
+                            onClick={() => handleDeleteAnnouncement(ann.id)}
+                            type="button"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ gridColumn: '1 / -1', background: '#FFFFFF', padding: '50px 20px', borderRadius: '20px', textAlign: 'center', color: '#9CA3AF', border: '1px solid #F3F4F6' }}>
+                    <Megaphone size={40} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
+                    <p style={{ fontWeight: '800', fontSize: '16px', color: '#111827' }}>Aucune annonce trouvée</p>
+                    <p style={{ fontSize: '13px' }}>Cliquez sur "+ Créer une Annonce" pour publier un nouvel avis aux élèves et parents.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              PAGE: STUDENT MANAGEMENT
+              ======================================================== */}
+          {activeTab === 'student' && (
+            <div className="tab-view-container">
+              {/* Top Clickable Summary KPI Cards */}
+              <div className="summary-kpi-grid">
+                <div
+                  className={`summary-kpi-card ${selectedFilterCategory === 'all' ? 'active-filter' : ''}`}
+                  onClick={() => setSelectedFilterCategory('all')}
+                >
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text">Total Élèves</span>
+                    <div className="kpi-icon-square" style={{ background: '#F3F4F6', color: '#4B5563' }}>
+                      <Users size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display">{totalStudentsCount}</div>
+                  <span className="kpi-sub-badge">Tous les inscrits</span>
+                </div>
+
+                <div
+                  className={`summary-kpi-card ${selectedFilterCategory === 'active' ? 'active-filter' : ''}`}
+                  onClick={() => setSelectedFilterCategory('active')}
+                >
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text">Élèves Actifs</span>
+                    <div className="kpi-icon-square" style={{ background: '#ECFDF5', color: '#10B981' }}>
+                      <CheckCircle2 size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display" style={{ color: '#059669' }}>
+                    {activeStudentsCount}
+                  </div>
+                  <span className="kpi-sub-badge" style={{ color: '#059669' }}>
+                    🟢 En cours d'études
+                  </span>
+                </div>
+
+                <div
+                  className={`summary-kpi-card ${selectedFilterCategory === 'pending' ? 'active-filter' : ''}`}
+                  onClick={() => setSelectedFilterCategory('pending')}
+                >
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text">En Attente</span>
+                    <div className="kpi-icon-square" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                      <Clock size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display" style={{ color: '#2563EB' }}>
+                    {pendingEnrollmentsCount}
+                  </div>
+                  <span className="kpi-sub-badge" style={{ color: '#2563EB' }}>
+                    🔵 Validation physique
+                  </span>
+                </div>
+
+                <div
+                  className={`summary-kpi-card card-warning ${selectedFilterCategory === 'due' ? 'active-filter' : ''}`}
+                  onClick={() => setSelectedFilterCategory('due')}
+                >
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text" style={{ color: '#B45309' }}>
+                      Paiements Requis
+                    </span>
+                    <div className="kpi-icon-square" style={{ background: '#FEF3C7', color: '#D97706' }}>
+                      <CreditCard size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display" style={{ color: '#D97706' }}>
+                    {paymentsDueCount}
+                  </div>
+                  <span className="kpi-sub-badge" style={{ color: '#D97706', fontWeight: '700' }}>
+                    🟠 4/4 séances faites
+                  </span>
+                </div>
+
+                <div
+                  className={`summary-kpi-card card-danger ${selectedFilterCategory === 'overdue' ? 'active-filter' : ''}`}
+                  onClick={() => setSelectedFilterCategory('overdue')}
+                >
+                  <div className="kpi-top-row">
+                    <span className="kpi-label-text" style={{ color: '#DC2626' }}>
+                      En Retard
+                    </span>
+                    <div className="kpi-icon-square" style={{ background: '#FEE2E2', color: '#DC2626' }}>
+                      <AlertTriangle size={16} />
+                    </div>
+                  </div>
+                  <div className="kpi-number-display" style={{ color: '#DC2626' }}>
+                    {overduePaymentsCount}
+                  </div>
+                  <span className="kpi-sub-badge" style={{ color: '#DC2626' }}>
+                    🔴 Échéance dépassée
+                  </span>
+                </div>
+              </div>
+
+              {/* PAYMENTS DUE HIGHLIGHTS WITH 1-CLICK WHATSAPP INTEGRATION */}
+              {studentsWithPaymentDue.length > 0 && (
+                <section className="payments-due-banner-section">
+                  <div className="payments-due-header">
+                    <div className="payments-due-title-wrap">
+                      <div className="payments-due-icon-badge">
+                        <CreditCard size={20} />
+                      </div>
+                      <div>
+                        <h2 className="payments-due-heading">
+                          Paiements Requis (4/4 Séances terminées) 📲
+                        </h2>
+                        <p className="payments-due-subtext">
+                          Ces élèves ont complété leur mois. Envoyez-leur un rappel automatique par <strong>WhatsApp</strong> depuis le <strong>{ADMIN_PHONE}</strong>.
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      style={{
+                        background: '#F59E0B',
+                        color: '#FFFFFF',
+                        fontWeight: '800',
+                        fontSize: '12px',
+                        padding: '4px 10px',
+                        borderRadius: '999px',
+                      }}
+                    >
+                      {studentsWithPaymentDue.length} à renouveler
+                    </span>
+                  </div>
+
+                  <div className="payments-due-cards-row">
+                    {studentsWithPaymentDue.map((student) => (
+                      <div className="payment-due-item-card" key={student.id}>
+                        <div>
+                          <div className="due-item-top">
+                            <div>
+                              <span className="due-student-name">{student.fullName}</span>
+                              <div className="due-course-tag">
+                                {student.courseName} • {student.teacherName}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
+                                📞 Tél: <strong>{student.phone}</strong>
+                              </div>
+                            </div>
+                            <span className="due-amount-pill">{student.monthlyPrice} DA</span>
+                          </div>
+
+                          <div className="due-message-callout" style={{ marginTop: '10px' }}>
+                            <strong>Cycle terminé ({student.sessionsCompleted}/{student.sessionsPerMonth} séances).</strong>
+                            <br />
+                            Paiement de {student.monthlyPrice} DA requis pour le prochain mois ({student.currentCycle}).
+                          </div>
+                        </div>
+
+                        <div className="due-actions-btn-group">
+                          <button
+                            className="btn-record-payment-primary"
+                            onClick={() => handleOpenPaymentModal(student)}
+                            type="button"
+                          >
+                            <CreditCard size={15} />
+                            <span>Payer</span>
+                          </button>
+
+                          {/* WhatsApp Reminder Button with Admin Phone 0667158842 */}
+                          <button
+                            className="btn-whatsapp-reminder"
+                            onClick={() => handleOpenWhatsAppModal(student)}
+                            title={`Envoyer rappel WhatsApp au ${student.phone}`}
+                            type="button"
+                          >
+                            <MessageSquare size={15} />
+                            <span>Rappel WhatsApp</span>
+                          </button>
+
+                          <button
+                            className="btn-action-icon-sm"
+                            title="Voir Profil"
+                            onClick={() => setViewingStudent(student)}
+                            type="button"
+                          >
+                            <Eye size={15} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Toolbar */}
+              <div className="students-toolbar">
+                <div className="student-search-box">
+                  <Search size={16} className="student-search-icon" />
+                  <input
+                    type="text"
+                    className="student-search-input"
+                    placeholder="Rechercher par élève, parent, tél (ex: 0669028265)..."
+                    value={studentSearch}
+                    onChange={(e) => setStudentSearch(e.target.value)}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: '6px', background: '#FFFFFF', padding: '4px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                    <button
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        fontSize: '12.5px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        background: selectedFilterCategory === 'all' ? '#2563EB' : 'transparent',
+                        color: selectedFilterCategory === 'all' ? '#FFFFFF' : '#4B5563',
+                      }}
+                      onClick={() => setSelectedFilterCategory('all')}
+                      type="button"
+                    >
+                      Tous ({totalStudentsCount})
+                    </button>
+                    <button
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        fontSize: '12.5px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        background: selectedFilterCategory === 'active' ? '#10B981' : 'transparent',
+                        color: selectedFilterCategory === 'active' ? '#FFFFFF' : '#4B5563',
+                      }}
+                      onClick={() => setSelectedFilterCategory('active')}
+                      type="button"
+                    >
+                      Actifs ({activeStudentsCount})
+                    </button>
+                    <button
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        fontSize: '12.5px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        background: selectedFilterCategory === 'due' ? '#F59E0B' : 'transparent',
+                        color: selectedFilterCategory === 'due' ? '#FFFFFF' : '#4B5563',
+                      }}
+                      onClick={() => setSelectedFilterCategory('due')}
+                      type="button"
+                    >
+                      Paiements Requis ({paymentsDueCount})
+                    </button>
+                  </div>
+
+                  <select
+                    className="student-filter-select"
+                    value={selectedClassFilter}
+                    onChange={(e) => setSelectedClassFilter(e.target.value)}
+                  >
+                    <option value="all">Toutes les matières</option>
+                    <option value="Math">Mathématiques</option>
+                    <option value="Anglais">Anglais</option>
+                    <option value="Français">Français</option>
+                    <option value="Sciences">Sciences / Physique</option>
+                    <option value="Informatique">Informatique</option>
+                  </select>
+
+                  <button
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '9px 14px',
+                      background: '#F0FDF4',
+                      color: '#16A34A',
+                      border: '1.5px solid #BBF7D0',
+                      borderRadius: '12px',
+                      fontSize: '12.5px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                    }}
+                    title="Valide automatiquement la présence d'une séance pour tous les élèves de la classe"
+                    onClick={() => {
+                      const count = studentService.autoAdvanceClassSessions(selectedClassFilter === 'all' ? null : selectedClassFilter)
+                      if (count > 0) {
+                        showToast(`⚡ Séance enregistrée automatiquement pour ${count} élève(s) !`)
+                      } else {
+                        showToast(`Tous les élèves sélectionnés ont déjà complété leurs séances ou nécessitent un paiement.`)
+                      }
+                    }}
+                    type="button"
+                  >
+                    <Sparkles size={14} />
+                    <span>Valider séance du jour</span>
+                  </button>
+
+                  <button
+                    className="btn-add-student-primary"
+                    onClick={() => setIsAddStudentOpen(true)}
+                    type="button"
+                  >
+                    <Plus size={16} />
+                    <span>+ Inscrire un Élève</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="students-table-card">
+                <div className="students-table-wrap">
+                  <table className="students-table">
+                    <thead>
+                      <tr>
+                        <th>Élève (Student)</th>
+                        <th>Cours &amp; Professeur</th>
+                        <th>Séances (Mois en cours)</th>
+                        <th>Paiement (Status)</th>
+                        <th>Prochaine Échéance</th>
+                        <th>Statut Compte</th>
+                        <th style={{ textAlign: 'right' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredStudents.length > 0 ? (
+                        filteredStudents.map((student) => {
+                          const isComplete = student.sessionsCompleted >= student.sessionsPerMonth
+                          const percent = Math.min(
+                            100,
+                            Math.round((student.sessionsCompleted / student.sessionsPerMonth) * 100)
+                          )
+
+                          return (
+                            <tr key={student.id}>
+                              <td>
+                                <div className="student-avatar-cell">
+                                  <div
+                                    className="student-initial-avatar avatar-blue"
+                                    style={{
+                                      background:
+                                        student.status === 'Active'
+                                          ? '#DBEAFE'
+                                          : student.status === 'Pending Approval'
+                                          ? '#E0E7FF'
+                                          : '#FEE2E2',
+                                      color:
+                                        student.status === 'Active'
+                                          ? '#1D4ED8'
+                                          : student.status === 'Pending Approval'
+                                          ? '#4338CA'
+                                          : '#DC2626',
+                                    }}
+                                  >
+                                    {student.fullName
+                                      .split(' ')
+                                      .map((n) => n[0])
+                                      .join('')
+                                      .slice(0, 2)
+                                      .toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div className="student-name-text">{student.fullName}</div>
+                                    <div className="student-id-code">
+                                      {student.id} • 📞 {student.phone}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td>
+                                <div style={{ fontWeight: '700', color: '#1E293B' }}>
+                                  {student.courseName}
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#64748B' }}>
+                                  {student.teacherName} • {student.monthlyPrice} DA / mois
+                                </div>
+                              </td>
+
+                              <td>
+                                <div className="session-counter-cell">
+                                  <div className="session-number-pill">
+                                    <span style={{ color: isComplete ? '#D97706' : '#1E293B', fontWeight: '800' }}>
+                                      {student.sessionsCompleted} / {student.sessionsPerMonth} séances
+                                    </span>
+                                    <span style={{ fontSize: '11px', color: isComplete ? '#D97706' : '#94A3B8', fontWeight: isComplete ? '800' : '500' }}>
+                                      {percent}%
+                                    </span>
+                                  </div>
+                                  <div className="session-progress-track">
+                                    <div
+                                      className={`session-progress-fill ${
+                                        isComplete ? 'fill-progress-complete' : 'fill-progress-active'
+                                      }`}
+                                      style={{ width: `${percent}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td>
+                                {student.paymentStatus === 'Paid' && (
+                                  <span className="badge-status-pill status-paid">
+                                    <CheckCircle2 size={12} />
+                                    <span>🟢 Payé (Paid)</span>
+                                  </span>
+                                )}
+                                {student.paymentStatus === 'Payment Required' && (
+                                  <span className="badge-status-pill status-due">
+                                    <AlertCircle size={12} />
+                                    <span>🟠 Paiement Requis</span>
+                                  </span>
+                                )}
+                                {student.paymentStatus === 'Overdue' && (
+                                  <span className="badge-status-pill status-overdue">
+                                    <AlertTriangle size={12} />
+                                    <span>🔴 En Retard</span>
+                                  </span>
+                                )}
+                                {student.paymentStatus === 'Pending Approval' && (
+                                  <span className="badge-status-pill status-pending">
+                                    <Clock size={12} />
+                                    <span>🔵 Non Payé (En attente)</span>
+                                  </span>
+                                )}
+                              </td>
+
+                              <td>
+                                <div style={{ fontSize: '13px', fontWeight: '600', color: isComplete ? '#DC2626' : '#334155' }}>
+                                  {student.nextPaymentDate}
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#94A3B8' }}>
+                                  Cycle : {student.currentCycle}
+                                </div>
+                              </td>
+
+                              <td>
+                                <span
+                                  className="badge-status-pill"
+                                  style={{
+                                    background:
+                                      student.status === 'Active'
+                                        ? '#ECFDF5'
+                                        : student.status === 'Pending Approval'
+                                        ? '#EFF6FF'
+                                        : student.status === 'Payment Overdue'
+                                        ? '#FEF2F2'
+                                        : '#F3F4F6',
+                                    color:
+                                      student.status === 'Active'
+                                        ? '#059669'
+                                        : student.status === 'Pending Approval'
+                                        ? '#2563EB'
+                                        : student.status === 'Payment Overdue'
+                                        ? '#DC2626'
+                                        : '#4B5563',
+                                  }}
+                                >
+                                  {student.status === 'Active' ? 'Actif' : student.status}
+                                </span>
+                              </td>
+
+                              <td>
+                                <div className="table-action-btns" style={{ justifyContent: 'flex-end' }}>
+                                  {/* If Payment Required, add WhatsApp button */}
+                                  {student.paymentStatus === 'Payment Required' && (
+                                    <button
+                                      className="btn-whatsapp-outline"
+                                      onClick={() => handleOpenWhatsAppModal(student)}
+                                      title={`Envoyer rappel WhatsApp au ${student.phone}`}
+                                      type="button"
+                                    >
+                                      <MessageSquare size={13} />
+                                      <span>WhatsApp</span>
+                                    </button>
+                                  )}
+
+                                  {student.status === 'Pending Approval' ? (
+                                    <button
+                                      className="btn-action-outline btn-action-approve"
+                                      onClick={() => handleOpenApproveModal(student)}
+                                      type="button"
+                                    >
+                                      <Check size={14} />
+                                      <span>Approuver &amp; 1er Paiement</span>
+                                    </button>
+                                  ) : (
+                                    <button
+                                      className="btn-action-outline btn-action-pay"
+                                      onClick={() => handleOpenPaymentModal(student)}
+                                      type="button"
+                                    >
+                                      <CreditCard size={13} />
+                                      <span>Payer</span>
+                                    </button>
+                                  )}
+
+                                  <button
+                                    className="btn-action-outline"
+                                    onClick={() => setViewingStudent(student)}
+                                    type="button"
+                                  >
+                                    <Eye size={13} />
+                                    <span>Profil</span>
+                                  </button>
+
+                                  <button
+                                    className="btn-action-icon-sm btn-delete"
+                                    title="Supprimer"
+                                    onClick={() => {
+                                      if (confirm(`Voulez-vous supprimer le dossier de ${student.fullName} ?`)) {
+                                        studentService.deleteStudent(student.id)
+                                        showToast(`Dossier supprimé.`)
+                                      }
+                                    }}
+                                    type="button"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          )
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan="7" style={{ textAlign: 'center', padding: '40px 20px', color: '#9CA3AF' }}>
+                            <GraduationCap size={36} style={{ margin: '0 auto 10px', opacity: 0.5 }} />
+                            <p style={{ fontWeight: '700', fontSize: '15px' }}>Aucun élève correspondant</p>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="table-footer-bar">
+                  <span>
+                    Affichage de <strong>{filteredStudents.length}</strong> sur <strong>{students.length}</strong> élèves
+                  </span>
+                  <div className="pagination-controls">
+                    <button className="page-btn active" type="button">1</button>
+                    <button className="page-btn" type="button">2</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              PAGE: HOME TAB
               ======================================================== */}
           {activeTab === 'home' && (
             <div className="tab-view-container">
+              {/* Home Announcement Ticker Banner */}
+              {topPinnedAnnouncement && (
+                <div className="announcements-home-banner">
+                  <div className="ann-home-left">
+                    <div className="ann-home-icon-circle">
+                      <Megaphone size={22} />
+                    </div>
+                    <div>
+                      <div className="ann-home-title">{topPinnedAnnouncement.title}</div>
+                      <div className="ann-home-text">{topPinnedAnnouncement.content.slice(0, 120)}...</div>
+                    </div>
+                  </div>
+                  <button
+                    className="btn-add-student-primary"
+                    style={{ background: '#1E40AF', padding: '8px 16px', fontSize: '12.5px', whiteSpace: 'nowrap' }}
+                    onClick={() => setActiveTab('announcements')}
+                    type="button"
+                  >
+                    <span>Voir toutes les annonces ({announcements.length})</span>
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              )}
+
               {/* Section 1: Aperçu général */}
               <section className="dashboard-card-panel">
                 <div className="panel-header-row">
@@ -713,7 +1408,7 @@ export default function Dashboard() {
                     <div className="panel-icon-badge">
                       <TrendingUp size={20} />
                     </div>
-                    <h2 className="panel-title-text">Aperçu général</h2>
+                    <h2 className="panel-title-text">Aperçu général &amp; Fréquentation</h2>
                   </div>
 
                   <div style={{ position: 'relative' }}>
@@ -725,51 +1420,10 @@ export default function Dashboard() {
                       <span>{selectedPeriod}</span>
                       <ChevronDown size={16} />
                     </button>
-
-                    {periodMenuOpen && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '42px',
-                        right: 0,
-                        background: '#FFFFFF',
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '12px',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-                        zIndex: 20,
-                        minWidth: '140px',
-                        overflow: 'hidden',
-                      }}>
-                        {['Cette semaine', 'Ce mois', 'Cette année'].map((p) => (
-                          <button
-                            key={p}
-                            style={{
-                              width: '100%',
-                              padding: '8px 14px',
-                              textAlign: 'left',
-                              background: selectedPeriod === p ? '#F3F4F6' : 'transparent',
-                              border: 'none',
-                              fontSize: '13px',
-                              fontWeight: '600',
-                              color: '#374151',
-                              cursor: 'pointer',
-                            }}
-                            onClick={() => {
-                              setSelectedPeriod(p)
-                              setPeriodMenuOpen(false)
-                            }}
-                            type="button"
-                          >
-                            {p}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
 
-                {/* Grid: Chart on Left, Metric on Right */}
                 <div className="overview-grid-layout">
-                  {/* Left Bar Chart */}
                   <div className="chart-container-wrap">
                     <div className="chart-grid-axis">
                       {[200, 150, 100, 50, 0].map((num) => (
@@ -781,38 +1435,36 @@ export default function Dashboard() {
                     </div>
 
                     <div className="chart-bars-stage">
-                      {currentData.map((item, idx) => {
-                        const heightPercent = (item.value / item.max) * 100
-                        return (
-                          <div className="bar-column" key={idx}>
-                            <div className="bar-tooltip">{item.value} étudiants</div>
-                            <div
-                              className="bar-pill"
-                              style={{ height: `${heightPercent}%` }}
-                            />
-                            <span className="axis-x-label">{item.day}</span>
-                          </div>
-                        )
-                      })}
+                      {[
+                        { day: 'Lun', value: 120 },
+                        { day: 'Mar', value: 170 },
+                        { day: 'Mer', value: 200 },
+                        { day: 'Jeu', value: 150 },
+                      ].map((item, idx) => (
+                        <div className="bar-column" key={idx}>
+                          <div className="bar-tooltip">{item.value} présences</div>
+                          <div className="bar-pill" style={{ height: `${(item.value / 200) * 100}%` }} />
+                          <span className="axis-x-label">{item.day}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Right Metric Card: Total étudiants */}
                   <div className="metric-summary-card">
                     <div className="metric-card-top">
-                      <span className="metric-label-title">Total étudiants</span>
+                      <span className="metric-label-title">Total Étudiants Actifs</span>
                       <div className="metric-icon-badge">
                         <Users size={20} />
                       </div>
                     </div>
 
-                    <div className="metric-big-number">642</div>
+                    <div className="metric-big-number">{activeStudentsCount}</div>
 
                     <div className="metric-trend-row">
                       <span className="trend-badge-green">
                         <span>↑ 12%</span>
                       </span>
-                      <span>par rapport à la semaine dernière</span>
+                      <span>par rapport au mois précédent</span>
                     </div>
                   </div>
                 </div>
@@ -830,54 +1482,44 @@ export default function Dashboard() {
                 </div>
 
                 <div className="quick-actions-list">
-                  {/* Row 1: Gérer les étudiants */}
-                  <div
-                    className="quick-action-row"
-                    onClick={() => setActiveTab('student')}
-                  >
+                  <div className="quick-action-row" onClick={() => setActiveTab('student')}>
                     <div className="action-row-left">
                       <div className="action-icon-circle circle-blue">
                         <Users size={22} />
                       </div>
                       <div className="action-text-group">
-                        <span className="action-main-title">Gérer les étudiants</span>
-                        <span className="action-subtitle">Voir et gérer la liste des étudiants</span>
-                      </div>
-                    </div>
-                    <ChevronRight size={20} className="action-arrow-icon" />
-                  </div>
-
-                  {/* Row 2: Demandes & Approbations */}
-                  <div
-                    className="quick-action-row"
-                    onClick={() => setActiveTab('classes')}
-                  >
-                    <div className="action-row-left">
-                      <div className="action-icon-circle circle-purple">
-                        <ClipboardCheck size={22} />
-                      </div>
-                      <div className="action-text-group">
-                        <span className="action-main-title">Approuver les cours &amp; classes</span>
+                        <span className="action-main-title">Gérer les étudiants &amp; Paiements</span>
                         <span className="action-subtitle">
-                          {pendingApprovalsCount > 0 ? `${pendingApprovalsCount} cours en attente d'approbation` : 'Toutes les demandes sont validées'}
+                          {paymentsDueCount > 0
+                            ? `${paymentsDueCount} élève(s) doivent renouveler leur mensualité`
+                            : 'Suivi des inscriptions et des séances'}
                         </span>
                       </div>
                     </div>
                     <ChevronRight size={20} className="action-arrow-icon" />
                   </div>
 
-                  {/* Row 3: Voir les statistiques */}
-                  <div
-                    className="quick-action-row"
-                    onClick={() => setActiveTab('statistique')}
-                  >
+                  <div className="quick-action-row" onClick={() => setActiveTab('announcements')}>
+                    <div className="action-row-left">
+                      <div className="action-icon-circle circle-purple">
+                        <Megaphone size={22} />
+                      </div>
+                      <div className="action-text-group">
+                        <span className="action-main-title">Publier une Annonce</span>
+                        <span className="action-subtitle">Créer un avis scolaire ou un rappel</span>
+                      </div>
+                    </div>
+                    <ChevronRight size={20} className="action-arrow-icon" />
+                  </div>
+
+                  <div className="quick-action-row" onClick={() => setActiveTab('statistique')}>
                     <div className="action-row-left">
                       <div className="action-icon-circle circle-green">
                         <BarChart2 size={22} />
                       </div>
                       <div className="action-text-group">
-                        <span className="action-main-title">Voir les statistiques</span>
-                        <span className="action-subtitle">Consulter les rapports et statistiques</span>
+                        <span className="action-main-title">Voir les rapports financiers &amp; revenus</span>
+                        <span className="action-subtitle">Consulter les transactions et bilans</span>
                       </div>
                     </div>
                     <ChevronRight size={20} className="action-arrow-icon" />
@@ -888,74 +1530,72 @@ export default function Dashboard() {
           )}
 
           {/* ========================================================
-              PAGE 2: STATISTIQUE TAB
+              PAGE: STATISTIQUE TAB
               ======================================================== */}
           {activeTab === 'statistique' && (
             <div className="tab-view-container">
-              {/* 4 Top KPI Cards */}
               <div className="stats-kpi-grid">
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
-                    <span className="kpi-title">Taux de Réussite</span>
+                    <span className="kpi-title">Revenu Collecté (Total)</span>
                     <div className="kpi-icon-pill" style={{ background: '#ECFDF5', color: '#10B981' }}>
-                      <Award size={18} />
+                      <DollarSign size={18} />
                     </div>
                   </div>
                   <div className="kpi-value-row">
-                    <span className="kpi-main-number">98.4%</span>
+                    <span className="kpi-main-number">{totalRevenueCollected.toLocaleString()} DA</span>
                     <span className="kpi-sub-trend" style={{ color: '#10B981' }}>
-                      ↑ 3.2% vs trimestre passé
+                      ↑ Encaissé en caisse &amp; banques
                     </span>
                   </div>
                 </div>
 
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
-                    <span className="kpi-title">Présence Moyenne</span>
+                    <span className="kpi-title">Revenu Mensuel Estimé</span>
                     <div className="kpi-icon-pill" style={{ background: '#EFF6FF', color: '#2563EB' }}>
-                      <CheckCircle2 size={18} />
-                    </div>
-                  </div>
-                  <div className="kpi-value-row">
-                    <span className="kpi-main-number">94.8%</span>
-                    <span className="kpi-sub-trend" style={{ color: '#2563EB' }}>
-                      ↑ 1.5% assiduité élevée
-                    </span>
-                  </div>
-                </div>
-
-                <div className="stats-kpi-card">
-                  <div className="kpi-card-header">
-                    <span className="kpi-title">Enseignants &amp; Cours</span>
-                    <div className="kpi-icon-pill" style={{ background: '#FAF5FF', color: '#9333EA' }}>
-                      <Users size={18} />
-                    </div>
-                  </div>
-                  <div className="kpi-value-row">
-                    <span className="kpi-main-number">{teachers.length} Profs</span>
-                    <span className="kpi-sub-trend" style={{ color: '#6B7280' }}>
-                      {proposedClasses.filter(c => c.status === 'Approuvé').length} cours actifs
-                    </span>
-                  </div>
-                </div>
-
-                <div className="stats-kpi-card">
-                  <div className="kpi-card-header">
-                    <span className="kpi-title">Revenu Mensuel</span>
-                    <div className="kpi-icon-pill" style={{ background: '#FEF3C7', color: '#D97706' }}>
                       <TrendingUp size={18} />
                     </div>
                   </div>
                   <div className="kpi-value-row">
-                    <span className="kpi-main-number">2.84M DZD</span>
-                    <span className="kpi-sub-trend" style={{ color: '#10B981' }}>
-                      ↑ 8.4% ce mois-ci
+                    <span className="kpi-main-number">{expectedMonthlyRevenue.toLocaleString()} DA</span>
+                    <span className="kpi-sub-trend" style={{ color: '#2563EB' }}>
+                      Pour les élèves actifs
+                    </span>
+                  </div>
+                </div>
+
+                <div className="stats-kpi-card">
+                  <div className="kpi-card-header">
+                    <span className="kpi-title">Paiements Requis (4/4)</span>
+                    <div className="kpi-icon-pill" style={{ background: '#FEF3C7', color: '#D97706' }}>
+                      <AlertCircle size={18} />
+                    </div>
+                  </div>
+                  <div className="kpi-value-row">
+                    <span className="kpi-main-number" style={{ color: '#D97706' }}>{paymentsDueCount}</span>
+                    <span className="kpi-sub-trend" style={{ color: '#D97706' }}>
+                      Séances du mois terminées
+                    </span>
+                  </div>
+                </div>
+
+                <div className="stats-kpi-card">
+                  <div className="kpi-card-header">
+                    <span className="kpi-title">Inscriptions en Attente</span>
+                    <div className="kpi-icon-pill" style={{ background: '#FAF5FF', color: '#9333EA' }}>
+                      <Clock size={18} />
+                    </div>
+                  </div>
+                  <div className="kpi-value-row">
+                    <span className="kpi-main-number" style={{ color: '#9333EA' }}>{pendingEnrollmentsCount}</span>
+                    <span className="kpi-sub-trend" style={{ color: '#9333EA' }}>
+                      À valider à l'école
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* 2-Column Section */}
               <div className="analytics-two-col-grid">
                 <section className="dashboard-card-panel">
                   <div className="panel-header-row">
@@ -963,14 +1603,14 @@ export default function Dashboard() {
                       <div className="panel-icon-badge badge-green">
                         <BarChart2 size={20} />
                       </div>
-                      <h2 className="panel-title-text">Performance par Matière</h2>
+                      <h2 className="panel-title-text">Répartition par Matière &amp; Assiduité</h2>
                     </div>
                   </div>
 
                   <div className="subject-progress-list">
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Mathématiques (2S &amp; BAC)</span>
+                        <span>Mathématiques Approfondies (2S &amp; BAC)</span>
                         <span className="subject-rate">94%</span>
                       </div>
                       <div className="subject-track">
@@ -980,7 +1620,7 @@ export default function Dashboard() {
 
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Physique &amp; Chimie</span>
+                        <span>Sciences Expérimentales &amp; Physique</span>
                         <span className="subject-rate">90%</span>
                       </div>
                       <div className="subject-track">
@@ -990,7 +1630,7 @@ export default function Dashboard() {
 
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Langue Anglaise</span>
+                        <span>Langue Anglaise (Intensif)</span>
                         <span className="subject-rate">96%</span>
                       </div>
                       <div className="subject-track">
@@ -1000,7 +1640,7 @@ export default function Dashboard() {
 
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Informatique &amp; IA</span>
+                        <span>Informatique &amp; Développement Web</span>
                         <span className="subject-rate">98%</span>
                       </div>
                       <div className="subject-track">
@@ -1016,33 +1656,33 @@ export default function Dashboard() {
                       <div className="panel-icon-badge badge-purple">
                         <GraduationCap size={20} />
                       </div>
-                      <h2 className="panel-title-text">Répartition par Filière</h2>
+                      <h2 className="panel-title-text">Répartition des Effectifs</h2>
                     </div>
                   </div>
 
                   <div className="level-distribution-grid">
                     <div className="level-dist-card">
-                      <span className="level-dist-title">Mathématiques</span>
-                      <span className="level-dist-count">248</span>
-                      <span className="level-dist-meta">élèves inscrits</span>
+                      <span className="level-dist-title">Élèves Actifs (Payés)</span>
+                      <span className="level-dist-count" style={{ color: '#059669' }}>{activeStudentsCount}</span>
+                      <span className="level-dist-meta">élèves en règle</span>
                     </div>
 
                     <div className="level-dist-card">
-                      <span className="level-dist-title">Sciences Expérimentales</span>
-                      <span className="level-dist-count">164</span>
-                      <span className="level-dist-meta">élèves inscrits</span>
+                      <span className="level-dist-title">Paiements Requis (4/4)</span>
+                      <span className="level-dist-count" style={{ color: '#D97706' }}>{paymentsDueCount}</span>
+                      <span className="level-dist-meta">à renouveler</span>
                     </div>
 
                     <div className="level-dist-card">
-                      <span className="level-dist-title">Langues Vivantes</span>
-                      <span className="level-dist-count">142</span>
-                      <span className="level-dist-meta">apprenants</span>
+                      <span className="level-dist-title">En Attente de Validation</span>
+                      <span className="level-dist-count" style={{ color: '#2563EB' }}>{pendingEnrollmentsCount}</span>
+                      <span className="level-dist-meta">à confirmer à l'école</span>
                     </div>
 
                     <div className="level-dist-card">
-                      <span className="level-dist-title">Informatique &amp; Web</span>
-                      <span className="level-dist-count">88</span>
-                      <span className="level-dist-meta">stagiaires</span>
+                      <span className="level-dist-title">Paiements en Retard</span>
+                      <span className="level-dist-count" style={{ color: '#DC2626' }}>{overduePaymentsCount}</span>
+                      <span className="level-dist-meta">dossiers en relance</span>
                     </div>
                   </div>
                 </section>
@@ -1051,295 +1691,50 @@ export default function Dashboard() {
           )}
 
           {/* ========================================================
-              PAGE 3: STUDENT TAB
-              ======================================================== */}
-          {activeTab === 'student' && (
-            <div className="tab-view-container">
-              {/* Toolbar & Filters */}
-              <div className="students-toolbar">
-                <div className="student-search-box">
-                  <Search size={16} className="student-search-icon" />
-                  <input
-                    type="text"
-                    className="student-search-input"
-                    placeholder="Rechercher par nom, ID ou téléphone..."
-                    value={studentSearch}
-                    onChange={(e) => setStudentSearch(e.target.value)}
-                  />
-                </div>
-
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <select
-                    className="student-filter-select"
-                    value={selectedClassFilter}
-                    onChange={(e) => setSelectedClassFilter(e.target.value)}
-                  >
-                    <option value="all">Toutes les classes</option>
-                    <option value="Mathématiques">Mathématiques</option>
-                    <option value="Sciences">Sciences</option>
-                    <option value="Langues">Langues</option>
-                    <option value="Informatique">Informatique</option>
-                  </select>
-
-                  <select
-                    className="student-filter-select"
-                    value={selectedStatusFilter}
-                    onChange={(e) => setSelectedStatusFilter(e.target.value)}
-                  >
-                    <option value="all">Tous les statuts</option>
-                    <option value="Validé">Validé</option>
-                    <option value="En attente">En attente</option>
-                  </select>
-
-                  <button
-                    className="btn-add-student-primary"
-                    onClick={() => setIsAddStudentOpen(true)}
-                    type="button"
-                  >
-                    <Plus size={16} />
-                    <span>Ajouter un étudiant</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Students Data Table */}
-              <div className="students-table-card">
-                <div className="students-table-wrap">
-                  <table className="students-table">
-                    <thead>
-                      <tr>
-                        <th>Élève</th>
-                        <th>Niveau / Classe</th>
-                        <th>Contact Parent</th>
-                        <th>Statut</th>
-                        <th>Date d'inscription</th>
-                        <th style={{ textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredStudents.length > 0 ? (
-                        filteredStudents.map((student) => (
-                          <tr key={student.id}>
-                            <td>
-                              <div className="student-avatar-cell">
-                                <div className={`student-initial-avatar ${student.avatarColor}`}>
-                                  {student.initials}
-                                </div>
-                                <div>
-                                  <div className="student-name-text">{student.name}</div>
-                                  <div className="student-id-code">{student.id}</div>
-                                </div>
-                              </div>
-                            </td>
-
-                            <td>
-                              <span className="badge-class-pill" style={{
-                                background: student.classTheme === 'blue' ? '#EFF6FF' : student.classTheme === 'purple' ? '#FAF5FF' : student.classTheme === 'amber' ? '#FFFBEB' : '#F0FDF4',
-                                color: student.classTheme === 'blue' ? '#2563EB' : student.classTheme === 'purple' ? '#7C3AED' : student.classTheme === 'amber' ? '#D97706' : '#16A34A',
-                              }}>
-                                {student.level}
-                              </span>
-                            </td>
-
-                            <td>
-                              <div style={{ fontWeight: '600', color: '#374151' }}>{student.phone}</div>
-                              <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Tuteur : {student.parent}</div>
-                            </td>
-
-                            <td>
-                              <span className={`badge-status-pill ${student.status === 'Validé' ? 'status-validated' : 'status-pending'}`}>
-                                {student.status === 'Validé' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                                <span>{student.status}</span>
-                              </span>
-                            </td>
-
-                            <td style={{ color: '#6B7280', fontSize: '13px' }}>
-                              {student.date}
-                            </td>
-
-                            <td>
-                              <div className="table-action-btns" style={{ justifyContent: 'flex-end' }}>
-                                <button
-                                  className="action-btn-sm"
-                                  title="Voir détails"
-                                  onClick={() => alert(`Détails de l'élève : ${student.name} (${student.id})\nClasse : ${student.level}\nTéléphone : ${student.phone}`)}
-                                  type="button"
-                                >
-                                  <Eye size={14} />
-                                </button>
-                                <button
-                                  className="action-btn-sm btn-delete"
-                                  title="Supprimer"
-                                  onClick={() => setStudents(students.filter(s => s.id !== student.id))}
-                                  type="button"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="6" style={{ textAlign: 'center', padding: '40px 20px', color: '#9CA3AF' }}>
-                            <GraduationCap size={36} style={{ margin: '0 auto 10px', opacity: 0.5 }} />
-                            <p style={{ fontWeight: '600' }}>Aucun étudiant trouvé</p>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="table-footer-bar">
-                  <span>Affichage de {filteredStudents.length} sur {students.length} étudiants enregistrés</span>
-                  <div className="pagination-controls">
-                    <button className="page-btn active" type="button">1</button>
-                    <button className="page-btn" type="button">2</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================
-              PAGE 4: TEACHER TAB (Enseignants)
+              PAGE: TEACHER TAB
               ======================================================== */}
           {activeTab === 'teacher' && (
             <div className="tab-view-container">
-              {/* Header Stats & Add Button */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-                  <div style={{ background: '#FFFFFF', padding: '12px 18px', borderRadius: '14px', border: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Users size={18} />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>{teachers.length}</div>
-                      <div style={{ fontSize: '11.5px', color: '#6B7280' }}>Enseignants Actifs</div>
-                    </div>
-                  </div>
-
-                  <div style={{ background: '#FFFFFF', padding: '12px 18px', borderRadius: '14px', border: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#ECFDF5', color: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <BookOpen size={18} />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>{proposedClasses.filter(c => c.status === 'Approuvé').length}</div>
-                      <div style={{ fontSize: '11.5px', color: '#6B7280' }}>Cours Assignés</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button
-                    className="btn-add-student-primary"
-                    onClick={() => setIsAddClassOpen(true)}
-                    style={{ background: '#059669' }}
-                    type="button"
-                  >
-                    <Plus size={16} />
-                    <span>+ Proposer une Classe / Leçon</span>
-                  </button>
-
-                  <button
-                    className="btn-add-student-primary"
-                    onClick={() => setIsAddTeacherOpen(true)}
-                    type="button"
-                  >
-                    <Plus size={16} />
-                    <span>Ajouter un Enseignant</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Teachers Table Card */}
               <div className="students-table-card">
+                <div style={{ padding: '20px', borderBottom: '1px solid #F3F4F6' }}>
+                  <h3 style={{ fontSize: '17px', fontWeight: '800' }}>Corps Enseignant &amp; Professeurs</h3>
+                </div>
                 <div className="students-table-wrap">
                   <table className="students-table">
                     <thead>
                       <tr>
                         <th>Enseignant</th>
-                        <th>Matière / Spécialité</th>
+                        <th>Matière</th>
                         <th>Contact</th>
-                        <th>Classes Assignées</th>
+                        <th>Élèves Assignés</th>
                         <th>Statut</th>
-                        <th style={{ textAlign: 'right' }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {teachers.map((teacher) => (
-                        <tr key={teacher.id}>
+                      {[
+                        { name: 'Prof. Sarah Benali', subject: 'Mathématiques (2S & BAC)', phone: '0550 12 34 56', count: 42 },
+                        { name: 'Prof. David Moreau', subject: 'Langue Anglaise & Française', phone: '0661 44 55 66', count: 38 },
+                        { name: 'Prof. Amira Al-Mansour', subject: 'Sciences & Physique', phone: '0770 88 99 11', count: 29 },
+                        { name: 'Prof. Marcus Chen', subject: 'Informatique & Web', phone: '0555 77 88 99', count: 19 },
+                      ].map((t, idx) => (
+                        <tr key={idx}>
                           <td>
                             <div className="student-avatar-cell">
-                              <div className={`student-initial-avatar ${teacher.avatarColor}`}>
-                                {teacher.initials}
-                              </div>
-                              <div>
-                                <div className="student-name-text">{teacher.name}</div>
-                                <div className="student-id-code">{teacher.id}</div>
-                              </div>
+                              <div className="student-initial-avatar avatar-blue">{t.name.slice(6, 8)}</div>
+                              <span className="student-name-text">{t.name}</span>
                             </div>
                           </td>
-
                           <td>
-                            <span className="badge-class-pill" style={{
-                              background: teacher.subjectTheme === 'blue' ? '#EFF6FF' : teacher.subjectTheme === 'green' ? '#F0FDF4' : teacher.subjectTheme === 'purple' ? '#FAF5FF' : '#FFFBEB',
-                              color: teacher.subjectTheme === 'blue' ? '#2563EB' : teacher.subjectTheme === 'green' ? '#16A34A' : teacher.subjectTheme === 'purple' ? '#7C3AED' : '#D97706',
-                            }}>
-                              {teacher.subject}
+                            <span className="badge-class-pill" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                              {t.subject}
                             </span>
                           </td>
-
+                          <td>{t.phone}</td>
                           <td>
-                            <div style={{ fontWeight: '600', color: '#374151' }}>{teacher.phone}</div>
-                            <div style={{ fontSize: '12px', color: '#9CA3AF' }}>{teacher.email}</div>
+                            <strong>{t.count} élèves</strong>
                           </td>
-
                           <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '700', color: '#2563EB' }}>
-                              <BookOpen size={14} />
-                              <span>{teacher.classesCount} Classes actives</span>
-                            </div>
-                          </td>
-
-                          <td>
-                            <span className="badge-status-pill status-validated">
-                              <CheckCircle2 size={12} />
-                              <span>{teacher.status}</span>
-                            </span>
-                          </td>
-
-                          <td>
-                            <div className="table-action-btns" style={{ justifyContent: 'flex-end' }}>
-                              <button
-                                className="action-btn-sm"
-                                title="Ajouter une classe pour ce professeur"
-                                onClick={() => {
-                                  setNewClass({ ...newClass, teacher: teacher.name, subject: teacher.subject })
-                                  setIsAddClassOpen(true)
-                                }}
-                                type="button"
-                              >
-                                <Plus size={14} />
-                              </button>
-                              <button
-                                className="action-btn-sm"
-                                title="Voir planning"
-                                onClick={() => alert(`Planning de ${teacher.name} : ${teacher.classesCount} classes actives ce semestre.`)}
-                                type="button"
-                              >
-                                <Eye size={14} />
-                              </button>
-                              <button
-                                className="action-btn-sm btn-delete"
-                                title="Supprimer"
-                                onClick={() => setTeachers(teachers.filter(t => t.id !== teacher.id))}
-                                type="button"
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
+                            <span className="badge-status-pill status-paid">🟢 Actif</span>
                           </td>
                         </tr>
                       ))}
@@ -1349,181 +1744,31 @@ export default function Dashboard() {
               </div>
             </div>
           )}
-
-          {/* ========================================================
-              PAGE 5: CLASSES & APPROVAL TAB
-              ======================================================== */}
-          {activeTab === 'classes' && (
-            <div className="tab-view-container">
-              {/* Approval Banner if pending */}
-              {pendingApprovalsCount > 0 && (
-                <div className="approval-banner-alert">
-                  <div className="approval-banner-left">
-                    <AlertCircle size={20} color="#D97706" />
-                    <div>
-                      <strong style={{ color: '#92400E', fontSize: '14px' }}>
-                        Demandes de cours en attente d'approbation
-                      </strong>
-                      <p style={{ color: '#B45309', fontSize: '12.5px', marginTop: '2px' }}>
-                        Certains cours proposés par les enseignants nécessitent votre validation pour être publiés.
-                      </p>
-                    </div>
-                  </div>
-                  <span className="approval-badge-count">{pendingApprovalsCount} en attente</span>
-                </div>
-              )}
-
-              {/* Sub-tabs & Action Toolbar */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-                <div className="sub-tabs-bar" style={{ marginBottom: 0, borderBottom: 'none', paddingBottom: 0 }}>
-                  <button
-                    className={`sub-tab-btn ${classApprovalFilter === 'all' ? 'active' : ''}`}
-                    onClick={() => setClassApprovalFilter('all')}
-                    type="button"
-                  >
-                    Tous les cours ({proposedClasses.length})
-                  </button>
-                  <button
-                    className={`sub-tab-btn ${classApprovalFilter === 'En attente' ? 'active' : ''}`}
-                    onClick={() => setClassApprovalFilter('En attente')}
-                    type="button"
-                  >
-                    En attente ({pendingApprovalsCount})
-                  </button>
-                  <button
-                    className={`sub-tab-btn ${classApprovalFilter === 'Approuvé' ? 'active' : ''}`}
-                    onClick={() => setClassApprovalFilter('Approuvé')}
-                    type="button"
-                  >
-                    Approuvés ({proposedClasses.filter(c => c.status === 'Approuvé').length})
-                  </button>
-                </div>
-
-                <button
-                  className="btn-add-student-primary"
-                  onClick={() => setIsAddClassOpen(true)}
-                  type="button"
-                >
-                  <Plus size={16} />
-                  <span>+ Proposer / Ajouter un Cours</span>
-                </button>
-              </div>
-
-              {/* Classes & Proposals Grid */}
-              <div className="approval-cards-grid">
-                {filteredProposedClasses.map((item) => (
-                  <div className="approval-card-item" key={item.id}>
-                    <div>
-                      <div className="approval-card-top">
-                        <span className={`badge-status-pill ${
-                          item.status === 'Approuvé'
-                            ? 'badge-status-approved'
-                            : item.status === 'En attente'
-                            ? 'badge-status-pending'
-                            : 'badge-status-rejected'
-                        }`}>
-                          {item.status === 'Approuvé' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                          <span>{item.status}</span>
-                        </span>
-                        <span style={{ fontSize: '11.5px', color: '#9CA3AF', fontWeight: '600' }}>{item.id}</span>
-                      </div>
-
-                      <h3 className="approval-card-title">{item.title}</h3>
-                      <div className="approval-card-teacher">
-                        <User size={14} color="#2563EB" />
-                        <span>{item.teacher}</span>
-                      </div>
-
-                      <div className="approval-specs-list">
-                        <div className="approval-spec-row">
-                          <BookOpen size={13} color="#9CA3AF" />
-                          <span><strong>Niveau :</strong> {item.level}</span>
-                        </div>
-                        <div className="approval-spec-row">
-                          <Calendar size={13} color="#9CA3AF" />
-                          <span><strong>Horaires :</strong> {item.schedule}</span>
-                        </div>
-                        <div className="approval-spec-row">
-                          <MapPin size={13} color="#9CA3AF" />
-                          <span><strong>Salle :</strong> {item.room}</span>
-                        </div>
-                        <div className="approval-spec-row">
-                          <DollarSign size={13} color="#9CA3AF" />
-                          <span><strong>Tarif :</strong> {item.price}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Action Bar based on approval status */}
-                    <div className="approval-actions-bar">
-                      {item.status === 'En attente' ? (
-                        <>
-                          <button
-                            className="btn-approve-action"
-                            onClick={() => handleApproveClass(item.id)}
-                            type="button"
-                          >
-                            <Check size={16} />
-                            <span>Approuver au Prof</span>
-                          </button>
-                          <button
-                            className="btn-reject-action"
-                            onClick={() => handleRejectClass(item.id)}
-                            type="button"
-                          >
-                            <X size={16} />
-                            <span>Rejeter</span>
-                          </button>
-                        </>
-                      ) : (
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                          <span style={{ fontSize: '12px', color: item.status === 'Approuvé' ? '#059669' : '#DC2626', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            {item.status === 'Approuvé' ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                            <span>{item.status === 'Approuvé' ? 'Assigné & Publié' : 'Demande Rejetée'}</span>
-                          </span>
-                          <button
-                            className="action-btn-sm"
-                            title="Modifier statut"
-                            onClick={() => {
-                              if (item.status === 'Approuvé') {
-                                handleRejectClass(item.id)
-                              } else {
-                                handleApproveClass(item.id)
-                              }
-                            }}
-                            type="button"
-                          >
-                            <Edit size={13} />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
         </main>
       </div>
 
       {/* ========================================================
-          MODAL 1: PROPOSER / AJOUTER UN COURS (CLASS & LESSON)
+          MODAL: WHATSAPP AUTOMATED PAYMENT REMINDER
           ======================================================== */}
-      {isAddClassOpen && (
-        <div className="dashboard-modal-backdrop" onClick={() => setIsAddClassOpen(false)}>
-          <div className="dashboard-modal-card" style={{ maxWidth: '600px' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+      {whatsappModalStudent && (
+        <div className="dashboard-modal-backdrop" onClick={() => setWhatsappModalStudent(null)}>
+          <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '580px' }}>
+            <div className="profile-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="action-icon-circle circle-blue" style={{ width: '38px', height: '38px' }}>
-                  <BookOpen size={20} />
+                <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#25D366', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <MessageSquare size={22} />
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
-                  Ajouter un Nouveau Cours / Leçon
-                </h3>
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
+                    Envoyer Rappel WhatsApp
+                  </h3>
+                  <p style={{ fontSize: '12.5px', color: '#6B7280' }}>
+                    Notification de fin de mois &amp; renouvellement de paiement.
+                  </p>
+                </div>
               </div>
               <button
-                onClick={() => setIsAddClassOpen(false)}
+                onClick={() => setWhatsappModalStudent(null)}
                 style={{ background: '#F3F4F6', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                 type="button"
               >
@@ -1531,159 +1776,107 @@ export default function Dashboard() {
               </button>
             </div>
 
-            {!classSuccess ? (
-              <form onSubmit={handleAddClassSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div style={{ background: '#F0FDF4', border: '1.5px solid #BBF7D0', padding: '14px 16px', borderRadius: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                    Titre du Cours / Leçon *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={100}
-                    placeholder="Ex: Mathématiques Approfondies - Spécial BAC"
-                    value={newClass.title}
-                    onChange={(e) => setNewClass({ ...newClass, title: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', outline: 'none' }}
-                  />
-                </div>
-
-                <div className="modal-form-grid">
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Enseignant Assigné *
-                    </label>
-                    <select
-                      value={newClass.teacher}
-                      onChange={(e) => setNewClass({ ...newClass, teacher: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
-                    >
-                      {teachers.map((t) => (
-                        <option key={t.id} value={t.name}>{t.name} ({t.subject})</option>
-                      ))}
-                    </select>
+                  <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#15803D', textTransform: 'uppercase' }}>
+                    Destinataire (Élève / Parent)
                   </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Matière / Domaine
-                    </label>
-                    <select
-                      value={newClass.subject}
-                      onChange={(e) => setNewClass({ ...newClass, subject: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
-                    >
-                      <option value="Mathématiques">Mathématiques</option>
-                      <option value="Sciences">Sciences &amp; Physique</option>
-                      <option value="Langues">Langues (Anglais / Français)</option>
-                      <option value="Informatique">Informatique &amp; Programmation</option>
-                    </select>
+                  <div style={{ fontSize: '15px', fontWeight: '800', color: '#14532D', marginTop: '2px' }}>
+                    {whatsappModalStudent.fullName}
+                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#166534', marginTop: '1px' }}>
+                    📞 Numéro : {whatsappModalStudent.phone} (WhatsApp : +{studentService.formatWhatsAppNumber(whatsappModalStudent.phone)})
                   </div>
                 </div>
 
-                <div className="modal-form-grid">
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Niveau Scolaire
-                    </label>
-                    <input
-                      type="text"
-                      maxLength={60}
-                      placeholder="Ex: 2ème Année Secondaire (2S)"
-                      value={newClass.level}
-                      onChange={(e) => setNewClass({ ...newClass, level: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
-                    />
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '11.5px', fontWeight: '700', color: '#6B7280' }}>
+                    Expéditeur (École)
                   </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Horaires &amp; Jours
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Samedi & Mardi : 14h-16h"
-                      value={newClass.schedule}
-                      onChange={(e) => setNewClass({ ...newClass, schedule: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
-                    />
+                  <div style={{ fontSize: '13px', fontWeight: '800', color: '#111827' }}>
+                    {ADMIN_PHONE}
                   </div>
                 </div>
-
-                <div className="modal-form-grid">
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Salle de Cours
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Salle B2 - Sciences"
-                      value={newClass.room}
-                      onChange={(e) => setNewClass({ ...newClass, room: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Tarif Mensuel
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ex: 4,500 DZD / mois"
-                      value={newClass.price}
-                      onChange={(e) => setNewClass({ ...newClass, price: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '12px', marginTop: '12px', justifyContent: 'flex-end' }}>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddClassOpen(false)}
-                    style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '700', cursor: 'pointer' }}
-                  >
-                    Soumettre pour Approbation
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <CheckCircle2 size={48} color="#10B981" style={{ margin: '0 auto 12px' }} />
-                <h4 style={{ fontSize: '18px', fontWeight: '700', color: '#111827', marginBottom: '6px' }}>
-                  Cours enregistré avec succès !
-                </h4>
-                <p style={{ fontSize: '13.5px', color: '#6B7280' }}>
-                  Le cours est prêt à être approuvé et assigné au professeur.
-                </p>
               </div>
-            )}
+
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px', color: '#374151' }}>
+                  Texte du Message WhatsApp (Personnalisable) :
+                </label>
+                <textarea
+                  rows={8}
+                  value={whatsappCustomMessage}
+                  onChange={(e) => setWhatsappCustomMessage(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    border: '1.5px solid #CBD5E1',
+                    fontSize: '13px',
+                    lineHeight: '1.6',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    resize: 'vertical',
+                    background: '#F8FAFC',
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '6px' }}>
+                <button
+                  type="button"
+                  onClick={() => setWhatsappModalStudent(null)}
+                  style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
+                >
+                  Annuler
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSendWhatsAppFromModal}
+                  style={{
+                    padding: '11px 22px',
+                    borderRadius: '12px',
+                    background: '#25D366',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    boxShadow: '0 4px 14px rgba(37, 211, 102, 0.3)',
+                    fontSize: '13.5px',
+                  }}
+                >
+                  <CheckCircle2 size={17} />
+                  <span>Confirmer le Rappel</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {/* ========================================================
-          MODAL 2: AJOUTER UN ENSEIGNANT
+          MODAL: CREATE ANNOUNCEMENT
           ======================================================== */}
-      {isAddTeacherOpen && (
-        <div className="dashboard-modal-backdrop" onClick={() => setIsAddTeacherOpen(false)}>
+      {isAddAnnouncementOpen && (
+        <div className="dashboard-modal-backdrop" onClick={() => setIsAddAnnouncementOpen(false)}>
           <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <div className="profile-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="action-icon-circle circle-green" style={{ width: '38px', height: '38px' }}>
-                  <Users size={20} />
+                <div className="action-icon-circle circle-blue" style={{ width: '38px', height: '38px' }}>
+                  <Megaphone size={19} />
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>Ajouter un Enseignant</h3>
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>Publier une Annonce</h3>
+                  <p style={{ fontSize: '12.5px', color: '#6B7280' }}>Diffusion d'un avis ou d'un rappel scolaire.</p>
+                </div>
               </div>
               <button
-                onClick={() => setIsAddTeacherOpen(false)}
+                onClick={() => setIsAddAnnouncementOpen(false)}
                 style={{ background: '#F3F4F6', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                 type="button"
               >
@@ -1691,110 +1884,529 @@ export default function Dashboard() {
               </button>
             </div>
 
-            {!teacherSuccess ? (
-              <form onSubmit={handleAddTeacherSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                    Nom et Prénom du Professeur *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={60}
-                    placeholder="Ex: Prof. Karim Haddad"
-                    value={newTeacher.name}
-                    onChange={(e) => setNewTeacher({ ...newTeacher, name: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', outline: 'none' }}
-                  />
-                </div>
+            <form onSubmit={handleAddAnnouncementSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                  Titre de l'Annonce *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Rappel de paiement mensuel ou Emploi du temps"
+                  value={newAnnForm.title}
+                  onChange={(e) => setNewAnnForm({ ...newAnnForm, title: e.target.value })}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                />
+              </div>
 
+              <div className="modal-form-grid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                    Matière Principale
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Catégorie
                   </label>
                   <select
-                    value={newTeacher.subject}
-                    onChange={(e) => setNewTeacher({ ...newTeacher, subject: e.target.value })}
+                    value={newAnnForm.category}
+                    onChange={(e) => setNewAnnForm({ ...newAnnForm, category: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
                   >
-                    <option value="Mathématiques">Mathématiques</option>
-                    <option value="Sciences & Physique">Sciences &amp; Physique</option>
-                    <option value="Langues (Anglais)">Langues (Anglais)</option>
-                    <option value="Langues (Français)">Langues (Français)</option>
-                    <option value="Informatique & Web">Informatique &amp; Web</option>
+                    <option value="Important">⚠️ Important / Urgent</option>
+                    <option value="Paiements">💳 Avis de Paiement</option>
+                    <option value="Pédagogique">📚 Pédagogique &amp; Examens</option>
+                    <option value="Événements">🏆 Événements &amp; Ateliers</option>
                   </select>
                 </div>
 
-                <div className="modal-form-grid">
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Numéro de Téléphone
-                    </label>
-                    <input
-                      type="tel"
-                      maxLength={20}
-                      placeholder="Ex: 0555 11 22 33"
-                      value={newTeacher.phone}
-                      onChange={(e) => setNewTeacher({ ...newTeacher, phone: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                      Adresse E-mail
-                    </label>
-                    <input
-                      type="email"
-                      maxLength={100}
-                      placeholder="Ex: prof@ecole.dz"
-                      value={newTeacher.email}
-                      onChange={(e) => setNewTeacher({ ...newTeacher, email: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '12px', marginTop: '12px', justifyContent: 'flex-end' }}>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddTeacherOpen(false)}
-                    style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Destinataires / Cible
+                  </label>
+                  <select
+                    value={newAnnForm.targetAudience}
+                    onChange={(e) => setNewAnnForm({ ...newAnnForm, targetAudience: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
                   >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    style={{ padding: '10px 22px', borderRadius: '12px', background: '#10B981', color: '#FFFFFF', border: 'none', fontWeight: '700', cursor: 'pointer' }}
-                  >
-                    Enregistrer l'Enseignant
-                  </button>
+                    <option value="Tous les élèves & parents">Tous les élèves &amp; parents</option>
+                    <option value="Classes de Lycée (2S & BAC)">Classes de Lycée (2S &amp; BAC)</option>
+                    <option value="Classes de Langues">Classes de Langues</option>
+                    <option value="Formations Informatique">Formations Informatique</option>
+                    <option value="Corps Enseignant">Corps Enseignant</option>
+                  </select>
                 </div>
-              </form>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <CheckCircle2 size={48} color="#10B981" style={{ margin: '0 auto 12px' }} />
-                <h4 style={{ fontSize: '18px', fontWeight: '700', color: '#111827', marginBottom: '6px' }}>
-                  Enseignant ajouté avec succès !
-                </h4>
               </div>
-            )}
+
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                  Contenu du Message *
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  placeholder="Rédigez le texte détaillé de l'annonce..."
+                  value={newAnnForm.content}
+                  onChange={(e) => setNewAnnForm({ ...newAnnForm, content: e.target.value })}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', resize: 'vertical' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  type="checkbox"
+                  id="pin-checkbox"
+                  checked={newAnnForm.isPinned}
+                  onChange={(e) => setNewAnnForm({ ...newAnnForm, isPinned: e.target.checked })}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                />
+                <label htmlFor="pin-checkbox" style={{ fontSize: '13px', fontWeight: '600', color: '#1E293B', cursor: 'pointer' }}>
+                  📌 Épingler cette annonce en tête d'affiche sur l'accueil
+                </label>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '10px', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsAddAnnouncementOpen(false)}
+                  style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Send size={15} />
+                  <span>Publier l'Annonce</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
       {/* ========================================================
-          MODAL 3: AJOUTER UN ÉTUDIANT
+          MODAL: VIEW ANNOUNCEMENT DETAILS
+          ======================================================== */}
+      {viewingAnnouncement && (
+        <div className="dashboard-modal-backdrop" onClick={() => setViewingAnnouncement(null)}>
+          <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className={`ann-category-badge ${viewingAnnouncement.category === 'Paiements' ? 'cat-badge-payments' : 'cat-badge-pedagogique'}`}>
+                  {viewingAnnouncement.category}
+                </span>
+                {viewingAnnouncement.isPinned && <span className="ann-pinned-tag">📌 Épinglé</span>}
+              </div>
+              <button
+                onClick={() => setViewingAnnouncement(null)}
+                style={{ background: '#F3F4F6', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                type="button"
+              >
+                <X size={16} color="#6B7280" />
+              </button>
+            </div>
+
+            <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#111827', margin: '14px 0 10px' }}>
+              {viewingAnnouncement.title}
+            </h2>
+
+            <div style={{ display: 'flex', gap: '14px', fontSize: '12.5px', color: '#64748B', marginBottom: '18px' }}>
+              <span>📅 Publié le : {viewingAnnouncement.date}</span>
+              <span>✍️ Par : {viewingAnnouncement.author}</span>
+              <span>🎯 Destinataires : {viewingAnnouncement.targetAudience}</span>
+            </div>
+
+            <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '14px', border: '1px solid #E2E8F0', fontSize: '14px', lineHeight: '1.7', color: '#1E293B', whiteSpace: 'pre-line' }}>
+              {viewingAnnouncement.content}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+              <button
+                type="button"
+                onClick={() => setViewingAnnouncement(null)}
+                style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '700', cursor: 'pointer' }}
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          MODAL: PHYSICAL ENROLLMENT APPROVAL
+          ======================================================== */}
+      {approvingStudent && (
+        <div className="dashboard-modal-backdrop" onClick={() => setApprovingStudent(null)}>
+          <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
+                  Confirmer l'inscription &amp; Premier Paiement
+                </h3>
+                <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '2px' }}>
+                  Validation physique de l'élève se présentant à l'école.
+                </p>
+              </div>
+              <button
+                onClick={() => setApprovingStudent(null)}
+                style={{ background: '#F3F4F6', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                type="button"
+              >
+                <X size={16} color="#6B7280" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitApproval} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="profile-modal-grid">
+                <div className="profile-info-box">
+                  <div className="profile-info-label">Élève &amp; Tuteur</div>
+                  <div className="profile-info-val">{approvingStudent.fullName}</div>
+                  <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
+                    Tuteur: {approvingStudent.parentName} • {approvingStudent.phone}
+                  </div>
+                </div>
+
+                <div className="profile-info-box">
+                  <div className="profile-info-label">Cours &amp; Enseignant</div>
+                  <div className="profile-info-val">{approvingStudent.courseName}</div>
+                  <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
+                    {approvingStudent.teacherName}
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-form-grid">
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Montant du 1er Paiement (DA) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={100}
+                    value={approvalForm.paymentAmount}
+                    onChange={(e) => setApprovalForm({ ...approvalForm, paymentAmount: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontWeight: '700', color: '#1E293B', outline: 'none' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Moyen de Paiement *
+                  </label>
+                  <select
+                    value={approvalForm.paymentMethod}
+                    onChange={(e) => setApprovalForm({ ...approvalForm, paymentMethod: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
+                  >
+                    <option value="Espèces (Cash)">Espèces (Cash au bureau)</option>
+                    <option value="BaridiMob / CCP">BaridiMob / CCP</option>
+                    <option value="Virement Bancaire">Virement Bancaire</option>
+                    <option value="Chèque">Chèque</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="modal-form-grid">
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Séances par Mois
+                  </label>
+                  <select
+                    value={approvalForm.sessionsPerMonth}
+                    onChange={(e) => setApprovalForm({ ...approvalForm, sessionsPerMonth: Number(e.target.value) })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
+                  >
+                    <option value={4}>4 séances / mois (Standard)</option>
+                    <option value={8}>8 séances / mois (Intensif)</option>
+                    <option value={12}>12 séances / mois (Quotidien)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Cycle Mensuel Initial
+                  </label>
+                  <input
+                    type="text"
+                    value={approvalForm.cycle}
+                    onChange={(e) => setApprovalForm({ ...approvalForm, cycle: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '12px', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setApprovingStudent(null)}
+                  style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  style={{ padding: '10px 24px', borderRadius: '12px', background: '#10B981', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Check size={16} />
+                  <span>Confirmer &amp; Activer l'Élève</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          MODAL: RECORD PAYMENT
+          ======================================================== */}
+      {payingStudent && (
+        <div className="dashboard-modal-backdrop" onClick={() => setPayingStudent(null)}>
+          <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
+                  Enregistrer le Paiement Mensuel
+                </h3>
+                <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '2px' }}>
+                  Renouvellement du cycle de séances pour l'élève.
+                </p>
+              </div>
+              <button
+                onClick={() => setPayingStudent(null)}
+                style={{ background: '#F3F4F6', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                type="button"
+              >
+                <X size={16} color="#6B7280" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitPayment} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="profile-info-box">
+                <div className="profile-info-label">Élève &amp; Cours</div>
+                <div className="profile-info-val">{payingStudent.fullName}</div>
+                <div style={{ fontSize: '12.5px', color: '#4B5563', marginTop: '2px' }}>
+                  {payingStudent.courseName} • Prof: {payingStudent.teacherName} • 📞 Tél: {payingStudent.phone}
+                </div>
+              </div>
+
+              <div className="modal-form-grid">
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Montant Encaissé (DA) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={100}
+                    value={paymentForm.amount}
+                    onChange={(e) => setPaymentForm({ ...paymentForm, amount: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', fontWeight: '700', color: '#1E293B', outline: 'none' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Moyen de Paiement *
+                  </label>
+                  <select
+                    value={paymentForm.paymentMethod}
+                    onChange={(e) => setPaymentForm({ ...paymentForm, paymentMethod: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
+                  >
+                    <option value="Espèces (Cash)">Espèces (Cash au bureau)</option>
+                    <option value="BaridiMob / CCP">BaridiMob / CCP</option>
+                    <option value="Virement Bancaire">Virement Bancaire</option>
+                    <option value="Chèque">Chèque</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                  Mois / Cycle Concerné
+                </label>
+                <input
+                  type="text"
+                  value={paymentForm.cycle}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, cycle: e.target.value })}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                />
+              </div>
+
+              <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '12px 16px', borderRadius: '12px', fontSize: '12.5px', color: '#065F46' }}>
+                ✓ Dès la confirmation, le compteur de séances sera réinitialisé à <strong>0/{payingStudent.sessionsPerMonth}</strong> pour le nouveau cycle et le statut passera à <strong>Payé</strong>.
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '8px', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setPayingStudent(null)}
+                  style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  style={{ padding: '10px 24px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <CreditCard size={16} />
+                  <span>Enregistrer le Paiement</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          MODAL: STUDENT PROFILE
+          ======================================================== */}
+      {viewingStudent && (
+        <div className="dashboard-modal-backdrop" onClick={() => setViewingStudent(null)}>
+          <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div className="student-initial-avatar avatar-blue" style={{ width: '48px', height: '48px', fontSize: '18px' }}>
+                  {viewingStudent.fullName.slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '19px', fontWeight: '800', color: '#111827' }}>
+                    {viewingStudent.fullName}
+                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
+                    <span style={{ fontSize: '12px', color: '#6B7280', fontWeight: '600' }}>
+                      ID: {viewingStudent.id}
+                    </span>
+                    <span className={`badge-status-pill ${viewingStudent.paymentStatus === 'Paid' ? 'status-paid' : 'status-due'}`}>
+                      {viewingStudent.paymentStatus === 'Paid' ? '🟢 Payé' : '🟠 Paiement Requis'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setViewingStudent(null)}
+                style={{ background: '#F3F4F6', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                type="button"
+              >
+                <X size={16} color="#6B7280" />
+              </button>
+            </div>
+
+            <div className="profile-modal-grid">
+              <div className="profile-info-box">
+                <div className="profile-info-label">Tuteur &amp; Contact</div>
+                <div className="profile-info-val">{viewingStudent.parentName}</div>
+                <div style={{ fontSize: '12.5px', color: '#4B5563', marginTop: '3px' }}>
+                  📞 {viewingStudent.phone}
+                </div>
+                <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
+                  📍 {viewingStudent.address}
+                </div>
+              </div>
+
+              <div className="profile-info-box">
+                <div className="profile-info-label">Cours &amp; Enseignant</div>
+                <div className="profile-info-val">{viewingStudent.courseName}</div>
+                <div style={{ fontSize: '12.5px', color: '#4B5563', marginTop: '3px' }}>
+                  👨‍🏫 {viewingStudent.teacherName}
+                </div>
+                <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
+                  Tarif: <strong>{viewingStudent.monthlyPrice} DA / mois</strong> ({viewingStudent.sessionsPerMonth} séances)
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-current-cycle-card">
+              <div>
+                <div style={{ fontSize: '12px', color: '#1E40AF', fontWeight: '700', textTransform: 'uppercase' }}>
+                  Cycle en cours : {viewingStudent.currentCycle}
+                </div>
+                <div style={{ fontSize: '20px', fontWeight: '800', color: '#1E3A8A', marginTop: '4px' }}>
+                  {viewingStudent.sessionsCompleted} sur {viewingStudent.sessionsPerMonth} séances complétées
+                </div>
+                <div style={{ fontSize: '12.5px', color: '#475569', marginTop: '2px' }}>
+                  {viewingStudent.sessionsCompleted >= viewingStudent.sessionsPerMonth
+                    ? '⚠️ Toutes les séances du mois sont terminées. Renouvellement requis.'
+                    : `Il reste ${viewingStudent.sessionsPerMonth - viewingStudent.sessionsCompleted} séance(s) avant le prochain paiement.`}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <button
+                  className="btn-whatsapp-reminder"
+                  onClick={() => handleOpenWhatsAppModal(viewingStudent)}
+                  type="button"
+                >
+                  <MessageSquare size={15} />
+                  <span>WhatsApp</span>
+                </button>
+                <button
+                  className="btn-record-payment-primary"
+                  onClick={() => handleOpenPaymentModal(viewingStudent)}
+                  style={{ alignSelf: 'center', padding: '10px 18px' }}
+                  type="button"
+                >
+                  <CreditCard size={16} />
+                  <span>Enregistrer Paiement</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Payment History */}
+            <div style={{ marginTop: '20px' }}>
+              <h4 style={{ fontSize: '14.5px', fontWeight: '800', color: '#111827', marginBottom: '8px' }}>
+                Historique des Paiements ({viewingStudent.paymentHistory?.length || 0})
+              </h4>
+              {viewingStudent.paymentHistory && viewingStudent.paymentHistory.length > 0 ? (
+                <table className="payment-history-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Montant</th>
+                      <th>Cycle / Mois</th>
+                      <th>Moyen</th>
+                      <th>Statut</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {viewingStudent.paymentHistory.map((p, idx) => (
+                      <tr key={idx}>
+                        <td style={{ fontWeight: '600' }}>{p.paymentDate}</td>
+                        <td style={{ fontWeight: '800', color: '#059669' }}>{p.amount} DA</td>
+                        <td>{p.cycle}</td>
+                        <td>{p.paymentMethod}</td>
+                        <td>
+                          <span className="badge-status-pill status-paid">Validé</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div style={{ background: '#F9FAFB', padding: '16px', borderRadius: '10px', textAlign: 'center', color: '#6B7280', fontSize: '13px' }}>
+                  Aucun paiement enregistré pour le moment.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          MODAL: ADD NEW STUDENT
           ======================================================== */}
       {isAddStudentOpen && (
         <div className="dashboard-modal-backdrop" onClick={() => setIsAddStudentOpen(false)}>
           <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="action-icon-circle circle-purple" style={{ width: '38px', height: '38px' }}>
-                  <GraduationCap size={20} />
-                </div>
-                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>Ajouter un étudiant</h3>
+            <div className="profile-modal-header">
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
+                  Inscrire un Nouvel Élève
+                </h3>
+                <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '2px' }}>
+                  Création d'un nouveau dossier d'inscription.
+                </p>
               </div>
               <button
                 onClick={() => setIsAddStudentOpen(false)}
@@ -1805,97 +2417,115 @@ export default function Dashboard() {
               </button>
             </div>
 
-            {!studentAddedSuccess ? (
-              <form onSubmit={handleAddStudentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                    Nom et Prénom de l'élève *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={60}
-                    placeholder="Ex: Yacine Benali"
-                    value={newStudent.name}
-                    onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', outline: 'none' }}
-                  />
-                </div>
+            <form onSubmit={handleAddStudentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                  Nom et Prénom de l'élève *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Yacine Benali"
+                  value={newStudentForm.studentName}
+                  onChange={(e) => setNewStudentForm({ ...newStudentForm, studentName: e.target.value })}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                />
+              </div>
 
+              <div className="modal-form-grid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                    Classe / Filière
-                  </label>
-                  <select
-                    value={newStudent.level}
-                    onChange={(e) => setNewStudent({ ...newStudent, level: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', outline: 'none', background: '#FFFFFF' }}
-                  >
-                    <option value="2S Mathématiques">2ème Année Secondaire - Mathématiques</option>
-                    <option value="2S Sciences">2ème Année Secondaire - Sciences</option>
-                    <option value="Langues (Anglais)">Cours de Langues (Anglais)</option>
-                    <option value="Langues (Français)">Cours de Langues (Français)</option>
-                    <option value="Informatique">Formation Informatique &amp; Web</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
                     Nom du Tuteur / Parent
                   </label>
                   <input
                     type="text"
-                    maxLength={60}
                     placeholder="Ex: Mohamed Benali"
-                    value={newStudent.parent}
-                    onChange={(e) => setNewStudent({ ...newStudent, parent: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', outline: 'none' }}
+                    value={newStudentForm.parentName}
+                    onChange={(e) => setNewStudentForm({ ...newStudentForm, parentName: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#374151' }}>
-                    Numéro de Téléphone *
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Numéro de Téléphone (WhatsApp) *
                   </label>
                   <input
                     type="tel"
                     required
-                    maxLength={20}
-                    placeholder="Ex: 0555 12 34 56"
-                    value={newStudent.phone}
-                    onChange={(e) => setNewStudent({ ...newStudent, phone: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '14px', outline: 'none' }}
+                    placeholder="Ex: 0669028265"
+                    value={newStudentForm.phone}
+                    onChange={(e) => setNewStudentForm({ ...newStudentForm, phone: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
                   />
                 </div>
-
-                <div style={{ display: 'flex', gap: '12px', marginTop: '10px', justifyContent: 'flex-end' }}>
-                  <button
-                    type="button"
-                    onClick={() => setIsAddStudentOpen(false)}
-                    style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '700', cursor: 'pointer' }}
-                  >
-                    Enregistrer l'étudiant
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <CheckCircle2 size={48} color="#10B981" style={{ margin: '0 auto 12px' }} />
-                <h4 style={{ fontSize: '18px', fontWeight: '700', color: '#111827', marginBottom: '6px' }}>
-                  Étudiant ajouté avec succès !
-                </h4>
               </div>
-            )}
+
+              <div className="modal-form-grid">
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Cours / Matière
+                  </label>
+                  <select
+                    value={newStudentForm.courseName}
+                    onChange={(e) => {
+                      const course = e.target.value
+                      let teacher = 'Prof. Sarah Benali'
+                      let price = 3000
+                      if (course.includes('Anglais') || course.includes('Français')) {
+                        teacher = 'Prof. David Moreau'
+                        price = 2200
+                      } else if (course.includes('Sciences')) {
+                        teacher = 'Prof. Amira Al-Mansour'
+                        price = 2800
+                      } else if (course.includes('Informatique')) {
+                        teacher = 'Prof. Marcus Chen'
+                        price = 3500
+                      }
+                      setNewStudentForm({ ...newStudentForm, courseName: course, teacherName: teacher, monthlyPrice: price })
+                    }}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
+                  >
+                    <option value="Mathématiques Approfondies (2S & BAC)">Mathématiques Approfondies (2S &amp; BAC)</option>
+                    <option value="Langue Anglaise (Intensif)">Langue Anglaise (Intensif)</option>
+                    <option value="Langue Française & Communication">Langue Française &amp; Communication</option>
+                    <option value="Sciences Expérimentales & Physique">Sciences Expérimentales &amp; Physique</option>
+                    <option value="Informatique & Développement Web">Informatique &amp; Développement Web</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    Tarif Mensuel (DA)
+                  </label>
+                  <input
+                    type="number"
+                    value={newStudentForm.monthlyPrice}
+                    onChange={(e) => setNewStudentForm({ ...newStudentForm, monthlyPrice: Number(e.target.value) })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '10px', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsAddStudentOpen(false)}
+                  style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer' }}
+                >
+                  Créer l'Inscription
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
-
     </div>
   )
 }
