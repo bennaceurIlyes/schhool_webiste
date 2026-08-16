@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
-import { Check, ArrowUpRight, Award } from 'lucide-react'
+import { Check, ArrowUpLeft, Award } from 'lucide-react'
 
 function RenderProgramIcon({ type }) {
   switch (type) {
@@ -73,7 +73,7 @@ function RenderActionContent({ actionType, actionValue }) {
   if (actionType === 'award') {
     return <Award size={18} />
   }
-  return <ArrowUpRight size={18} />
+  return <ArrowUpLeft size={18} />
 }
 
 export default function ProgramCard({ program }) {
@@ -90,7 +90,7 @@ export default function ProgramCard({ program }) {
     actionType,
     actionValue,
     link = '/Classes',
-    ariaLabel = `Explore ${title}`,
+    ariaLabel = `استكشف ${title}`,
     description,
     bulletClass,
     features = [],

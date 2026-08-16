@@ -1788,3 +1788,72 @@ a {
   transform: translateX(4px);
 }
 
+/* ============================================================
+   RTL (RIGHT-TO-LEFT) & ARABIC ADAPTATIONS
+   ============================================================ */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .hero-badge-top {
+  left: auto;
+  right: -12px;
+}
+
+[dir="rtl"] .hero-badge-bottom {
+  right: auto;
+  left: -12px;
+}
+
+[dir="rtl"] .card-action-btn {
+  right: auto;
+  left: 20px;
+}
+
+[dir="rtl"] .growth-sparkle-doodle {
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+[dir="rtl"] .growth-connectors-svg {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .doodle-lightbulb {
+  left: auto;
+  right: 31%;
+}
+
+[dir="rtl"] .doodle-plane {
+  right: auto;
+  left: 30%;
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .class-bookmark-ribbon {
+  right: auto;
+  left: 14px;
+}
+
+[dir="rtl"] .btn-see-more-classes:hover .cta-arrow-icon {
+  transform: translateX(-4px);
+}
+
+@keyframes scroll-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [dir="rtl"] .teachers-track {
+    animation: scroll-rtl 32s linear infinite;
+  }
+  [dir="rtl"] .teachers-track:hover {
+    animation-play-state: paused;
+  }
+}
+

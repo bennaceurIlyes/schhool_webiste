@@ -12,9 +12,12 @@ import {
   MapPin,
   Calendar,
   Sparkles,
-  ArrowRight,
+  ArrowLeft,
   GraduationCap,
 } from 'lucide-react'
+import { normalizeArabic } from '../utils/security'
+
+const CATEGORY_WHITELIST = ['all', 'الرياضيات', 'اللغات', 'العلوم', 'التكنولوجيا']
 
 export default function Classes({ classesList = defaultClassesList }) {
   const [searchParams] = useSearchParams()
@@ -23,11 +26,12 @@ export default function Classes({ classesList = defaultClassesList }) {
   const [activeModalClass, setActiveModalClass] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Auto-open modal if URL has ?class=class-id
+  // Auto-open modal if URL has ?class=class-id securely
   useEffect(() => {
     const classIdFromUrl = searchParams.get('class')
-    if (classIdFromUrl) {
-      const found = classesList.find((c) => c.id === classIdFromUrl)
+    if (classIdFromUrl && typeof classIdFromUrl === 'string') {
+      const sanitizedId = classIdFromUrl.slice(0, 50).trim()
+      const found = classesList.find((c) => c.id === sanitizedId)
       if (found) {
         setActiveModalClass(found)
         setIsModalOpen(true)
@@ -36,22 +40,48 @@ export default function Classes({ classesList = defaultClassesList }) {
   }, [searchParams, classesList])
 
   const categories = [
-    { id: 'all', label: 'Toutes les matières' },
-    { id: 'Mathématiques', label: 'Mathématiques' },
-    { id: 'Langue', label: 'Langues' },
-    { id: 'Sciences', label: 'Sciences' },
-    { id: 'Technologie', label: 'Technologie' },
+    { id: 'all', label: 'جميع المواد' },
+    { id: 'الرياضيات', label: 'الرياضيات' },
+    { id: 'اللغات', label: 'اللغات' },
+    { id: 'العلوم', label: 'العلوم' },
+    { id: 'التكنولوجيا', label: 'التكنولوجيا' },
   ]
+
+  const handleSearchChange = (e) => {
+    // Limit search query length to 60 characters to avoid client-side freezing
+    const cleanVal = e.target.value.slice(0, 60)
+    setSearchQuery(cleanVal)
+  }
+
+  const handleCategorySelect = (catId) => {
+    if (CATEGORY_WHITELIST.includes(catId)) {
+      setSelectedCategory(catId)
+    }
+  }
+
+  // Normalized intelligent Arabic search
+  const normalizedQuery = normalizeArabic(searchQuery)
 
   const filteredClasses = classesList.filter((item) => {
     const matchesCategory =
       selectedCategory === 'all' || item.category === selectedCategory
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.teacher.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.level.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.category.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesCategory && matchesSearch
+
+    if (!matchesCategory) return false
+    if (!normalizedQuery) return true
+
+    const normalizedTitle = normalizeArabic(item.title)
+    const normalizedTeacher = normalizeArabic(item.teacher)
+    const normalizedLevel = normalizeArabic(item.level)
+    const normalizedCat = normalizeArabic(item.category)
+    const normalizedDesc = normalizeArabic(item.description)
+
+    return (
+      normalizedTitle.includes(normalizedQuery) ||
+      normalizedTeacher.includes(normalizedQuery) ||
+      normalizedLevel.includes(normalizedQuery) ||
+      normalizedCat.includes(normalizedQuery) ||
+      normalizedDesc.includes(normalizedQuery)
+    )
   })
 
   const handleOpenEnrollModal = (classItem) => {
@@ -76,16 +106,15 @@ export default function Classes({ classesList = defaultClassesList }) {
         <div className="classes-page-container">
           <div className="classes-hero-badge">
             <GraduationCap size={16} />
-            <span>Année Scolaire 2026 / 2027</span>
+            <span>السنة الدراسية 2026 / 2027</span>
           </div>
 
           <h1 className="classes-page-title">
-            Explorez Nos Classes &amp;{' '}
-            <span className="title-highlight">Inscrivez-vous</span>
+            استكشف فصولنا و<span className="title-highlight">سجّل الآن</span>
           </h1>
 
           <p className="classes-page-desc">
-            Des cours de soutien ciblés, des formations linguistiques vivantes et des ateliers technologiques dispensés par des enseignants de premier plan.
+            دروس دعم وتقوية مدرسية مركزة، دورات لغات تفاعلية وورشات تكنولوجية تطبيقية بإشراف نخبة من أفضل الأساتذة ذوي الخبرة.
           </p>
 
           {/* Search & Filter Toolbar */}
@@ -94,16 +123,18 @@ export default function Classes({ classesList = defaultClassesList }) {
               <Search size={18} className="search-icon" />
               <input
                 type="text"
-                placeholder="Rechercher une matière, un enseignant, un niveau..."
+                placeholder="ابحث عن مادة، أستاذ، أو مستوى دراسي..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Rechercher des classes"
+                maxLength={60}
+                onChange={handleSearchChange}
+                aria-label="البحث في الفصول والدروس"
               />
               {searchQuery && (
                 <button
                   className="clear-search-btn"
                   onClick={() => setSearchQuery('')}
-                  aria-label="Effacer la recherche"
+                  aria-label="مسح نص البحث"
+                  type="button"
                 >
                   ✕
                 </button>
@@ -116,7 +147,8 @@ export default function Classes({ classesList = defaultClassesList }) {
                 <button
                   key={cat.id}
                   className={`filter-tab ${selectedCategory === cat.id ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => handleCategorySelect(cat.id)}
+                  type="button"
                 >
                   {cat.label}
                 </button>
@@ -132,11 +164,11 @@ export default function Classes({ classesList = defaultClassesList }) {
 
           <div className="catalog-header-bar">
             <h2 className="catalog-count-title">
-              {filteredClasses.length} {filteredClasses.length > 1 ? 'Classes disponibles' : 'Classe disponible'}
+              {filteredClasses.length} {filteredClasses.length > 1 ? 'فصول متاحة' : 'فصل متاح'}
             </h2>
             <div className="payment-notice-pill">
               <Sparkles size={14} />
-              <span>Pré-inscription en ligne + validation à l'école</span>
+              <span>تسجيل أولي عبر الموقع + تأكيد الحجز في إدارة المدرسة</span>
             </div>
           </div>
 
@@ -162,7 +194,7 @@ export default function Classes({ classesList = defaultClassesList }) {
                     {item.spotsLeft && (
                       <div className="spots-badge">
                         <span className="spots-dot" />
-                        {item.spotsLeft} places restantes
+                        {item.spotsLeft} مقاعد متبقية
                       </div>
                     )}
                   </div>
@@ -204,17 +236,18 @@ export default function Classes({ classesList = defaultClassesList }) {
                     {/* Price & Action Row */}
                     <div className="catalog-card-footer">
                       <div className="price-block">
-                        <span className="price-label">Tarif</span>
-                        <span className="price-amount">{item.price || '4,500 DZD / mois'}</span>
+                        <span className="price-label">الرسوم</span>
+                        <span className="price-amount">{item.price || '4,500 دج / شهر'}</span>
                       </div>
 
                       <button
                         className="btn-enroll-action"
                         onClick={() => handleOpenEnrollModal(item)}
                         id={`btn-enroll-${item.id}`}
+                        type="button"
                       >
-                        <span>S'inscrire</span>
-                        <ArrowRight size={16} />
+                        <span>سجّل الآن</span>
+                        <ArrowLeft size={16} />
                       </button>
                     </div>
                   </div>
@@ -224,16 +257,17 @@ export default function Classes({ classesList = defaultClassesList }) {
           ) : (
             <div className="empty-catalog-state">
               <BookOpen size={48} className="empty-icon" />
-              <h3>Aucune classe trouvée</h3>
-              <p>Essayez de modifier vos filtres ou votre recherche.</p>
+              <h3>لم يتم العثور على أي فصل</h3>
+              <p>يرجى تجربة كلمات بحث أخرى أو تغيير تصنيف الفلترة.</p>
               <button
                 className="btn-reset-filters"
                 onClick={() => {
                   setSelectedCategory('all')
                   setSearchQuery('')
                 }}
+                type="button"
               >
-                Réinitialiser les filtres
+                إعادة ضبط الفلاتر
               </button>
             </div>
           )}

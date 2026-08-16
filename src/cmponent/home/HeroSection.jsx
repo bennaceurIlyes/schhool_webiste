@@ -65,6 +65,14 @@ export default function HeroSection({ data = defaultHeroData }) {
               {secondaryCta.label}
             </Link>
           )}
+          <Link
+            to="/dashboard"
+            className="btn-secondary"
+            style={{ borderColor: '#93C5FD', color: '#2563EB', background: '#EFF6FF' }}
+            id="hero-cta-dashboard"
+          >
+            📊 لوحة التحكم
+          </Link>
         </div>
       </div>
 

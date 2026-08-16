@@ -994,3 +994,142 @@
     justify-content: center;
   }
 }
+
+/* ============================================================
+   RTL (RIGHT-TO-LEFT) & ARABIC ADAPTATIONS FOR CLASSES & MODAL
+   ============================================================ */
+[dir="rtl"] .search-icon {
+  left: auto;
+  right: 18px;
+}
+
+[dir="rtl"] .search-box input {
+  padding: 14px 50px 14px 44px;
+}
+
+[dir="rtl"] .clear-search-btn {
+  right: auto;
+  left: 16px;
+}
+
+[dir="rtl"] .catalog-bookmark-ribbon {
+  right: auto;
+  left: 14px;
+}
+
+[dir="rtl"] .spots-badge {
+  left: auto;
+  right: 14px;
+}
+
+[dir="rtl"] .modal-close-btn {
+  right: auto;
+  left: 18px;
+}
+
+[dir="rtl"] .input-with-icon .input-icon {
+  left: auto;
+  right: 14px;
+}
+
+[dir="rtl"] .input-with-icon input,
+[dir="rtl"] .input-with-icon select {
+  padding: 11px 42px 11px 14px;
+}
+
+[dir="rtl"] .card-enroll-hint {
+  flex-direction: row;
+}
+
+[dir="rtl"] .receipt-summary-box .receipt-row {
+  flex-direction: row;
+}
+
+/* ============================================================
+   FORM ERROR STYLES & FEEDBACK
+   ============================================================ */
+.form-group.has-error input,
+.form-group.has-error select,
+.form-group.has-error textarea {
+  border-color: #EF4444 !important;
+  background-color: #FEF2F2 !important;
+}
+
+.form-group.has-error input:focus,
+.form-group.has-error select:focus,
+.form-group.has-error textarea:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+.field-error-msg {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #DC2626;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-top: 4px;
+  animation: fadeInErr 0.2s ease-out;
+}
+
+@keyframes fadeInErr {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   PRINT STYLES FOR OFFICIAL RECEIPT VOUCHER
+   ============================================================ */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  .navbar,
+  .classes-page-hero,
+  .classes-catalog-section,
+  .modal-close-btn,
+  .no-print {
+    display: none !important;
+  }
+
+  .modal-overlay {
+    position: static !important;
+    background: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .modal-container {
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .printable-receipt-section {
+    padding: 20px 0 !important;
+  }
+
+  .receipt-summary-box {
+    border: 2px solid #000000 !important;
+    background: #FAFAFA !important;
+    page-break-inside: avoid;
+  }
+
+  .mandatory-payment-alert {
+    border: 2px solid #D97706 !important;
+    background: #FFFBEB !important;
+    page-break-inside: avoid;
+  }
+
+  .school-visit-info {
+    border-top: 1px solid #CCCCCC !important;
+    margin-top: 20px !important;
+    padding-top: 20px !important;
+    page-break-inside: avoid;
+  }
+}
+
+

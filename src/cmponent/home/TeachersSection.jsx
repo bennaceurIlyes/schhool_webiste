@@ -3,7 +3,7 @@ import TeacherCard from './TeacherCard'
 import { teachersData as defaultTeachersData } from './homeData'
 
 export default function TeachersSection({
-  title = 'Our Teachers',
+  title = 'نخبة أساتذتنا ومؤطرينا',
   teachers = defaultTeachersData,
 }) {
   return (

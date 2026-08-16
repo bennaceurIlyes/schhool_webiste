@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
-import { GraduationCap, LayoutGrid, ArrowRight } from 'lucide-react'
+import { GraduationCap, LayoutGrid, ArrowLeft } from 'lucide-react'
 import ClassCard from './ClassCard'
 import {
   classesHeaderData as defaultHeaderData,
@@ -57,7 +57,7 @@ export default function ClassesSection({
             <Link to={ctaLink} className="btn-see-more-classes" id="btn-more-classes">
               <LayoutGrid size={18} className="cta-grid-icon" />
               <span>{ctaText}</span>
-              <ArrowRight size={18} className="cta-arrow-icon" />
+              <ArrowLeft size={18} className="cta-arrow-icon" />
             </Link>
           </div>
         )}

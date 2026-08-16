@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
-import { User, Clock, BookOpen, FlaskConical, Monitor, ArrowRight } from 'lucide-react'
+import { User, Clock, BookOpen, FlaskConical, Monitor, ArrowLeft } from 'lucide-react'
 
 function RenderSubjectIcon({ iconType, categoryTheme }) {
   switch (iconType) {
@@ -64,7 +64,7 @@ export default function ClassCard({ classItem }) {
       className="class-card"
       data-animate
       id={id}
-      aria-label={`S'inscrire au cours de ${title} - ${level}`}
+      aria-label={`التسجيل في دورة ${title} - ${level}`}
     >
       {/* Card Image with Bookmark Ribbon */}
       <div className="class-card-image-wrap">
@@ -117,7 +117,8 @@ export default function ClassCard({ classItem }) {
           <span className={`class-category-tag theme-tag--${categoryTheme}`}>
             <span>{category}</span>
             <span className="card-enroll-hint">
-              S'inscrire <ArrowRight size={12} />
+              <span>سجّل الآن</span>
+              <ArrowLeft size={12} />
             </span>
           </span>
         </div>
