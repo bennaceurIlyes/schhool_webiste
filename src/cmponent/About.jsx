@@ -50,7 +50,7 @@ export default function About() {
         <div className="classes-page-container">
           <div className="classes-hero-badge">
             <Sparkles size={16} />
-            <span>عن أكاديمية الخوارزمي</span>
+            <span>عن المدرسة</span>
           </div>
 
           <h1 className="classes-page-title">
@@ -93,7 +93,7 @@ export default function About() {
               نهج متكامل يجمع بين المعرفة النظرية والتطبيق العملي
             </h2>
             <p style={{ color: 'var(--text-muted)', lineHeight: '1.8', fontSize: '16px', marginBottom: '20px' }}>
-              تأسست أكاديمية الخوارزمي لتكون البيئة المثالية لكل طالب يبحث عن التميز والارتقاء بدرجاته، ولكل شخص يسعى لاكتساب لغات جديدة أو مهارات تطبيقية تؤهله لسوق العمل.
+              تأسست المدرسة لتكون البيئة المثالية لكل طالب يبحث عن التميز والارتقاء بدرجاته، ولكل شخص يسعى لاكتساب لغات جديدة أو مهارات تطبيقية تؤهله لسوق العمل.
             </p>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <li style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '600', color: 'var(--text-primary)' }}>
@@ -114,7 +114,7 @@ export default function About() {
           <div style={{ textAlign: 'center' }}>
             <img
               src={studentImg}
-              alt="طالب بأكاديمية الخوارزمي"
+              alt="طالب بالمدرسة"
               style={{
                 width: '100%',
                 maxHeight: '420px',

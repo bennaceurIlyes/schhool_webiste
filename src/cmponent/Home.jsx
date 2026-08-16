@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Home.css'
 import Navbar from './common/Navbar'
 import HeroSection from './home/HeroSection'
 import GrowthSection from './home/GrowthSection'
 import ClassesSection from './home/ClassesSection'
 import TeachersSection from './home/TeachersSection'
+import ClassAdsBanner from './common/ClassAdsBanner'
+import ClassEnrollModal from './classes/ClassEnrollModal'
 
 function Home({
   heroData,
@@ -16,6 +18,9 @@ function Home({
   classesData,
   teachersData,
 }) {
+  const [activeModalClass, setActiveModalClass] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   useEffect(() => {
     // Scroll-triggered animations for elements across sections
     const observer = new IntersectionObserver(
@@ -41,6 +46,16 @@ function Home({
     return () => observer.disconnect()
   }, [])
 
+  const handleOpenEnrollModal = (classItem) => {
+    setActiveModalClass(classItem)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setActiveModalClass(null)
+  }
+
   return (
     <div className="page-wrapper">
       {/* ===== 1. Reusable Top Navigation Bar ===== */}
@@ -49,7 +64,12 @@ function Home({
       {/* ===== 2. Hero Section ===== */}
       <HeroSection data={heroData} />
 
-      {/* ===== 3. Everything Your Child Needs to Grow (Programs & Stats) ===== */}
+      {/* ===== 3. Class Ads & Live Announcements Banner ===== */}
+      <div style={{ marginTop: '10px' }}>
+        <ClassAdsBanner onEnrollClick={handleOpenEnrollModal} title="📢 إعلانات الأفواج المفتوحة للتسجيل الفوري" />
+      </div>
+
+      {/* ===== 4. Everything Your Child Needs to Grow (Programs & Stats) ===== */}
       <GrowthSection
         headerData={growthHeaderData}
         programs={programsData}
@@ -57,13 +77,20 @@ function Home({
         stats={statsData}
       />
 
-      {/* ===== 4. Our Teachers Marquee Section ===== */}
+      {/* ===== 5. Our Teachers Marquee Section ===== */}
       <TeachersSection teachers={teachersData} />
 
-      {/* ===== 5. Our Classes Section (Matching Reference Design) ===== */}
+      {/* ===== 6. Our Classes Section (Matching Reference Design) ===== */}
       <ClassesSection
         headerData={classesHeaderData}
         classes={classesData}
+      />
+
+      {/* ===== 7. Registration Modal from Home Ads ===== */}
+      <ClassEnrollModal
+        classItem={activeModalClass}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
       />
     </div>
   )

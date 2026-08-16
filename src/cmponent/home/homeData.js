@@ -27,7 +27,7 @@ export const heroData = {
     link: '/Contact',
   },
   studentImage: studentImg,
-  studentImageAlt: 'طالب في أكاديمية الخوارزمي',
+  studentImageAlt: 'طالب في المدرسة',
   badges: [
     { id: 'b1', icon: '🎓', text: 'دعم مدرسي مخصص', position: 'top' },
     { id: 'b2', icon: '📜', text: 'تكوين وشهادات معتمدة', position: 'bottom' },
@@ -106,7 +106,7 @@ export const programsData = [
 
 export const growthVisualData = {
   childImage: childImg,
-  childImageAlt: 'طالب يدرس باجتهاد وتركيز في أكاديمية الخوارزمي',
+  childImageAlt: 'طالب يدرس باجتهاد وتركيز في المدرسة',
 }
 
 export const statsData = [
@@ -237,7 +237,7 @@ export const classesData = [
 ]
 
 export const schoolInfo = {
-  name: 'أكاديمية الخوارزمي',
+  name: 'المدرسة',
   address: '12 شارع الحرية، الجزائر الوسطى، الجزائر',
   phone: '+213 (0) 555 12 34 56',
   email: 'contact@academie-alkhwarizmi.dz',

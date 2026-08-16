@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Zap,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   Bell,
   Menu,
@@ -46,20 +47,20 @@ import {
 import { studentService } from '../../utils/studentService'
 
 export default function Dashboard() {
-  const ADMIN_PHONE = '0667158842' // User's admin phone number
+  const ADMIN_PHONE = '0667158842' // رقم إدارة المدرسة
   const [activeTab, setActiveTab] = useState('student')
-  const [selectedPeriod, setSelectedPeriod] = useState('Cette semaine')
+  const [selectedPeriod, setSelectedPeriod] = useState('هذا الأسبوع')
   const [periodMenuOpen, setPeriodMenuOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
 
-  // Students Live State
+  // حالة الطلاب اللحظية
   const [students, setStudents] = useState(() => studentService.getStudents())
   const [studentSearch, setStudentSearch] = useState('')
   const [selectedFilterCategory, setSelectedFilterCategory] = useState('all')
   const [selectedClassFilter, setSelectedClassFilter] = useState('all')
 
-  // Announcements Live State
+  // حالة الإعلانات اللحظية
   const [announcements, setAnnouncements] = useState(() => studentService.getAnnouncements())
   const [announcementSearch, setAnnouncementSearch] = useState('')
   const [selectedAnnCategory, setSelectedAnnCategory] = useState('all')
@@ -68,38 +69,45 @@ export default function Dashboard() {
   const [newAnnForm, setNewAnnForm] = useState({
     title: '',
     content: '',
-    category: 'Important',
-    targetAudience: 'Tous les élèves & parents',
+    category: 'أفواج ودروس جديدة',
+    targetAudience: 'أقسام 2 ثانوي وبكالوريا',
+    courseName: 'الرياضيات المتقدمة (2 ثانوي وبكالوريا)',
+    teacherName: 'الأستاذ أحمد بن علي',
+    groupName: 'فوج نهاية الأسبوع',
+    schedule: 'السبت والثلاثاء : 14:00 - 16:00',
+    price: '4,500 دج / شهر',
+    spotsLeft: 8,
+    isClassAd: true,
     isPinned: true,
   })
 
-  // WhatsApp Reminder Modal State
+  // نافذة تذكير واتساب
   const [whatsappModalStudent, setWhatsappModalStudent] = useState(null)
   const [whatsappCustomMessage, setWhatsappCustomMessage] = useState('')
 
-  // Selected Student for View Profile Modal
+  // نافذة عرض ملف الطالب
   const [viewingStudent, setViewingStudent] = useState(null)
 
-  // Selected Student for Physical Approval Modal
+  // نافذة التأكيد الفعلي والتسجيل الأولي بالمدرسة
   const [approvingStudent, setApprovingStudent] = useState(null)
   const [approvalForm, setApprovalForm] = useState({
     paymentAmount: 2500,
-    paymentMethod: 'Espèces (Cash)',
+    paymentMethod: 'نقداً (في الإدارة)',
     sessionsPerMonth: 4,
-    cycle: 'Septembre 2026',
-    notes: '',
+    cycle: 'سبتمبر 2026',
+    notes: 'تم تأكيد التسجيل حضورياً في مقر المدرسة',
   })
 
-  // Selected Student for Next Month Payment Modal
+  // نافذة دفع اشتراك الشهر القادم
   const [payingStudent, setPayingStudent] = useState(null)
   const [paymentForm, setPaymentForm] = useState({
     amount: 2500,
-    paymentMethod: 'Espèces (Cash)',
-    cycle: 'Octobre 2026',
-    notes: '',
+    paymentMethod: 'نقداً (في الإدارة)',
+    cycle: 'أكتوبر 2026',
+    notes: 'تم تسديد الاشتراك الشهري لدى أمانة المدرسة',
   })
 
-  // New Student Modal
+  // نافذة إضافة طالب جديد يدوياً
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false)
   const [newStudentForm, setNewStudentForm] = useState({
     studentName: '',
@@ -107,13 +115,13 @@ export default function Dashboard() {
     phone: '',
     email: '',
     address: '',
-    courseName: 'Mathématiques Approfondies (2S & BAC)',
-    teacherName: 'Prof. Sarah Benali',
+    courseName: 'الرياضيات المتقدمة (2 ثانوي وبكالوريا)',
+    teacherName: 'أ. سارة بن علي',
     monthlyPrice: 3000,
     sessionsPerMonth: 4,
   })
 
-  // Subscribe to live state updates
+  // الاشتراك في التحديثات الحية
   useEffect(() => {
     const unsubscribe = studentService.subscribe((updated) => {
       setStudents([...updated])
@@ -122,23 +130,23 @@ export default function Dashboard() {
     return () => unsubscribe()
   }, [])
 
-  // Show Toast
+  // إظهار التنبيه اللحظي
   const showToast = (msg) => {
     setToastMessage(msg)
     setTimeout(() => setToastMessage(''), 3800)
   }
 
-  // Derived KPI Counts
+  // الحسابات الإحصائية
   const totalStudentsCount = students.length
   const activeStudentsCount = students.filter((s) => s.status === 'Active').length
   const pendingEnrollmentsCount = students.filter((s) => s.status === 'Pending Approval').length
   const paymentsDueCount = students.filter((s) => s.paymentStatus === 'Payment Required').length
   const overduePaymentsCount = students.filter((s) => s.paymentStatus === 'Overdue' || s.status === 'Payment Overdue').length
 
-  // Students whose payment is required (Completed 4/4 sessions)
+  // الطلاب الذين أتموا 4/4 حصص وبحاجة لتجديد الاشتراك
   const studentsWithPaymentDue = students.filter((s) => s.paymentStatus === 'Payment Required')
 
-  // Filtered Students List
+  // فلترة قائمة الطلاب
   const filteredStudents = students.filter((s) => {
     const matchesSearch =
       s.fullName.toLowerCase().includes(studentSearch.toLowerCase()) ||
@@ -166,7 +174,7 @@ export default function Dashboard() {
     return matchesSearch && matchesCategory && matchesClass
   })
 
-  // Filtered Announcements List
+  // فلترة قائمة الإعلانات
   const filteredAnnouncements = announcements.filter((ann) => {
     const matchesSearch =
       ann.title.toLowerCase().includes(announcementSearch.toLowerCase()) ||
@@ -179,10 +187,10 @@ export default function Dashboard() {
     return matchesSearch && matchesCat
   })
 
-  // Top Pinned Announcement for Home ticker
+  // الإعلان المثبت الرئيسي في الشريط العلوي
   const topPinnedAnnouncement = announcements.find((a) => a.isPinned) || announcements[0]
 
-  // Submit New Announcement
+  // نشر إعلان جديد
   const handleAddAnnouncementSubmit = (e) => {
     e.preventDefault()
     if (!newAnnForm.title.trim() || !newAnnForm.content.trim()) return
@@ -192,38 +200,52 @@ export default function Dashboard() {
       content: newAnnForm.content,
       category: newAnnForm.category,
       targetAudience: newAnnForm.targetAudience,
+      courseName: newAnnForm.courseName,
+      teacherName: newAnnForm.teacherName,
+      groupName: newAnnForm.groupName,
+      schedule: newAnnForm.schedule,
+      price: newAnnForm.price,
+      spotsLeft: newAnnForm.spotsLeft,
+      isClassAd: newAnnForm.isClassAd,
       isPinned: newAnnForm.isPinned,
     })
 
-    showToast(`📢 Annonce "${newAnnForm.title}" publiée avec succès !`)
+    showToast(`📢 تم نشر الإعلان "${newAnnForm.title}" بنجاح في الموقع واللوحة !`)
     setIsAddAnnouncementOpen(false)
     setNewAnnForm({
       title: '',
       content: '',
-      category: 'Important',
-      targetAudience: 'Tous les élèves & parents',
+      category: 'أفواج ودروس جديدة',
+      targetAudience: 'جميع الأولياء والطلاب',
+      courseName: 'الرياضيات المتقدمة (2 ثانوي وبكالوريا)',
+      teacherName: 'الأستاذ أحمد بن علي',
+      groupName: 'فوج نهاية الأسبوع',
+      schedule: 'السبت والثلاثاء : 14:00 - 16:00',
+      price: '4,500 دج / شهر',
+      spotsLeft: 8,
+      isClassAd: true,
       isPinned: true,
     })
     setAnnouncements([...studentService.getAnnouncements()])
   }
 
-  // Toggle Pin Announcement
+  // تبديل تثبيت الإعلان
   const handleTogglePin = (id) => {
     studentService.togglePinAnnouncement(id)
     setAnnouncements([...studentService.getAnnouncements()])
-    showToast(`Statut d'épinglage mis à jour.`)
+    showToast(`تم تحديث حالة التثبيت.`)
   }
 
-  // Delete Announcement
+  // حذف إعلان
   const handleDeleteAnnouncement = (id) => {
-    if (confirm('Voulez-vous supprimer cette annonce ?')) {
+    if (confirm('هل أنت متأكد من حذف هذا الإعلان؟')) {
       studentService.deleteAnnouncement(id)
       setAnnouncements([...studentService.getAnnouncements()])
-      showToast(`Annonce supprimée.`)
+      showToast(`تم حذف الإعلان بنجاح.`)
     }
   }
 
-  // Open WhatsApp Reminder Modal
+  // فتح نافذة تذكير واتساب
   const handleOpenWhatsAppModal = (student) => {
     setWhatsappModalStudent(student)
     setWhatsappCustomMessage(
@@ -240,31 +262,26 @@ export default function Dashboard() {
     )
   }
 
-  // Direct 1-Click WhatsApp Simulation
-  const handleDirectWhatsAppSend = (student) => {
-    showToast(`✓ Rappel WhatsApp envoyé (Mode simulation) pour ${student.fullName} (${student.phone})`)
-  }
-
-  // Send WhatsApp from Modal (Frontend Mode)
+  // محاكاة إرسال تذكير الواتساب
   const handleSendWhatsAppFromModal = () => {
     if (!whatsappModalStudent) return
-    showToast(`✓ Rappel WhatsApp envoyé avec succès (Mode simulation) pour ${whatsappModalStudent.fullName} (${whatsappModalStudent.phone}) !`)
+    showToast(`✓ تم إرسال تذكير WhatsApp بنجاح للطالب ${whatsappModalStudent.fullName} (${whatsappModalStudent.phone}) !`)
     setWhatsappModalStudent(null)
   }
 
-  // Open Physical Approval Modal
+  // فتح نافذة تأكيد التسجيل الفعلي
   const handleOpenApproveModal = (student) => {
     setApprovingStudent(student)
     setApprovalForm({
       paymentAmount: student.monthlyPrice || 2500,
-      paymentMethod: 'Espèces (Cash)',
+      paymentMethod: 'نقداً (في الإدارة)',
       sessionsPerMonth: student.sessionsPerMonth || 4,
-      cycle: 'Septembre 2026',
-      notes: 'Inscription confirmée sur place à l’école',
+      cycle: 'سبتمبر 2026',
+      notes: 'تم تأكيد التسجيل حضورياً في مقر المدرسة',
     })
   }
 
-  // Submit Physical Approval
+  // تأكيد التسجيل الفعلي ودفع أول قسط
   const handleSubmitApproval = (e) => {
     e.preventDefault()
     if (!approvingStudent) return
@@ -277,22 +294,22 @@ export default function Dashboard() {
       notes: approvalForm.notes,
     })
 
-    showToast(`✓ Inscription approuvée avec succès ! ${approvingStudent.fullName} est maintenant Actif.`)
+    showToast(`✓ تم تأكيد التسجيل بنجاح ! ${approvingStudent.fullName} أصبح الآن في حالة نشط.`)
     setApprovingStudent(null)
   }
 
-  // Open Record Payment Modal
+  // فتح نافذة تسجيل الدفعة الشهرية
   const handleOpenPaymentModal = (student) => {
     setPayingStudent(student)
     setPaymentForm({
       amount: student.monthlyPrice || 2500,
-      paymentMethod: 'Espèces (Cash)',
-      cycle: student.currentCycle.includes('Septembre') ? 'Octobre 2026' : 'Nouveau Mois',
-      notes: 'Paiement mensuel enregistré par l’administrateur',
+      paymentMethod: 'نقداً (في الإدارة)',
+      cycle: student.currentCycle.includes('سبتمبر') ? 'أكتوبر 2026' : 'شهر جديد',
+      notes: 'تم تسديد الاشتراك الشهري لدى أمانة المدرسة',
     })
   }
 
-  // Submit Next Month Payment
+  // تسجيل دفعة الشهر الجديد
   const handleSubmitPayment = (e) => {
     e.preventDefault()
     if (!payingStudent) return
@@ -304,7 +321,7 @@ export default function Dashboard() {
       notes: paymentForm.notes,
     })
 
-    showToast(`✓ Paiement de ${paymentForm.amount} DA enregistré pour ${payingStudent.fullName}. Nouveau cycle démarré (0/${payingStudent.sessionsPerMonth} séances) !`)
+    showToast(`✓ تم تسجيل دفع ${paymentForm.amount} دج للطالب ${payingStudent.fullName}. بدأت دورة جديدة (0/${payingStudent.sessionsPerMonth} حصص) !`)
     setPayingStudent(null)
     if (viewingStudent && viewingStudent.id === payingStudent.id) {
       const refreshed = studentService.getStudents().find((s) => s.id === payingStudent.id)
@@ -312,14 +329,14 @@ export default function Dashboard() {
     }
   }
 
-  // Add Student Manually
+  // إضافة طالب جديد
   const handleAddStudentSubmit = (e) => {
     e.preventDefault()
     if (!newStudentForm.studentName.trim()) return
 
     studentService.addOnlineEnrollment({
       studentName: newStudentForm.studentName,
-      parentName: newStudentForm.parentName || 'Tuteur',
+      parentName: newStudentForm.parentName || 'الولي / الوصي',
       phone: newStudentForm.phone,
       email: newStudentForm.email,
       address: newStudentForm.address,
@@ -329,7 +346,7 @@ export default function Dashboard() {
       sessionsPerMonth: Number(newStudentForm.sessionsPerMonth),
     })
 
-    showToast(`Nouvelle demande d'inscription créée pour ${newStudentForm.studentName} (En attente d'approbation).`)
+    showToast(`تم إنشاء طلب تسجيل جديد للطالب ${newStudentForm.studentName} (قيد التأكيد الفعلي).`)
     setIsAddStudentOpen(false)
     setNewStudentForm({
       studentName: '',
@@ -337,14 +354,14 @@ export default function Dashboard() {
       phone: '',
       email: '',
       address: '',
-      courseName: 'Mathématiques Approfondies (2S & BAC)',
-      teacherName: 'Prof. Sarah Benali',
+      courseName: 'الرياضيات المتقدمة (2 ثانوي وبكالوريا)',
+      teacherName: 'أ. سارة بن علي',
       monthlyPrice: 3000,
       sessionsPerMonth: 4,
     })
   }
 
-  // Financial calculations
+  // الحسابات المالية
   const totalRevenueCollected = students.reduce((acc, s) => {
     const studentTotal = (s.paymentHistory || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
     return acc + studentTotal
@@ -356,13 +373,13 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page-canvas">
-      {/* Real-time Toast Alert */}
+      {/* التنبيه اللحظي المنبثق */}
       {toastMessage && (
         <div
           style={{
             position: 'fixed',
             top: '24px',
-            right: '24px',
+            left: '24px',
             background: '#111827',
             color: '#FFFFFF',
             padding: '14px 22px',
@@ -385,11 +402,11 @@ export default function Dashboard() {
 
       <div className="dashboard-app-container">
         {/* ========================================================
-            LEFT SIDEBAR
+            القائمة الجانبية (SIDEBAR)
             ======================================================== */}
         <aside className="dashboard-sidebar">
           <div>
-            {/* Brand Logo */}
+            {/* الشعار والهوية */}
             <div className="sidebar-brand" onClick={() => setActiveTab('student')}>
               <div className="brand-logo-icon">
                 <svg width="40" height="40" viewBox="0 0 44 44" fill="none">
@@ -402,12 +419,12 @@ export default function Dashboard() {
                 </svg>
               </div>
               <div className="brand-text-wrap">
-                <span className="brand-name">Nawafid</span>
-                <span className="brand-subtext">ÉDUCATION</span>
+                <span className="brand-name">School</span>
+                <span className="brand-subtext">منصة التعليم والإدارة</span>
               </div>
             </div>
 
-            {/* Navigation Menu */}
+            {/* روابط التنقل */}
             <nav className="sidebar-nav">
               <button
                 className={`sidebar-nav-item ${activeTab === 'home' ? 'active' : ''}`}
@@ -416,7 +433,7 @@ export default function Dashboard() {
                 id="tab-btn-home"
               >
                 <Home size={19} className="nav-item-icon" />
-                <span>Home</span>
+                <span>الرئيسية</span>
                 {activeTab === 'home' && <span className="nav-active-dot" />}
               </button>
 
@@ -427,10 +444,10 @@ export default function Dashboard() {
                 id="tab-btn-student"
               >
                 <GraduationCap size={19} className="nav-item-icon" />
-                <span>Student</span>
+                <span>الطلاب</span>
                 {paymentsDueCount > 0 && (
                   <span className="sidebar-badge-count badge-amber-bg">
-                    {paymentsDueCount} dues
+                    {paymentsDueCount} مستحق
                   </span>
                 )}
                 {activeTab === 'student' && <span className="nav-active-dot" />}
@@ -443,7 +460,7 @@ export default function Dashboard() {
                 id="tab-btn-announcements"
               >
                 <Megaphone size={19} className="nav-item-icon" />
-                <span>Annonces</span>
+                <span>إعلانات الفصول</span>
                 <span className="sidebar-badge-count" style={{ background: '#EFF6FF', color: '#2563EB' }}>
                   {announcements.length}
                 </span>
@@ -457,7 +474,7 @@ export default function Dashboard() {
                 id="tab-btn-statistique"
               >
                 <BarChart2 size={19} className="nav-item-icon" />
-                <span>Statistique</span>
+                <span>الإحصائيات</span>
                 {activeTab === 'statistique' && <span className="nav-active-dot" />}
               </button>
 
@@ -468,21 +485,21 @@ export default function Dashboard() {
                 id="tab-btn-teacher"
               >
                 <Users size={19} className="nav-item-icon" />
-                <span>Teacher</span>
+                <span>هيئة التدريس</span>
                 {activeTab === 'teacher' && <span className="nav-active-dot" />}
               </button>
             </nav>
           </div>
 
-          {/* Bottom Profile Card */}
+          {/* بطاقة المدير السفلية */}
           <div className="sidebar-profile-card">
             <div className="profile-avatar-wrap">
               <div className="profile-avatar">
                 <User size={19} />
               </div>
               <div className="profile-info">
-                <span className="profile-name">Admin ({ADMIN_PHONE})</span>
-                <span className="profile-role">Administrateur</span>
+                <span className="profile-name">المدير ({ADMIN_PHONE})</span>
+                <span className="profile-role">مسؤول المنصة</span>
               </div>
             </div>
             <ChevronDown size={18} className="profile-chevron" />
@@ -490,19 +507,19 @@ export default function Dashboard() {
         </aside>
 
         {/* ========================================================
-            MAIN CONTENT AREA
+            منطقة المحتوى الرئيسي (MAIN CONTENT)
             ======================================================== */}
         <main className="dashboard-main-content">
-          {/* Topbar Header */}
+          {/* الشريط العلوي للترحيب */}
           <header className="dashboard-topbar">
             <div>
               {activeTab === 'student' && (
                 <>
                   <h1 className="dashboard-welcome-heading">
-                    Gestion des Élèves &amp; Paiements Mensuels 🎓
+                    إدارة الطلاب والمدفوعات الشهرية 🎓
                   </h1>
                   <p className="dashboard-welcome-subtext">
-                    Suivi du cycle de 4 séances, rappels WhatsApp automatiques et validation physique des inscriptions.
+                    متابعة دورة الـ 4 حصص، تذكيرات WhatsApp التلقائية وتأكيد الاشتراكات في مقر المدرسة.
                   </p>
                 </>
               )}
@@ -510,10 +527,10 @@ export default function Dashboard() {
               {activeTab === 'announcements' && (
                 <>
                   <h1 className="dashboard-welcome-heading">
-                    Tableau d'Affichage &amp; Annonces Scolaires 📢
+                    إدارة إعلانات الفصول والأفواج الجديدة 📢
                   </h1>
                   <p className="dashboard-welcome-subtext">
-                    Publiez des avis importants, des rappels de paiement et des événements pour toute l'école.
+                    إنشاء ونشر إعلانات الأفواج والدروس لتظهر مباشرة للطلاب في الصفحة الرئيسية وصفحة الفصول للتسجيل الفوري.
                   </p>
                 </>
               )}
@@ -521,10 +538,10 @@ export default function Dashboard() {
               {activeTab === 'home' && (
                 <>
                   <h1 className="dashboard-welcome-heading">
-                    Bienvenue, Admin ({ADMIN_PHONE}) <span role="img" aria-label="wave">👋</span>
+                    مرحباً بك، المدير ({ADMIN_PHONE}) <span role="img" aria-label="wave">👋</span>
                   </h1>
                   <p className="dashboard-welcome-subtext">
-                    Voici un aperçu général de votre plateforme.
+                    إليك نظرة شاملة على أداء المؤسسة، مؤشرات الحضور، وسير الاشتراكات.
                   </p>
                 </>
               )}
@@ -532,10 +549,10 @@ export default function Dashboard() {
               {activeTab === 'statistique' && (
                 <>
                   <h1 className="dashboard-welcome-heading">
-                    Statistiques Financières &amp; Pédagogiques 📈
+                    الإحصائيات والتقارير المالية 📈
                   </h1>
                   <p className="dashboard-welcome-subtext">
-                    Revenus collectés, assiduité aux cours et suivi des cycles mensuels.
+                    متابعة المداخيل المحصلة، نسب الحضور الأكاديمي، وتوزيع الطلاب على المواد.
                   </p>
                 </>
               )}
@@ -543,10 +560,10 @@ export default function Dashboard() {
               {activeTab === 'teacher' && (
                 <>
                   <h1 className="dashboard-welcome-heading">
-                    Corps Enseignant &amp; Professeurs 👨‍🏫
+                    هيئة التدريس والأساتذة 👨‍🏫
                   </h1>
                   <p className="dashboard-welcome-subtext">
-                    Gestion des enseignants, cours dispensés et suivi des présences.
+                    إدارة الأساتذة، المواد المسندة إليهم، وتتبع أعداد الطلاب في كل فوج.
                   </p>
                 </>
               )}
@@ -557,7 +574,7 @@ export default function Dashboard() {
                 <button
                   className="topbar-circle-btn"
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
-                  aria-label="Notifications"
+                  aria-label="التنبيهات"
                   type="button"
                 >
                   <Bell size={20} />
@@ -571,7 +588,7 @@ export default function Dashboard() {
                     style={{
                       position: 'absolute',
                       top: '50px',
-                      right: '0',
+                      left: '0',
                       width: '320px',
                       background: '#FFFFFF',
                       borderRadius: '16px',
@@ -582,7 +599,7 @@ export default function Dashboard() {
                     }}
                   >
                     <h4 style={{ fontSize: '14px', fontWeight: '800', marginBottom: '10px' }}>
-                      Alertes &amp; Annonces Récentes
+                      أحدث التنبيهات والإعلانات
                     </h4>
                     {paymentsDueCount > 0 && (
                       <div
@@ -597,7 +614,7 @@ export default function Dashboard() {
                           border: '1px solid #FDE68A',
                         }}
                       >
-                        ⚠️ {paymentsDueCount} élève(s) ont terminé leur 4ème séance et doivent payer le mois prochain.
+                        ⚠️ يوجد {paymentsDueCount} طالب(ين) أتموا حصتهم الرابعة ويجب عليهم تجديد الاشتراك.
                       </div>
                     )}
                     {topPinnedAnnouncement && (
@@ -620,78 +637,76 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <button className="topbar-circle-btn" aria-label="Menu" type="button">
+              <button className="topbar-circle-btn" aria-label="القائمة" type="button">
                 <Menu size={20} />
               </button>
             </div>
           </header>
 
           {/* ========================================================
-              PAGE: ANNOUNCEMENTS
+              تبويب: إعلانات الفصول والأفواج (CLASS ADS)
               ======================================================== */}
           {activeTab === 'announcements' && (
             <div className="tab-view-container">
-              {/* Summary Cards */}
+              {/* بطاقات المؤشرات */}
               <div className="summary-kpi-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
                 <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('all')}>
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text">Total Annonces</span>
+                    <span className="kpi-label-text">إجمالي إعلانات الفصول</span>
                     <div className="kpi-icon-square" style={{ background: '#EFF6FF', color: '#2563EB' }}>
                       <Megaphone size={16} />
                     </div>
                   </div>
                   <div className="kpi-number-display">{announcements.length}</div>
-                  <span className="kpi-sub-badge">Toutes les publications</span>
+                  <span className="kpi-sub-badge">جميع الأفواج المنشورة</span>
                 </div>
 
-                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('Important')}>
+                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('all')}>
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text" style={{ color: '#DC2626' }}>Urgentes &amp; Épinglées</span>
-                    <div className="kpi-icon-square" style={{ background: '#FEE2E2', color: '#DC2626' }}>
+                    <span className="kpi-label-text" style={{ color: '#059669' }}>أفواج مثبتة في الموقع</span>
+                    <div className="kpi-icon-square" style={{ background: '#ECFDF5', color: '#10B981' }}>
                       <Pin size={16} />
                     </div>
                   </div>
-                  <div className="kpi-number-display" style={{ color: '#DC2626' }}>
+                  <div className="kpi-number-display" style={{ color: '#059669' }}>
                     {announcements.filter((a) => a.isPinned).length}
                   </div>
-                  <span className="kpi-sub-badge" style={{ color: '#DC2626' }}>En tête d'affiche</span>
+                  <span className="kpi-sub-badge" style={{ color: '#059669' }}>تظهر في الرئيسية والفصول</span>
                 </div>
 
-                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('Paiements')}>
+                <div className="summary-kpi-card">
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text" style={{ color: '#D97706' }}>Avis de Paiement</span>
+                    <span className="kpi-label-text" style={{ color: '#D97706' }}>المقاعد المتاحة</span>
                     <div className="kpi-icon-square" style={{ background: '#FEF3C7', color: '#D97706' }}>
-                      <CreditCard size={16} />
+                      <Users size={16} />
                     </div>
                   </div>
                   <div className="kpi-number-display" style={{ color: '#D97706' }}>
-                    {announcements.filter((a) => a.category === 'Paiements').length}
+                    {announcements.reduce((acc, a) => acc + (Number(a.spotsLeft) || 0), 0)} مقعد
                   </div>
-                  <span className="kpi-sub-badge" style={{ color: '#D97706' }}>Rappels de mensualités</span>
+                  <span className="kpi-sub-badge" style={{ color: '#D97706' }}>جاهزة لاستقبال الطلاب</span>
                 </div>
 
-                <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('Événements')}>
+                <div className="summary-kpi-card">
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text" style={{ color: '#059669' }}>Événements &amp; Ateliers</span>
-                    <div className="kpi-icon-square" style={{ background: '#ECFDF5', color: '#10B981' }}>
+                    <span className="kpi-label-text" style={{ color: '#7C3AED' }}>التسجيل الفوري</span>
+                    <div className="kpi-icon-square" style={{ background: '#F5F3FF', color: '#7C3AED' }}>
                       <Sparkles size={16} />
                     </div>
                   </div>
-                  <div className="kpi-number-display" style={{ color: '#059669' }}>
-                    {announcements.filter((a) => a.category === 'Événements').length}
-                  </div>
-                  <span className="kpi-sub-badge" style={{ color: '#059669' }}>Activités &amp; Formations</span>
+                  <div className="kpi-number-display" style={{ color: '#7C3AED' }}>نشط 🟢</div>
+                  <span className="kpi-sub-badge" style={{ color: '#7C3AED' }}>متاح في الموقع للزوار</span>
                 </div>
               </div>
 
-              {/* Toolbar */}
+              {/* شريط الأدوات والفلترة حسب المادة */}
               <div className="students-toolbar">
                 <div className="student-search-box">
                   <Search size={16} className="student-search-icon" />
                   <input
                     type="text"
                     className="student-search-input"
-                    placeholder="Rechercher une annonce par mot-clé ou titre..."
+                    placeholder="ابحث عن إعلان مادة، اسم الأستاذ، أو الفوج..."
                     value={announcementSearch}
                     onChange={(e) => setAnnouncementSearch(e.target.value)}
                   />
@@ -699,7 +714,7 @@ export default function Dashboard() {
 
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', gap: '6px', background: '#FFFFFF', padding: '4px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
-                    {['all', 'Paiements', 'Pédagogique', 'Événements'].map((cat) => (
+                    {['all', 'الرياضيات', 'اللغات', 'العلوم', 'التكنولوجيا'].map((cat) => (
                       <button
                         key={cat}
                         style={{
@@ -715,7 +730,7 @@ export default function Dashboard() {
                         onClick={() => setSelectedAnnCategory(cat)}
                         type="button"
                       >
-                        {cat === 'all' ? 'Toutes' : cat}
+                        {cat === 'all' ? 'جميع المواد' : cat}
                       </button>
                     ))}
                   </div>
@@ -726,12 +741,12 @@ export default function Dashboard() {
                     type="button"
                   >
                     <Plus size={16} />
-                    <span>+ Créer une Annonce</span>
+                    <span>+ إنشاء إعلان فوج جديد</span>
                   </button>
                 </div>
               </div>
 
-              {/* Announcements Grid */}
+              {/* شبكة بطاقات إعلانات الفصول */}
               <div className="announcements-grid">
                 {filteredAnnouncements.length > 0 ? (
                   filteredAnnouncements.map((ann) => (
@@ -742,25 +757,15 @@ export default function Dashboard() {
                       <div>
                         <div className="ann-card-top-row">
                           <div className="ann-badge-group">
-                            <span
-                              className={`ann-category-badge ${
-                                ann.category === 'Paiements'
-                                  ? 'cat-badge-payments'
-                                  : ann.category === 'Pédagogique'
-                                  ? 'cat-badge-pedagogique'
-                                  : ann.category === 'Événements'
-                                  ? 'cat-badge-events'
-                                  : 'cat-badge-general'
-                              }`}
-                            >
+                            <span className="ann-category-badge cat-badge-pedagogique">
                               <Tag size={11} />
-                              <span>{ann.category}</span>
+                              <span>{ann.category || 'فصل دراسي'}</span>
                             </span>
 
                             {ann.isPinned && (
                               <span className="ann-pinned-tag">
                                 <Pin size={11} />
-                                <span>Épinglé</span>
+                                <span>ظاهر في الموقع</span>
                               </span>
                             )}
                           </div>
@@ -773,8 +778,43 @@ export default function Dashboard() {
                         <h3 className="ann-card-title">{ann.title}</h3>
                         <p className="ann-card-content-preview">{ann.content}</p>
 
+                        <div
+                          style={{
+                            marginTop: '12px',
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gap: '8px',
+                            fontSize: '12px',
+                            background: '#F8FAFC',
+                            padding: '10px 12px',
+                            borderRadius: '10px',
+                            border: '1px solid #E2E8F0',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#1E40AF', fontWeight: '700' }}>
+                            <User size={14} />
+                            <span>{ann.teacherName || 'أستاذ المادة'}</span>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#D97706', fontWeight: '700' }}>
+                            <CreditCard size={14} />
+                            <span>{ann.price || '4,500 دج / شهر'}</span>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#059669', fontWeight: '600', gridColumn: 'span 2' }}>
+                            <Clock size={14} />
+                            <span>{ann.schedule || 'توقيت الحصص الأسبوعية'}</span>
+                          </div>
+
+                          {ann.spotsLeft && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#DC2626', fontWeight: '800', gridColumn: 'span 2' }}>
+                              <span>🔥 المقاعد المتبقية: <strong>{ann.spotsLeft} مقاعد</strong></span>
+                            </div>
+                          )}
+                        </div>
+
                         <div style={{ marginTop: '10px', fontSize: '12px', color: '#6B7280', fontWeight: '600' }}>
-                          🎯 Destinataires : <span style={{ color: '#1E293B' }}>{ann.targetAudience}</span>
+                          🎯 المستوى المستهدف : <span style={{ color: '#1E293B' }}>{ann.targetAudience}</span>
                         </div>
                       </div>
 
@@ -787,7 +827,7 @@ export default function Dashboard() {
                         <div className="ann-actions-btns">
                           <button
                             className="btn-action-icon-sm"
-                            title={ann.isPinned ? 'Désépingler' : 'Épingler en haut'}
+                            title={ann.isPinned ? 'إلغاء التثبيت' : 'تثبيت في الأعلى'}
                             onClick={() => handleTogglePin(ann.id)}
                             style={{ color: ann.isPinned ? '#D97706' : '#6B7280' }}
                             type="button"
@@ -796,7 +836,7 @@ export default function Dashboard() {
                           </button>
                           <button
                             className="btn-action-icon-sm"
-                            title="Lire l'annonce complète"
+                            title="قراءة الإعلان كاملاً"
                             onClick={() => setViewingAnnouncement(ann)}
                             type="button"
                           >
@@ -804,7 +844,7 @@ export default function Dashboard() {
                           </button>
                           <button
                             className="btn-action-icon-sm btn-delete"
-                            title="Supprimer"
+                            title="حذف الإعلان"
                             onClick={() => handleDeleteAnnouncement(ann.id)}
                             type="button"
                           >
@@ -817,8 +857,8 @@ export default function Dashboard() {
                 ) : (
                   <div style={{ gridColumn: '1 / -1', background: '#FFFFFF', padding: '50px 20px', borderRadius: '20px', textAlign: 'center', color: '#9CA3AF', border: '1px solid #F3F4F6' }}>
                     <Megaphone size={40} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
-                    <p style={{ fontWeight: '800', fontSize: '16px', color: '#111827' }}>Aucune annonce trouvée</p>
-                    <p style={{ fontSize: '13px' }}>Cliquez sur "+ Créer une Annonce" pour publier un nouvel avis aux élèves et parents.</p>
+                    <p style={{ fontWeight: '800', fontSize: '16px', color: '#111827' }}>لم يتم العثور على أي إعلانات</p>
+                    <p style={{ fontSize: '13px' }}>انقر على "+ إنشاء إعلان جديد" لنشر تنبيه للطلاب وأولياء الأمور.</p>
                   </div>
                 )}
               </div>
@@ -826,24 +866,24 @@ export default function Dashboard() {
           )}
 
           {/* ========================================================
-              PAGE: STUDENT MANAGEMENT
+              تبويب: إدارة الطلاب (STUDENT MANAGEMENT)
               ======================================================== */}
           {activeTab === 'student' && (
             <div className="tab-view-container">
-              {/* Top Clickable Summary KPI Cards */}
+              {/* بطاقات المؤشرات العلوية */}
               <div className="summary-kpi-grid">
                 <div
                   className={`summary-kpi-card ${selectedFilterCategory === 'all' ? 'active-filter' : ''}`}
                   onClick={() => setSelectedFilterCategory('all')}
                 >
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text">Total Élèves</span>
+                    <span className="kpi-label-text">إجمالي الطلاب</span>
                     <div className="kpi-icon-square" style={{ background: '#F3F4F6', color: '#4B5563' }}>
                       <Users size={16} />
                     </div>
                   </div>
                   <div className="kpi-number-display">{totalStudentsCount}</div>
-                  <span className="kpi-sub-badge">Tous les inscrits</span>
+                  <span className="kpi-sub-badge">جميع المسجلين</span>
                 </div>
 
                 <div
@@ -851,7 +891,7 @@ export default function Dashboard() {
                   onClick={() => setSelectedFilterCategory('active')}
                 >
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text">Élèves Actifs</span>
+                    <span className="kpi-label-text">الطلاب النشطين</span>
                     <div className="kpi-icon-square" style={{ background: '#ECFDF5', color: '#10B981' }}>
                       <CheckCircle2 size={16} />
                     </div>
@@ -860,7 +900,7 @@ export default function Dashboard() {
                     {activeStudentsCount}
                   </div>
                   <span className="kpi-sub-badge" style={{ color: '#059669' }}>
-                    🟢 En cours d'études
+                    🟢 قيد الدراسة
                   </span>
                 </div>
 
@@ -869,7 +909,7 @@ export default function Dashboard() {
                   onClick={() => setSelectedFilterCategory('pending')}
                 >
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text">En Attente</span>
+                    <span className="kpi-label-text">قيد الانتظار</span>
                     <div className="kpi-icon-square" style={{ background: '#EFF6FF', color: '#2563EB' }}>
                       <Clock size={16} />
                     </div>
@@ -878,7 +918,7 @@ export default function Dashboard() {
                     {pendingEnrollmentsCount}
                   </div>
                   <span className="kpi-sub-badge" style={{ color: '#2563EB' }}>
-                    🔵 Validation physique
+                    🔵 قيد التأكيد الفعلي
                   </span>
                 </div>
 
@@ -888,7 +928,7 @@ export default function Dashboard() {
                 >
                   <div className="kpi-top-row">
                     <span className="kpi-label-text" style={{ color: '#B45309' }}>
-                      Paiements Requis
+                      المدفوعات المطلوبة
                     </span>
                     <div className="kpi-icon-square" style={{ background: '#FEF3C7', color: '#D97706' }}>
                       <CreditCard size={16} />
@@ -898,7 +938,7 @@ export default function Dashboard() {
                     {paymentsDueCount}
                   </div>
                   <span className="kpi-sub-badge" style={{ color: '#D97706', fontWeight: '700' }}>
-                    🟠 4/4 séances faites
+                    🟠 4/4 حصص مكتملة
                   </span>
                 </div>
 
@@ -908,7 +948,7 @@ export default function Dashboard() {
                 >
                   <div className="kpi-top-row">
                     <span className="kpi-label-text" style={{ color: '#DC2626' }}>
-                      En Retard
+                      متأخر
                     </span>
                     <div className="kpi-icon-square" style={{ background: '#FEE2E2', color: '#DC2626' }}>
                       <AlertTriangle size={16} />
@@ -918,12 +958,12 @@ export default function Dashboard() {
                     {overduePaymentsCount}
                   </div>
                   <span className="kpi-sub-badge" style={{ color: '#DC2626' }}>
-                    🔴 Échéance dépassée
+                    🔴 تجاوز الموعد النهائي
                   </span>
                 </div>
               </div>
 
-              {/* PAYMENTS DUE HIGHLIGHTS WITH 1-CLICK WHATSAPP INTEGRATION */}
+              {/* قسم المدفوعات المستحقة وتذكيرات الواتساب الفورية */}
               {studentsWithPaymentDue.length > 0 && (
                 <section className="payments-due-banner-section">
                   <div className="payments-due-header">
@@ -933,10 +973,10 @@ export default function Dashboard() {
                       </div>
                       <div>
                         <h2 className="payments-due-heading">
-                          Paiements Requis (4/4 Séances terminées) 📲
+                          المدفوعات المستحقة (4/4 حصص مكتملة) 📲
                         </h2>
                         <p className="payments-due-subtext">
-                          Ces élèves ont complété leur mois. Envoyez-leur un rappel automatique par <strong>WhatsApp</strong> depuis le <strong>{ADMIN_PHONE}</strong>.
+                          أتم هؤلاء الطلاب كامل حصص الشهر. يمكنك إرسال تذكير تلقائي عبر <strong>WhatsApp</strong> من الرقم <strong>{ADMIN_PHONE}</strong>.
                         </p>
                       </div>
                     </div>
@@ -950,7 +990,7 @@ export default function Dashboard() {
                         borderRadius: '999px',
                       }}
                     >
-                      {studentsWithPaymentDue.length} à renouveler
+                      {studentsWithPaymentDue.length} بحاجة للتجديد
                     </span>
                   </div>
 
@@ -965,16 +1005,16 @@ export default function Dashboard() {
                                 {student.courseName} • {student.teacherName}
                               </div>
                               <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
-                                📞 Tél: <strong>{student.phone}</strong>
+                                📞 الهاتف: <strong>{student.phone}</strong>
                               </div>
                             </div>
-                            <span className="due-amount-pill">{student.monthlyPrice} DA</span>
+                            <span className="due-amount-pill">{student.monthlyPrice} دج</span>
                           </div>
 
                           <div className="due-message-callout" style={{ marginTop: '10px' }}>
-                            <strong>Cycle terminé ({student.sessionsCompleted}/{student.sessionsPerMonth} séances).</strong>
+                            <strong>اكتملت الدورة ({student.sessionsCompleted}/{student.sessionsPerMonth} حصص).</strong>
                             <br />
-                            Paiement de {student.monthlyPrice} DA requis pour le prochain mois ({student.currentCycle}).
+                            مبلغ {student.monthlyPrice} دج مطلوب لتجديد الاشتراك ({student.currentCycle}).
                           </div>
                         </div>
 
@@ -985,23 +1025,22 @@ export default function Dashboard() {
                             type="button"
                           >
                             <CreditCard size={15} />
-                            <span>Payer</span>
+                            <span>تسجيل دفع</span>
                           </button>
 
-                          {/* WhatsApp Reminder Button with Admin Phone 0667158842 */}
                           <button
                             className="btn-whatsapp-reminder"
                             onClick={() => handleOpenWhatsAppModal(student)}
-                            title={`Envoyer rappel WhatsApp au ${student.phone}`}
+                            title={`إرسال تذكير واتساب إلى ${student.phone}`}
                             type="button"
                           >
                             <MessageSquare size={15} />
-                            <span>Rappel WhatsApp</span>
+                            <span>تذكير WhatsApp</span>
                           </button>
 
                           <button
                             className="btn-action-icon-sm"
-                            title="Voir Profil"
+                            title="عرض الملف"
                             onClick={() => setViewingStudent(student)}
                             type="button"
                           >
@@ -1014,14 +1053,14 @@ export default function Dashboard() {
                 </section>
               )}
 
-              {/* Toolbar */}
+              {/* شريط الأدوات والبحث */}
               <div className="students-toolbar">
                 <div className="student-search-box">
                   <Search size={16} className="student-search-icon" />
                   <input
                     type="text"
                     className="student-search-input"
-                    placeholder="Rechercher par élève, parent, tél (ex: 0669028265)..."
+                    placeholder="ابحث بالاسم، الولي، أو رقم الهاتف (مثال: 0555123456)..."
                     value={studentSearch}
                     onChange={(e) => setStudentSearch(e.target.value)}
                   />
@@ -1043,7 +1082,7 @@ export default function Dashboard() {
                       onClick={() => setSelectedFilterCategory('all')}
                       type="button"
                     >
-                      Tous ({totalStudentsCount})
+                      الكل ({totalStudentsCount})
                     </button>
                     <button
                       style={{
@@ -1059,7 +1098,7 @@ export default function Dashboard() {
                       onClick={() => setSelectedFilterCategory('active')}
                       type="button"
                     >
-                      Actifs ({activeStudentsCount})
+                      النشطين ({activeStudentsCount})
                     </button>
                     <button
                       style={{
@@ -1075,7 +1114,7 @@ export default function Dashboard() {
                       onClick={() => setSelectedFilterCategory('due')}
                       type="button"
                     >
-                      Paiements Requis ({paymentsDueCount})
+                      المدفوعات المطلوبة ({paymentsDueCount})
                     </button>
                   </div>
 
@@ -1084,12 +1123,12 @@ export default function Dashboard() {
                     value={selectedClassFilter}
                     onChange={(e) => setSelectedClassFilter(e.target.value)}
                   >
-                    <option value="all">Toutes les matières</option>
-                    <option value="Math">Mathématiques</option>
-                    <option value="Anglais">Anglais</option>
-                    <option value="Français">Français</option>
-                    <option value="Sciences">Sciences / Physique</option>
-                    <option value="Informatique">Informatique</option>
+                    <option value="all">جميع المواد</option>
+                    <option value="الرياضيات">الرياضيات</option>
+                    <option value="الإنجليزية">اللغة الإنجليزية</option>
+                    <option value="الفرنسية">اللغة الفرنسية</option>
+                    <option value="العلوم">العلوم والفيزياء</option>
+                    <option value="الإعلام">الإعلام الآلي</option>
                   </select>
 
                   <button
@@ -1106,19 +1145,19 @@ export default function Dashboard() {
                       fontWeight: '700',
                       cursor: 'pointer',
                     }}
-                    title="Valide automatiquement la présence d'une séance pour tous les élèves de la classe"
+                    title="تسجيل حضور حصة تلقائياً لجميع طلاب الفوج المحدد"
                     onClick={() => {
                       const count = studentService.autoAdvanceClassSessions(selectedClassFilter === 'all' ? null : selectedClassFilter)
                       if (count > 0) {
-                        showToast(`⚡ Séance enregistrée automatiquement pour ${count} élève(s) !`)
+                        showToast(`⚡ تم تسجيل حضور الحصة تلقائياً لـ ${count} طالب(ين) !`)
                       } else {
-                        showToast(`Tous les élèves sélectionnés ont déjà complété leurs séances ou nécessitent un paiement.`)
+                        showToast(`جميع الطلاب المحددين أتموا حصصهم أو بحاجة لتسديد الاشتراك.`)
                       }
                     }}
                     type="button"
                   >
                     <Sparkles size={14} />
-                    <span>Valider séance du jour</span>
+                    <span>تسجيل حضور حصة اليوم</span>
                   </button>
 
                   <button
@@ -1127,24 +1166,24 @@ export default function Dashboard() {
                     type="button"
                   >
                     <Plus size={16} />
-                    <span>+ Inscrire un Élève</span>
+                    <span>+ تسجيل طالب جديد</span>
                   </button>
                 </div>
               </div>
 
-              {/* Table */}
+              {/* جدول الطلاب */}
               <div className="students-table-card">
                 <div className="students-table-wrap">
                   <table className="students-table">
                     <thead>
                       <tr>
-                        <th>Élève (Student)</th>
-                        <th>Cours &amp; Professeur</th>
-                        <th>Séances (Mois en cours)</th>
-                        <th>Paiement (Status)</th>
-                        <th>Prochaine Échéance</th>
-                        <th>Statut Compte</th>
-                        <th style={{ textAlign: 'right' }}>Actions</th>
+                        <th>الطالب</th>
+                        <th>المادة والأستاذ</th>
+                        <th>الحصص (الدورة الحالية)</th>
+                        <th>حالة الدفع</th>
+                        <th>الموعد القادم</th>
+                        <th>حالة الحساب</th>
+                        <th style={{ textAlign: 'left' }}>الإجراءات</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1181,8 +1220,7 @@ export default function Dashboard() {
                                       .split(' ')
                                       .map((n) => n[0])
                                       .join('')
-                                      .slice(0, 2)
-                                      .toUpperCase()}
+                                      .slice(0, 2)}
                                   </div>
                                   <div>
                                     <div className="student-name-text">{student.fullName}</div>
@@ -1198,7 +1236,7 @@ export default function Dashboard() {
                                   {student.courseName}
                                 </div>
                                 <div style={{ fontSize: '12px', color: '#64748B' }}>
-                                  {student.teacherName} • {student.monthlyPrice} DA / mois
+                                  {student.teacherName} • {student.monthlyPrice} دج / شهر
                                 </div>
                               </td>
 
@@ -1206,7 +1244,7 @@ export default function Dashboard() {
                                 <div className="session-counter-cell">
                                   <div className="session-number-pill">
                                     <span style={{ color: isComplete ? '#D97706' : '#1E293B', fontWeight: '800' }}>
-                                      {student.sessionsCompleted} / {student.sessionsPerMonth} séances
+                                      {student.sessionsCompleted} / {student.sessionsPerMonth} حصص
                                     </span>
                                     <span style={{ fontSize: '11px', color: isComplete ? '#D97706' : '#94A3B8', fontWeight: isComplete ? '800' : '500' }}>
                                       {percent}%
@@ -1227,25 +1265,25 @@ export default function Dashboard() {
                                 {student.paymentStatus === 'Paid' && (
                                   <span className="badge-status-pill status-paid">
                                     <CheckCircle2 size={12} />
-                                    <span>🟢 Payé (Paid)</span>
+                                    <span>🟢 مسدد</span>
                                   </span>
                                 )}
                                 {student.paymentStatus === 'Payment Required' && (
                                   <span className="badge-status-pill status-due">
                                     <AlertCircle size={12} />
-                                    <span>🟠 Paiement Requis</span>
+                                    <span>🟠 دفع مطلوب</span>
                                   </span>
                                 )}
                                 {student.paymentStatus === 'Overdue' && (
                                   <span className="badge-status-pill status-overdue">
                                     <AlertTriangle size={12} />
-                                    <span>🔴 En Retard</span>
+                                    <span>🔴 متأخر</span>
                                   </span>
                                 )}
                                 {student.paymentStatus === 'Pending Approval' && (
                                   <span className="badge-status-pill status-pending">
                                     <Clock size={12} />
-                                    <span>🔵 Non Payé (En attente)</span>
+                                    <span>🔵 قيد الانتظار</span>
                                   </span>
                                 )}
                               </td>
@@ -1255,7 +1293,7 @@ export default function Dashboard() {
                                   {student.nextPaymentDate}
                                 </div>
                                 <div style={{ fontSize: '11px', color: '#94A3B8' }}>
-                                  Cycle : {student.currentCycle}
+                                  الدورة : {student.currentCycle}
                                 </div>
                               </td>
 
@@ -1281,22 +1319,27 @@ export default function Dashboard() {
                                         : '#4B5563',
                                   }}
                                 >
-                                  {student.status === 'Active' ? 'Actif' : student.status}
+                                  {student.status === 'Active'
+                                    ? 'نشط'
+                                    : student.status === 'Pending Approval'
+                                    ? 'قيد الانتظار'
+                                    : student.status === 'Payment Overdue'
+                                    ? 'اشتراك متأخر'
+                                    : student.status}
                                 </span>
                               </td>
 
                               <td>
                                 <div className="table-action-btns" style={{ justifyContent: 'flex-end' }}>
-                                  {/* If Payment Required, add WhatsApp button */}
                                   {student.paymentStatus === 'Payment Required' && (
                                     <button
                                       className="btn-whatsapp-outline"
                                       onClick={() => handleOpenWhatsAppModal(student)}
-                                      title={`Envoyer rappel WhatsApp au ${student.phone}`}
+                                      title={`إرسال تذكير واتساب إلى ${student.phone}`}
                                       type="button"
                                     >
                                       <MessageSquare size={13} />
-                                      <span>WhatsApp</span>
+                                      <span>واتساب</span>
                                     </button>
                                   )}
 
@@ -1307,7 +1350,7 @@ export default function Dashboard() {
                                       type="button"
                                     >
                                       <Check size={14} />
-                                      <span>Approuver &amp; 1er Paiement</span>
+                                      <span>تأكيد ودفع أول</span>
                                     </button>
                                   ) : (
                                     <button
@@ -1316,7 +1359,7 @@ export default function Dashboard() {
                                       type="button"
                                     >
                                       <CreditCard size={13} />
-                                      <span>Payer</span>
+                                      <span>دفع</span>
                                     </button>
                                   )}
 
@@ -1326,16 +1369,16 @@ export default function Dashboard() {
                                     type="button"
                                   >
                                     <Eye size={13} />
-                                    <span>Profil</span>
+                                    <span>الملف</span>
                                   </button>
 
                                   <button
                                     className="btn-action-icon-sm btn-delete"
-                                    title="Supprimer"
+                                    title="حذف"
                                     onClick={() => {
-                                      if (confirm(`Voulez-vous supprimer le dossier de ${student.fullName} ?`)) {
+                                      if (confirm(`هل أنت متأكد من حذف ملف الطالب ${student.fullName}؟`)) {
                                         studentService.deleteStudent(student.id)
-                                        showToast(`Dossier supprimé.`)
+                                        showToast(`تم حذف الملف.`)
                                       }
                                     }}
                                     type="button"
@@ -1351,7 +1394,7 @@ export default function Dashboard() {
                         <tr>
                           <td colSpan="7" style={{ textAlign: 'center', padding: '40px 20px', color: '#9CA3AF' }}>
                             <GraduationCap size={36} style={{ margin: '0 auto 10px', opacity: 0.5 }} />
-                            <p style={{ fontWeight: '700', fontSize: '15px' }}>Aucun élève correspondant</p>
+                            <p style={{ fontWeight: '700', fontSize: '15px' }}>لم يتم العثور على أي طالب مطابق</p>
                           </td>
                         </tr>
                       )}
@@ -1361,7 +1404,7 @@ export default function Dashboard() {
 
                 <div className="table-footer-bar">
                   <span>
-                    Affichage de <strong>{filteredStudents.length}</strong> sur <strong>{students.length}</strong> élèves
+                    عرض <strong>{filteredStudents.length}</strong> من أصل <strong>{students.length}</strong> طالب
                   </span>
                   <div className="pagination-controls">
                     <button className="page-btn active" type="button">1</button>
@@ -1373,11 +1416,11 @@ export default function Dashboard() {
           )}
 
           {/* ========================================================
-              PAGE: HOME TAB
+              تبويب: الرئيسية (HOME TAB)
               ======================================================== */}
           {activeTab === 'home' && (
             <div className="tab-view-container">
-              {/* Home Announcement Ticker Banner */}
+              {/* شريط الإعلان المثبت */}
               {topPinnedAnnouncement && (
                 <div className="announcements-home-banner">
                   <div className="ann-home-left">
@@ -1395,20 +1438,20 @@ export default function Dashboard() {
                     onClick={() => setActiveTab('announcements')}
                     type="button"
                   >
-                    <span>Voir toutes les annonces ({announcements.length})</span>
-                    <ChevronRight size={16} />
+                    <span>عرض جميع إعلانات الفصول ({announcements.length})</span>
+                    <ChevronLeft size={16} />
                   </button>
                 </div>
               )}
 
-              {/* Section 1: Aperçu général */}
+              {/* قسم 1: نظرة عامة والحضور */}
               <section className="dashboard-card-panel">
                 <div className="panel-header-row">
                   <div className="panel-title-wrap">
                     <div className="panel-icon-badge">
                       <TrendingUp size={20} />
                     </div>
-                    <h2 className="panel-title-text">Aperçu général &amp; Fréquentation</h2>
+                    <h2 className="panel-title-text">نظرة عامة والحضور الأسبوعي</h2>
                   </div>
 
                   <div style={{ position: 'relative' }}>
@@ -1436,13 +1479,13 @@ export default function Dashboard() {
 
                     <div className="chart-bars-stage">
                       {[
-                        { day: 'Lun', value: 120 },
-                        { day: 'Mar', value: 170 },
-                        { day: 'Mer', value: 200 },
-                        { day: 'Jeu', value: 150 },
+                        { day: 'الأحد', value: 120 },
+                        { day: 'الإثنين', value: 170 },
+                        { day: 'الثلاثاء', value: 200 },
+                        { day: 'الأربعاء', value: 150 },
                       ].map((item, idx) => (
                         <div className="bar-column" key={idx}>
-                          <div className="bar-tooltip">{item.value} présences</div>
+                          <div className="bar-tooltip">{item.value} حضور</div>
                           <div className="bar-pill" style={{ height: `${(item.value / 200) * 100}%` }} />
                           <span className="axis-x-label">{item.day}</span>
                         </div>
@@ -1452,7 +1495,7 @@ export default function Dashboard() {
 
                   <div className="metric-summary-card">
                     <div className="metric-card-top">
-                      <span className="metric-label-title">Total Étudiants Actifs</span>
+                      <span className="metric-label-title">إجمالي الطلاب النشطين</span>
                       <div className="metric-icon-badge">
                         <Users size={20} />
                       </div>
@@ -1464,20 +1507,20 @@ export default function Dashboard() {
                       <span className="trend-badge-green">
                         <span>↑ 12%</span>
                       </span>
-                      <span>par rapport au mois précédent</span>
+                      <span>مقارنة بالشهر السابق</span>
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* Section 2: Actions rapides */}
+              {/* قسم 2: الإجراءات السريعة */}
               <section className="dashboard-card-panel">
                 <div className="panel-header-row" style={{ marginBottom: '20px' }}>
                   <div className="panel-title-wrap">
                     <div className="panel-icon-badge badge-zap">
                       <Zap size={20} />
                     </div>
-                    <h2 className="panel-title-text">Actions rapides</h2>
+                    <h2 className="panel-title-text">إجراءات سريعة</h2>
                   </div>
                 </div>
 
@@ -1488,15 +1531,15 @@ export default function Dashboard() {
                         <Users size={22} />
                       </div>
                       <div className="action-text-group">
-                        <span className="action-main-title">Gérer les étudiants &amp; Paiements</span>
+                        <span className="action-main-title">إدارة الطلاب والمدفوعات</span>
                         <span className="action-subtitle">
                           {paymentsDueCount > 0
-                            ? `${paymentsDueCount} élève(s) doivent renouveler leur mensualité`
-                            : 'Suivi des inscriptions et des séances'}
+                            ? `${paymentsDueCount} طالب(ين) يجب عليهم تجديد اشتراكهم`
+                            : 'متابعة التسجيلات والحصص'}
                         </span>
                       </div>
                     </div>
-                    <ChevronRight size={20} className="action-arrow-icon" />
+                    <ChevronLeft size={20} className="action-arrow-icon" />
                   </div>
 
                   <div className="quick-action-row" onClick={() => setActiveTab('announcements')}>
@@ -1505,11 +1548,11 @@ export default function Dashboard() {
                         <Megaphone size={22} />
                       </div>
                       <div className="action-text-group">
-                        <span className="action-main-title">Publier une Annonce</span>
-                        <span className="action-subtitle">Créer un avis scolaire ou un rappel</span>
+                        <span className="action-main-title">نشر إعلان جديد</span>
+                        <span className="action-subtitle">إنشاء إشعار مدرسي أو تذكير</span>
                       </div>
                     </div>
-                    <ChevronRight size={20} className="action-arrow-icon" />
+                    <ChevronLeft size={20} className="action-arrow-icon" />
                   </div>
 
                   <div className="quick-action-row" onClick={() => setActiveTab('statistique')}>
@@ -1518,11 +1561,11 @@ export default function Dashboard() {
                         <BarChart2 size={22} />
                       </div>
                       <div className="action-text-group">
-                        <span className="action-main-title">Voir les rapports financiers &amp; revenus</span>
-                        <span className="action-subtitle">Consulter les transactions et bilans</span>
+                        <span className="action-main-title">عرض التقارير المالية والإيرادات</span>
+                        <span className="action-subtitle">الاطلاع على المعاملات والميزانيات</span>
                       </div>
                     </div>
-                    <ChevronRight size={20} className="action-arrow-icon" />
+                    <ChevronLeft size={20} className="action-arrow-icon" />
                   </div>
                 </div>
               </section>
@@ -1530,44 +1573,44 @@ export default function Dashboard() {
           )}
 
           {/* ========================================================
-              PAGE: STATISTIQUE TAB
+              تبويب: الإحصائيات (STATISTICS TAB)
               ======================================================== */}
           {activeTab === 'statistique' && (
             <div className="tab-view-container">
               <div className="stats-kpi-grid">
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
-                    <span className="kpi-title">Revenu Collecté (Total)</span>
+                    <span className="kpi-title">إجمالي المداخيل المحصلة</span>
                     <div className="kpi-icon-pill" style={{ background: '#ECFDF5', color: '#10B981' }}>
                       <DollarSign size={18} />
                     </div>
                   </div>
                   <div className="kpi-value-row">
-                    <span className="kpi-main-number">{totalRevenueCollected.toLocaleString()} DA</span>
+                    <span className="kpi-main-number">{totalRevenueCollected.toLocaleString()} دج</span>
                     <span className="kpi-sub-trend" style={{ color: '#10B981' }}>
-                      ↑ Encaissé en caisse &amp; banques
+                      ↑ في الصندوق والحسابات البنكية
                     </span>
                   </div>
                 </div>
 
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
-                    <span className="kpi-title">Revenu Mensuel Estimé</span>
+                    <span className="kpi-title">المداخيل الشهرية المتوقعة</span>
                     <div className="kpi-icon-pill" style={{ background: '#EFF6FF', color: '#2563EB' }}>
                       <TrendingUp size={18} />
                     </div>
                   </div>
                   <div className="kpi-value-row">
-                    <span className="kpi-main-number">{expectedMonthlyRevenue.toLocaleString()} DA</span>
+                    <span className="kpi-main-number">{expectedMonthlyRevenue.toLocaleString()} دج</span>
                     <span className="kpi-sub-trend" style={{ color: '#2563EB' }}>
-                      Pour les élèves actifs
+                      للطلاب في حالة نشط
                     </span>
                   </div>
                 </div>
 
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
-                    <span className="kpi-title">Paiements Requis (4/4)</span>
+                    <span className="kpi-title">مدفوعات مستحقة (4/4)</span>
                     <div className="kpi-icon-pill" style={{ background: '#FEF3C7', color: '#D97706' }}>
                       <AlertCircle size={18} />
                     </div>
@@ -1575,14 +1618,14 @@ export default function Dashboard() {
                   <div className="kpi-value-row">
                     <span className="kpi-main-number" style={{ color: '#D97706' }}>{paymentsDueCount}</span>
                     <span className="kpi-sub-trend" style={{ color: '#D97706' }}>
-                      Séances du mois terminées
+                      أتموا حصص الشهر بالكامل
                     </span>
                   </div>
                 </div>
 
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
-                    <span className="kpi-title">Inscriptions en Attente</span>
+                    <span className="kpi-title">طلبات تسجيل قيد الانتظار</span>
                     <div className="kpi-icon-pill" style={{ background: '#FAF5FF', color: '#9333EA' }}>
                       <Clock size={18} />
                     </div>
@@ -1590,7 +1633,7 @@ export default function Dashboard() {
                   <div className="kpi-value-row">
                     <span className="kpi-main-number" style={{ color: '#9333EA' }}>{pendingEnrollmentsCount}</span>
                     <span className="kpi-sub-trend" style={{ color: '#9333EA' }}>
-                      À valider à l'école
+                      بانتظار التأكيد الفعلي بالمدرسة
                     </span>
                   </div>
                 </div>
@@ -1603,14 +1646,14 @@ export default function Dashboard() {
                       <div className="panel-icon-badge badge-green">
                         <BarChart2 size={20} />
                       </div>
-                      <h2 className="panel-title-text">Répartition par Matière &amp; Assiduité</h2>
+                      <h2 className="panel-title-text">توزيع الحضور والالتزام حسب المادة</h2>
                     </div>
                   </div>
 
                   <div className="subject-progress-list">
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Mathématiques Approfondies (2S &amp; BAC)</span>
+                        <span>الرياضيات المتقدمة (2 ثانوي وبكالوريا)</span>
                         <span className="subject-rate">94%</span>
                       </div>
                       <div className="subject-track">
@@ -1620,7 +1663,7 @@ export default function Dashboard() {
 
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Sciences Expérimentales &amp; Physique</span>
+                        <span>العلوم التجريبية والفيزياء</span>
                         <span className="subject-rate">90%</span>
                       </div>
                       <div className="subject-track">
@@ -1630,7 +1673,7 @@ export default function Dashboard() {
 
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Langue Anglaise (Intensif)</span>
+                        <span>اللغة الإنجليزية (مكثف)</span>
                         <span className="subject-rate">96%</span>
                       </div>
                       <div className="subject-track">
@@ -1640,7 +1683,7 @@ export default function Dashboard() {
 
                     <div className="subject-progress-item">
                       <div className="subject-item-header">
-                        <span>Informatique &amp; Développement Web</span>
+                        <span>الإعلام الآلي وتطوير الويب</span>
                         <span className="subject-rate">98%</span>
                       </div>
                       <div className="subject-track">
@@ -1656,33 +1699,33 @@ export default function Dashboard() {
                       <div className="panel-icon-badge badge-purple">
                         <GraduationCap size={20} />
                       </div>
-                      <h2 className="panel-title-text">Répartition des Effectifs</h2>
+                      <h2 className="panel-title-text">إحصائيات وتوزيع الطلاب</h2>
                     </div>
                   </div>
 
                   <div className="level-distribution-grid">
                     <div className="level-dist-card">
-                      <span className="level-dist-title">Élèves Actifs (Payés)</span>
+                      <span className="level-dist-title">الطلاب النشطين (مسدد)</span>
                       <span className="level-dist-count" style={{ color: '#059669' }}>{activeStudentsCount}</span>
-                      <span className="level-dist-meta">élèves en règle</span>
+                      <span className="level-dist-meta">طالب في وضعية نظامية</span>
                     </div>
 
                     <div className="level-dist-card">
-                      <span className="level-dist-title">Paiements Requis (4/4)</span>
+                      <span className="level-dist-title">مدفوعات مستحقة (4/4)</span>
                       <span className="level-dist-count" style={{ color: '#D97706' }}>{paymentsDueCount}</span>
-                      <span className="level-dist-meta">à renouveler</span>
+                      <span className="level-dist-meta">بحاجة لتجديد الاشتراك</span>
                     </div>
 
                     <div className="level-dist-card">
-                      <span className="level-dist-title">En Attente de Validation</span>
+                      <span className="level-dist-title">قيد التأكيد الفعلي</span>
                       <span className="level-dist-count" style={{ color: '#2563EB' }}>{pendingEnrollmentsCount}</span>
-                      <span className="level-dist-meta">à confirmer à l'école</span>
+                      <span className="level-dist-meta">بانتظار التأكيد بالمدرسة</span>
                     </div>
 
                     <div className="level-dist-card">
-                      <span className="level-dist-title">Paiements en Retard</span>
+                      <span className="level-dist-title">مدفوعات متأخرة</span>
                       <span className="level-dist-count" style={{ color: '#DC2626' }}>{overduePaymentsCount}</span>
-                      <span className="level-dist-meta">dossiers en relance</span>
+                      <span className="level-dist-meta">ملفات قيد المتابعة</span>
                     </div>
                   </div>
                 </section>
@@ -1691,36 +1734,36 @@ export default function Dashboard() {
           )}
 
           {/* ========================================================
-              PAGE: TEACHER TAB
+              تبويب: هيئة التدريس (TEACHER TAB)
               ======================================================== */}
           {activeTab === 'teacher' && (
             <div className="tab-view-container">
               <div className="students-table-card">
                 <div style={{ padding: '20px', borderBottom: '1px solid #F3F4F6' }}>
-                  <h3 style={{ fontSize: '17px', fontWeight: '800' }}>Corps Enseignant &amp; Professeurs</h3>
+                  <h3 style={{ fontSize: '17px', fontWeight: '800' }}>هيئة التدريس والأساتذة</h3>
                 </div>
                 <div className="students-table-wrap">
                   <table className="students-table">
                     <thead>
                       <tr>
-                        <th>Enseignant</th>
-                        <th>Matière</th>
-                        <th>Contact</th>
-                        <th>Élèves Assignés</th>
-                        <th>Statut</th>
+                        <th>الأستاذ</th>
+                        <th>المادة والتخصص</th>
+                        <th>رقم الهاتف</th>
+                        <th>الطلاب المسندين</th>
+                        <th>الحالة</th>
                       </tr>
                     </thead>
                     <tbody>
                       {[
-                        { name: 'Prof. Sarah Benali', subject: 'Mathématiques (2S & BAC)', phone: '0550 12 34 56', count: 42 },
-                        { name: 'Prof. David Moreau', subject: 'Langue Anglaise & Française', phone: '0661 44 55 66', count: 38 },
-                        { name: 'Prof. Amira Al-Mansour', subject: 'Sciences & Physique', phone: '0770 88 99 11', count: 29 },
-                        { name: 'Prof. Marcus Chen', subject: 'Informatique & Web', phone: '0555 77 88 99', count: 19 },
+                        { name: 'أ. سارة بن علي', subject: 'الرياضيات (2 ثانوي وبكالوريا)', phone: '0550 12 34 56', count: 42 },
+                        { name: 'أ. داود مورو', subject: 'اللغة الإنجليزية والفرنسية', phone: '0661 44 55 66', count: 38 },
+                        { name: 'أ. أميرة المنصور', subject: 'العلوم والفيزياء', phone: '0770 88 99 11', count: 29 },
+                        { name: 'أ. ماركوس تشن', subject: 'الإعلام الآلي والبرمجة', phone: '0555 77 88 99', count: 19 },
                       ].map((t, idx) => (
                         <tr key={idx}>
                           <td>
                             <div className="student-avatar-cell">
-                              <div className="student-initial-avatar avatar-blue">{t.name.slice(6, 8)}</div>
+                              <div className="student-initial-avatar avatar-blue">{t.name.slice(3, 5)}</div>
                               <span className="student-name-text">{t.name}</span>
                             </div>
                           </td>
@@ -1731,10 +1774,10 @@ export default function Dashboard() {
                           </td>
                           <td>{t.phone}</td>
                           <td>
-                            <strong>{t.count} élèves</strong>
+                            <strong>{t.count} طالب</strong>
                           </td>
                           <td>
-                            <span className="badge-status-pill status-paid">🟢 Actif</span>
+                            <span className="badge-status-pill status-paid">🟢 نشط</span>
                           </td>
                         </tr>
                       ))}
@@ -1748,7 +1791,7 @@ export default function Dashboard() {
       </div>
 
       {/* ========================================================
-          MODAL: WHATSAPP AUTOMATED PAYMENT REMINDER
+          نافذة: تذكير واتساب التلقائي بالدفع
           ======================================================== */}
       {whatsappModalStudent && (
         <div className="dashboard-modal-backdrop" onClick={() => setWhatsappModalStudent(null)}>
@@ -1760,10 +1803,10 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
-                    Envoyer Rappel WhatsApp
+                    إرسال تذكير عبر WhatsApp
                   </h3>
                   <p style={{ fontSize: '12.5px', color: '#6B7280' }}>
-                    Notification de fin de mois &amp; renouvellement de paiement.
+                    إشعار بانتهاء الحصص الشهرية وتجديد الاشتراك.
                   </p>
                 </div>
               </div>
@@ -1780,19 +1823,19 @@ export default function Dashboard() {
               <div style={{ background: '#F0FDF4', border: '1.5px solid #BBF7D0', padding: '14px 16px', borderRadius: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#15803D', textTransform: 'uppercase' }}>
-                    Destinataire (Élève / Parent)
+                    المستلم (الطالب / الولي)
                   </div>
                   <div style={{ fontSize: '15px', fontWeight: '800', color: '#14532D', marginTop: '2px' }}>
                     {whatsappModalStudent.fullName}
                   </div>
                   <div style={{ fontSize: '13px', fontWeight: '700', color: '#166534', marginTop: '1px' }}>
-                    📞 Numéro : {whatsappModalStudent.phone} (WhatsApp : +{studentService.formatWhatsAppNumber(whatsappModalStudent.phone)})
+                    📞 الهاتف: {whatsappModalStudent.phone}
                   </div>
                 </div>
 
-                <div style={{ textAlign: 'right' }}>
+                <div style={{ textAlign: 'left' }}>
                   <div style={{ fontSize: '11.5px', fontWeight: '700', color: '#6B7280' }}>
-                    Expéditeur (École)
+                    المرسل (إدارة المدرسة)
                   </div>
                   <div style={{ fontSize: '13px', fontWeight: '800', color: '#111827' }}>
                     {ADMIN_PHONE}
@@ -1802,7 +1845,7 @@ export default function Dashboard() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px', color: '#374151' }}>
-                  Texte du Message WhatsApp (Personnalisable) :
+                  نص رسالة WhatsApp (قابل للتعديل) :
                 </label>
                 <textarea
                   rows={8}
@@ -1829,7 +1872,7 @@ export default function Dashboard() {
                   onClick={() => setWhatsappModalStudent(null)}
                   style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
                 >
-                  Annuler
+                  إلغاء
                 </button>
 
                 <button
@@ -1851,7 +1894,7 @@ export default function Dashboard() {
                   }}
                 >
                   <CheckCircle2 size={17} />
-                  <span>Confirmer le Rappel</span>
+                  <span>تأكيد إرسال التذكير</span>
                 </button>
               </div>
             </div>
@@ -1860,7 +1903,7 @@ export default function Dashboard() {
       )}
 
       {/* ========================================================
-          MODAL: CREATE ANNOUNCEMENT
+          نافذة: إنشاء إعلان جديد
           ======================================================== */}
       {isAddAnnouncementOpen && (
         <div className="dashboard-modal-backdrop" onClick={() => setIsAddAnnouncementOpen(false)}>
@@ -1871,8 +1914,8 @@ export default function Dashboard() {
                   <Megaphone size={19} />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>Publier une Annonce</h3>
-                  <p style={{ fontSize: '12.5px', color: '#6B7280' }}>Diffusion d'un avis ou d'un rappel scolaire.</p>
+                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>نشر إعلان فوج / فصل دراسي جديد</h3>
+                  <p style={{ fontSize: '12.5px', color: '#6B7280' }}>يظهر مباشرة في الصفحة الرئيسية وصفحة الفصول لتسجيل الطلاب الفوري.</p>
                 </div>
               </div>
               <button
@@ -1887,12 +1930,12 @@ export default function Dashboard() {
             <form onSubmit={handleAddAnnouncementSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                  Titre de l'Annonce *
+                  عنوان الفوج أو الإعلان *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Rappel de paiement mensuel ou Emploi du temps"
+                  placeholder="مثال: فوج الرياضيات المتقدمة مع الأستاذ أحمد (2 ثانوي وبكالوريا)"
                   value={newAnnForm.title}
                   onChange={(e) => setNewAnnForm({ ...newAnnForm, title: e.target.value })}
                   style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
@@ -1902,46 +1945,103 @@ export default function Dashboard() {
               <div className="modal-form-grid">
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Catégorie
+                    المادة / التخصص
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: الرياضيات المتقدمة"
+                    value={newAnnForm.courseName}
+                    onChange={(e) => setNewAnnForm({ ...newAnnForm, courseName: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    الأستاذ المشرف
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: الأستاذ أحمد بن علي"
+                    value={newAnnForm.teacherName}
+                    onChange={(e) => setNewAnnForm({ ...newAnnForm, teacherName: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                  />
+                </div>
+              </div>
+
+              <div className="modal-form-grid">
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    اسم الفوج والتوقيت
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="مثال: فوج نهاية الأسبوع (السبت والثلاثاء 14:00 - 16:00)"
+                    value={newAnnForm.schedule}
+                    onChange={(e) => setNewAnnForm({ ...newAnnForm, schedule: e.target.value, groupName: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    رسوم الاشتراك الشهري
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="مثال: 4,500 دج / شهر"
+                    value={newAnnForm.price}
+                    onChange={(e) => setNewAnnForm({ ...newAnnForm, price: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                  />
+                </div>
+              </div>
+
+              <div className="modal-form-grid">
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
+                    المادة / المجال
                   </label>
                   <select
                     value={newAnnForm.category}
                     onChange={(e) => setNewAnnForm({ ...newAnnForm, category: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
                   >
-                    <option value="Important">⚠️ Important / Urgent</option>
-                    <option value="Paiements">💳 Avis de Paiement</option>
-                    <option value="Pédagogique">📚 Pédagogique &amp; Examens</option>
-                    <option value="Événements">🏆 Événements &amp; Ateliers</option>
+                    <option value="الرياضيات">📐 الرياضيات</option>
+                    <option value="اللغات">🌍 اللغات الأجنبية (إنجليزية / فرنسية)</option>
+                    <option value="العلوم">🔬 العلوم التجريبية والفيزياء</option>
+                    <option value="التكنولوجيا">💻 التكنولوجيا والبرمجة</option>
+                    <option value="التعليم العام">📚 مواد أخرى</option>
                   </select>
                 </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Destinataires / Cible
+                    المقاعد المتاحة
                   </label>
-                  <select
-                    value={newAnnForm.targetAudience}
-                    onChange={(e) => setNewAnnForm({ ...newAnnForm, targetAudience: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
-                  >
-                    <option value="Tous les élèves & parents">Tous les élèves &amp; parents</option>
-                    <option value="Classes de Lycée (2S & BAC)">Classes de Lycée (2S &amp; BAC)</option>
-                    <option value="Classes de Langues">Classes de Langues</option>
-                    <option value="Formations Informatique">Formations Informatique</option>
-                    <option value="Corps Enseignant">Corps Enseignant</option>
-                  </select>
+                  <input
+                    type="number"
+                    min={1}
+                    max={50}
+                    placeholder="مثال: 8"
+                    value={newAnnForm.spotsLeft || ''}
+                    onChange={(e) => setNewAnnForm({ ...newAnnForm, spotsLeft: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
+                  />
                 </div>
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                  Contenu du Message *
+                  نص وتفاصيل الإعلان *
                 </label>
                 <textarea
                   required
-                  rows={4}
-                  placeholder="Rédigez le texte détaillé de l'annonce..."
+                  rows={3}
+                  placeholder="اكتب تفاصيل البرنامج، أهداف الفوج، وشروط التسجيل..."
                   value={newAnnForm.content}
                   onChange={(e) => setNewAnnForm({ ...newAnnForm, content: e.target.value })}
                   style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', resize: 'vertical' }}
@@ -1957,7 +2057,7 @@ export default function Dashboard() {
                   style={{ width: '16px', height: '16px', cursor: 'pointer' }}
                 />
                 <label htmlFor="pin-checkbox" style={{ fontSize: '13px', fontWeight: '600', color: '#1E293B', cursor: 'pointer' }}>
-                  📌 Épingler cette annonce en tête d'affiche sur l'accueil
+                  📌 تثبيت هذا الإعلان في شريط الإعلانات في الصفحة الرئيسية وصفحة الفصول
                 </label>
               </div>
 
@@ -1967,14 +2067,14 @@ export default function Dashboard() {
                   onClick={() => setIsAddAnnouncementOpen(false)}
                   style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
                 >
-                  Annuler
+                  إلغاء
                 </button>
                 <button
                   type="submit"
                   style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
                   <Send size={15} />
-                  <span>Publier l'Annonce</span>
+                  <span>نشر الإعلان في الموقع</span>
                 </button>
               </div>
             </form>
@@ -1983,17 +2083,17 @@ export default function Dashboard() {
       )}
 
       {/* ========================================================
-          MODAL: VIEW ANNOUNCEMENT DETAILS
+          نافذة: تفاصيل الإعلان
           ======================================================== */}
       {viewingAnnouncement && (
         <div className="dashboard-modal-backdrop" onClick={() => setViewingAnnouncement(null)}>
           <div className="dashboard-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="profile-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className={`ann-category-badge ${viewingAnnouncement.category === 'Paiements' ? 'cat-badge-payments' : 'cat-badge-pedagogique'}`}>
+                <span className={`ann-category-badge ${viewingAnnouncement.category === 'مدفوعات' ? 'cat-badge-payments' : 'cat-badge-pedagogique'}`}>
                   {viewingAnnouncement.category}
                 </span>
-                {viewingAnnouncement.isPinned && <span className="ann-pinned-tag">📌 Épinglé</span>}
+                {viewingAnnouncement.isPinned && <span className="ann-pinned-tag">📌 مثبت</span>}
               </div>
               <button
                 onClick={() => setViewingAnnouncement(null)}
@@ -2009,9 +2109,9 @@ export default function Dashboard() {
             </h2>
 
             <div style={{ display: 'flex', gap: '14px', fontSize: '12.5px', color: '#64748B', marginBottom: '18px' }}>
-              <span>📅 Publié le : {viewingAnnouncement.date}</span>
-              <span>✍️ Par : {viewingAnnouncement.author}</span>
-              <span>🎯 Destinataires : {viewingAnnouncement.targetAudience}</span>
+              <span>📅 النشر : {viewingAnnouncement.date}</span>
+              <span>✍️ الكاتب : {viewingAnnouncement.author}</span>
+              <span>🎯 الفئة : {viewingAnnouncement.targetAudience}</span>
             </div>
 
             <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '14px', border: '1px solid #E2E8F0', fontSize: '14px', lineHeight: '1.7', color: '#1E293B', whiteSpace: 'pre-line' }}>
@@ -2024,7 +2124,7 @@ export default function Dashboard() {
                 onClick={() => setViewingAnnouncement(null)}
                 style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '700', cursor: 'pointer' }}
               >
-                Fermer
+                إغلاق
               </button>
             </div>
           </div>
@@ -2032,7 +2132,7 @@ export default function Dashboard() {
       )}
 
       {/* ========================================================
-          MODAL: PHYSICAL ENROLLMENT APPROVAL
+          نافذة: تأكيد التسجيل الفعلي بالمدرسة
           ======================================================== */}
       {approvingStudent && (
         <div className="dashboard-modal-backdrop" onClick={() => setApprovingStudent(null)}>
@@ -2040,10 +2140,10 @@ export default function Dashboard() {
             <div className="profile-modal-header">
               <div>
                 <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
-                  Confirmer l'inscription &amp; Premier Paiement
+                  تأكيد التسجيل والدفعة الأولى
                 </h3>
                 <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '2px' }}>
-                  Validation physique de l'élève se présentant à l'école.
+                  التأكيد الفعلي للطالب الحاضر في مقر المدرسة.
                 </p>
               </div>
               <button
@@ -2058,15 +2158,15 @@ export default function Dashboard() {
             <form onSubmit={handleSubmitApproval} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div className="profile-modal-grid">
                 <div className="profile-info-box">
-                  <div className="profile-info-label">Élève &amp; Tuteur</div>
+                  <div className="profile-info-label">الطالب والولي</div>
                   <div className="profile-info-val">{approvingStudent.fullName}</div>
                   <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
-                    Tuteur: {approvingStudent.parentName} • {approvingStudent.phone}
+                    الولي: {approvingStudent.parentName} • {approvingStudent.phone}
                   </div>
                 </div>
 
                 <div className="profile-info-box">
-                  <div className="profile-info-label">Cours &amp; Enseignant</div>
+                  <div className="profile-info-label">المادة والأستاذ</div>
                   <div className="profile-info-val">{approvingStudent.courseName}</div>
                   <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
                     {approvingStudent.teacherName}
@@ -2077,7 +2177,7 @@ export default function Dashboard() {
               <div className="modal-form-grid">
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Montant du 1er Paiement (DA) *
+                    مبلغ الدفعة الأولى (دج) *
                   </label>
                   <input
                     type="number"
@@ -2091,17 +2191,17 @@ export default function Dashboard() {
 
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Moyen de Paiement *
+                    طريقة الدفع *
                   </label>
                   <select
                     value={approvalForm.paymentMethod}
                     onChange={(e) => setApprovalForm({ ...approvalForm, paymentMethod: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
                   >
-                    <option value="Espèces (Cash)">Espèces (Cash au bureau)</option>
-                    <option value="BaridiMob / CCP">BaridiMob / CCP</option>
-                    <option value="Virement Bancaire">Virement Bancaire</option>
-                    <option value="Chèque">Chèque</option>
+                    <option value="نقداً (في الإدارة)">نقداً (في الإدارة)</option>
+                    <option value="بريدي موب / CCP">بريدي موب / CCP</option>
+                    <option value="تحويل بنكي">تحويل بنكي</option>
+                    <option value="شيك">شيك</option>
                   </select>
                 </div>
               </div>
@@ -2109,22 +2209,22 @@ export default function Dashboard() {
               <div className="modal-form-grid">
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Séances par Mois
+                    عدد الحصص الشهرية
                   </label>
                   <select
                     value={approvalForm.sessionsPerMonth}
                     onChange={(e) => setApprovalForm({ ...approvalForm, sessionsPerMonth: Number(e.target.value) })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
                   >
-                    <option value={4}>4 séances / mois (Standard)</option>
-                    <option value={8}>8 séances / mois (Intensif)</option>
-                    <option value={12}>12 séances / mois (Quotidien)</option>
+                    <option value={4}>4 حصص / شهر (نظامي)</option>
+                    <option value={8}>8 حصص / شهر (مكثف)</option>
+                    <option value={12}>12 حصة / شهر (يومي)</option>
                   </select>
                 </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Cycle Mensuel Initial
+                    دورة الاشتراك الأولية
                   </label>
                   <input
                     type="text"
@@ -2141,14 +2241,14 @@ export default function Dashboard() {
                   onClick={() => setApprovingStudent(null)}
                   style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
                 >
-                  Annuler
+                  إلغاء
                 </button>
                 <button
                   type="submit"
                   style={{ padding: '10px 24px', borderRadius: '12px', background: '#10B981', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
                   <Check size={16} />
-                  <span>Confirmer &amp; Activer l'Élève</span>
+                  <span>تأكيد وتفعيل الطالب</span>
                 </button>
               </div>
             </form>
@@ -2157,7 +2257,7 @@ export default function Dashboard() {
       )}
 
       {/* ========================================================
-          MODAL: RECORD PAYMENT
+          نافذة: تسجيل الدفعة الشهرية
           ======================================================== */}
       {payingStudent && (
         <div className="dashboard-modal-backdrop" onClick={() => setPayingStudent(null)}>
@@ -2165,10 +2265,10 @@ export default function Dashboard() {
             <div className="profile-modal-header">
               <div>
                 <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
-                  Enregistrer le Paiement Mensuel
+                  تسجيل الدفعة الشهرية
                 </h3>
                 <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '2px' }}>
-                  Renouvellement du cycle de séances pour l'élève.
+                  تجديد دورة الحصص الشهرية للطالب.
                 </p>
               </div>
               <button
@@ -2182,17 +2282,17 @@ export default function Dashboard() {
 
             <form onSubmit={handleSubmitPayment} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div className="profile-info-box">
-                <div className="profile-info-label">Élève &amp; Cours</div>
+                <div className="profile-info-label">الطالب والمادة</div>
                 <div className="profile-info-val">{payingStudent.fullName}</div>
                 <div style={{ fontSize: '12.5px', color: '#4B5563', marginTop: '2px' }}>
-                  {payingStudent.courseName} • Prof: {payingStudent.teacherName} • 📞 Tél: {payingStudent.phone}
+                  {payingStudent.courseName} • الأستاذ: {payingStudent.teacherName} • 📞 الهاتف: {payingStudent.phone}
                 </div>
               </div>
 
               <div className="modal-form-grid">
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Montant Encaissé (DA) *
+                    المبلغ المسدد (دج) *
                   </label>
                   <input
                     type="number"
@@ -2206,24 +2306,24 @@ export default function Dashboard() {
 
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Moyen de Paiement *
+                    طريقة الدفع *
                   </label>
                   <select
                     value={paymentForm.paymentMethod}
                     onChange={(e) => setPaymentForm({ ...paymentForm, paymentMethod: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
                   >
-                    <option value="Espèces (Cash)">Espèces (Cash au bureau)</option>
-                    <option value="BaridiMob / CCP">BaridiMob / CCP</option>
-                    <option value="Virement Bancaire">Virement Bancaire</option>
-                    <option value="Chèque">Chèque</option>
+                    <option value="نقداً (في الإدارة)">نقداً (في الإدارة)</option>
+                    <option value="بريدي موب / CCP">بريدي موب / CCP</option>
+                    <option value="تحويل بنكي">تحويل بنكي</option>
+                    <option value="شيك">شيك</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                  Mois / Cycle Concerné
+                  الشهر / الدورة المعنية
                 </label>
                 <input
                   type="text"
@@ -2234,7 +2334,7 @@ export default function Dashboard() {
               </div>
 
               <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '12px 16px', borderRadius: '12px', fontSize: '12.5px', color: '#065F46' }}>
-                ✓ Dès la confirmation, le compteur de séances sera réinitialisé à <strong>0/{payingStudent.sessionsPerMonth}</strong> pour le nouveau cycle et le statut passera à <strong>Payé</strong>.
+                ✓ فور التأكيد، سيتم إعادة ضبط عداد الحصص إلى <strong>0/{payingStudent.sessionsPerMonth}</strong> للدورة الجديدة وتتحول الحالة إلى <strong>مسدد</strong>.
               </div>
 
               <div style={{ display: 'flex', gap: '12px', marginTop: '8px', justifyContent: 'flex-end' }}>
@@ -2243,14 +2343,14 @@ export default function Dashboard() {
                   onClick={() => setPayingStudent(null)}
                   style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
                 >
-                  Annuler
+                  إلغاء
                 </button>
                 <button
                   type="submit"
                   style={{ padding: '10px 24px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
                   <CreditCard size={16} />
-                  <span>Enregistrer le Paiement</span>
+                  <span>تسجيل الدفعة الآن</span>
                 </button>
               </div>
             </form>
@@ -2259,7 +2359,7 @@ export default function Dashboard() {
       )}
 
       {/* ========================================================
-          MODAL: STUDENT PROFILE
+          نافذة: الملف الشخصي للطالب
           ======================================================== */}
       {viewingStudent && (
         <div className="dashboard-modal-backdrop" onClick={() => setViewingStudent(null)}>
@@ -2267,7 +2367,7 @@ export default function Dashboard() {
             <div className="profile-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div className="student-initial-avatar avatar-blue" style={{ width: '48px', height: '48px', fontSize: '18px' }}>
-                  {viewingStudent.fullName.slice(0, 2).toUpperCase()}
+                  {viewingStudent.fullName.slice(0, 2)}
                 </div>
                 <div>
                   <h3 style={{ fontSize: '19px', fontWeight: '800', color: '#111827' }}>
@@ -2275,10 +2375,10 @@ export default function Dashboard() {
                   </h3>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
                     <span style={{ fontSize: '12px', color: '#6B7280', fontWeight: '600' }}>
-                      ID: {viewingStudent.id}
+                      الرمز: {viewingStudent.id}
                     </span>
                     <span className={`badge-status-pill ${viewingStudent.paymentStatus === 'Paid' ? 'status-paid' : 'status-due'}`}>
-                      {viewingStudent.paymentStatus === 'Paid' ? '🟢 Payé' : '🟠 Paiement Requis'}
+                      {viewingStudent.paymentStatus === 'Paid' ? '🟢 مسدد' : '🟠 دفع مطلوب'}
                     </span>
                   </div>
                 </div>
@@ -2295,7 +2395,7 @@ export default function Dashboard() {
 
             <div className="profile-modal-grid">
               <div className="profile-info-box">
-                <div className="profile-info-label">Tuteur &amp; Contact</div>
+                <div className="profile-info-label">الولي ومعلومات الاتصال</div>
                 <div className="profile-info-val">{viewingStudent.parentName}</div>
                 <div style={{ fontSize: '12.5px', color: '#4B5563', marginTop: '3px' }}>
                   📞 {viewingStudent.phone}
@@ -2306,13 +2406,13 @@ export default function Dashboard() {
               </div>
 
               <div className="profile-info-box">
-                <div className="profile-info-label">Cours &amp; Enseignant</div>
+                <div className="profile-info-label">المادة والأستاذ</div>
                 <div className="profile-info-val">{viewingStudent.courseName}</div>
                 <div style={{ fontSize: '12.5px', color: '#4B5563', marginTop: '3px' }}>
                   👨‍🏫 {viewingStudent.teacherName}
                 </div>
                 <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>
-                  Tarif: <strong>{viewingStudent.monthlyPrice} DA / mois</strong> ({viewingStudent.sessionsPerMonth} séances)
+                  الاشتراك: <strong>{viewingStudent.monthlyPrice} دج / شهر</strong> ({viewingStudent.sessionsPerMonth} حصص)
                 </div>
               </div>
             </div>
@@ -2320,15 +2420,15 @@ export default function Dashboard() {
             <div className="profile-current-cycle-card">
               <div>
                 <div style={{ fontSize: '12px', color: '#1E40AF', fontWeight: '700', textTransform: 'uppercase' }}>
-                  Cycle en cours : {viewingStudent.currentCycle}
+                  الدورة الحالية : {viewingStudent.currentCycle}
                 </div>
                 <div style={{ fontSize: '20px', fontWeight: '800', color: '#1E3A8A', marginTop: '4px' }}>
-                  {viewingStudent.sessionsCompleted} sur {viewingStudent.sessionsPerMonth} séances complétées
+                  {viewingStudent.sessionsCompleted} من أصل {viewingStudent.sessionsPerMonth} حصص مكتملة
                 </div>
                 <div style={{ fontSize: '12.5px', color: '#475569', marginTop: '2px' }}>
                   {viewingStudent.sessionsCompleted >= viewingStudent.sessionsPerMonth
-                    ? '⚠️ Toutes les séances du mois sont terminées. Renouvellement requis.'
-                    : `Il reste ${viewingStudent.sessionsPerMonth - viewingStudent.sessionsCompleted} séance(s) avant le prochain paiement.`}
+                    ? '⚠️ اكتملت جميع حصص الشهر. يرجى تسديد الاشتراك لتثبيت المقعد.'
+                    : `تبقى ${viewingStudent.sessionsPerMonth - viewingStudent.sessionsCompleted} حصة قبل حلول موعد الدفع القادم.`}
                 </div>
               </div>
 
@@ -2339,7 +2439,7 @@ export default function Dashboard() {
                   type="button"
                 >
                   <MessageSquare size={15} />
-                  <span>WhatsApp</span>
+                  <span>تذكير WhatsApp</span>
                 </button>
                 <button
                   className="btn-record-payment-primary"
@@ -2348,36 +2448,36 @@ export default function Dashboard() {
                   type="button"
                 >
                   <CreditCard size={16} />
-                  <span>Enregistrer Paiement</span>
+                  <span>تسجيل دفع</span>
                 </button>
               </div>
             </div>
 
-            {/* Payment History */}
+            {/* سجل المدفوعات */}
             <div style={{ marginTop: '20px' }}>
               <h4 style={{ fontSize: '14.5px', fontWeight: '800', color: '#111827', marginBottom: '8px' }}>
-                Historique des Paiements ({viewingStudent.paymentHistory?.length || 0})
+                سجل المدفوعات السابقة ({viewingStudent.paymentHistory?.length || 0})
               </h4>
               {viewingStudent.paymentHistory && viewingStudent.paymentHistory.length > 0 ? (
                 <table className="payment-history-table">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Montant</th>
-                      <th>Cycle / Mois</th>
-                      <th>Moyen</th>
-                      <th>Statut</th>
+                      <th>التاريخ</th>
+                      <th>المبلغ</th>
+                      <th>الدورة / الشهر</th>
+                      <th>طريقة الدفع</th>
+                      <th>الحالة</th>
                     </tr>
                   </thead>
                   <tbody>
                     {viewingStudent.paymentHistory.map((p, idx) => (
                       <tr key={idx}>
                         <td style={{ fontWeight: '600' }}>{p.paymentDate}</td>
-                        <td style={{ fontWeight: '800', color: '#059669' }}>{p.amount} DA</td>
+                        <td style={{ fontWeight: '800', color: '#059669' }}>{p.amount} دج</td>
                         <td>{p.cycle}</td>
                         <td>{p.paymentMethod}</td>
                         <td>
-                          <span className="badge-status-pill status-paid">Validé</span>
+                          <span className="badge-status-pill status-paid">مؤكد</span>
                         </td>
                       </tr>
                     ))}
@@ -2385,7 +2485,7 @@ export default function Dashboard() {
                 </table>
               ) : (
                 <div style={{ background: '#F9FAFB', padding: '16px', borderRadius: '10px', textAlign: 'center', color: '#6B7280', fontSize: '13px' }}>
-                  Aucun paiement enregistré pour le moment.
+                  لا توجد مدفوعات مسجلة حتى الآن.
                 </div>
               )}
             </div>
@@ -2394,7 +2494,7 @@ export default function Dashboard() {
       )}
 
       {/* ========================================================
-          MODAL: ADD NEW STUDENT
+          نافذة: تسجيل طالب جديد يدوياً
           ======================================================== */}
       {isAddStudentOpen && (
         <div className="dashboard-modal-backdrop" onClick={() => setIsAddStudentOpen(false)}>
@@ -2402,10 +2502,10 @@ export default function Dashboard() {
             <div className="profile-modal-header">
               <div>
                 <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#111827' }}>
-                  Inscrire un Nouvel Élève
+                  تسجيل طالب جديد
                 </h3>
                 <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '2px' }}>
-                  Création d'un nouveau dossier d'inscription.
+                  فتح ملف دراسي جديد في قاعدة بيانات المدرسة.
                 </p>
               </div>
               <button
@@ -2420,12 +2520,12 @@ export default function Dashboard() {
             <form onSubmit={handleAddStudentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                  Nom et Prénom de l'élève *
+                  اسم ولقب التلميذ *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Yacine Benali"
+                  placeholder="مثال: ياسين بن علي"
                   value={newStudentForm.studentName}
                   onChange={(e) => setNewStudentForm({ ...newStudentForm, studentName: e.target.value })}
                   style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
@@ -2435,11 +2535,11 @@ export default function Dashboard() {
               <div className="modal-form-grid">
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Nom du Tuteur / Parent
+                    اسم الولي / الوصي
                   </label>
                   <input
                     type="text"
-                    placeholder="Ex: Mohamed Benali"
+                    placeholder="مثال: محمد بن علي"
                     value={newStudentForm.parentName}
                     onChange={(e) => setNewStudentForm({ ...newStudentForm, parentName: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
@@ -2448,12 +2548,12 @@ export default function Dashboard() {
 
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Numéro de Téléphone (WhatsApp) *
+                    رقم الهاتف (WhatsApp) *
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="Ex: 0669028265"
+                    placeholder="مثال: 0555123456"
                     value={newStudentForm.phone}
                     onChange={(e) => setNewStudentForm({ ...newStudentForm, phone: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none' }}
@@ -2464,39 +2564,39 @@ export default function Dashboard() {
               <div className="modal-form-grid">
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Cours / Matière
+                    المادة / الدورة
                   </label>
                   <select
                     value={newStudentForm.courseName}
                     onChange={(e) => {
                       const course = e.target.value
-                      let teacher = 'Prof. Sarah Benali'
+                      let teacher = 'أ. سارة بن علي'
                       let price = 3000
-                      if (course.includes('Anglais') || course.includes('Français')) {
-                        teacher = 'Prof. David Moreau'
+                      if (course.includes('الإنجليزية') || course.includes('الفرنسية')) {
+                        teacher = 'أ. داود مورو'
                         price = 2200
-                      } else if (course.includes('Sciences')) {
-                        teacher = 'Prof. Amira Al-Mansour'
+                      } else if (course.includes('العلوم')) {
+                        teacher = 'أ. أميرة المنصور'
                         price = 2800
-                      } else if (course.includes('Informatique')) {
-                        teacher = 'Prof. Marcus Chen'
+                      } else if (course.includes('الإعلام')) {
+                        teacher = 'أ. ماركوس تشن'
                         price = 3500
                       }
                       setNewStudentForm({ ...newStudentForm, courseName: course, teacherName: teacher, monthlyPrice: price })
                     }}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #E5E7EB', fontSize: '13.5px', outline: 'none', background: '#FFFFFF' }}
                   >
-                    <option value="Mathématiques Approfondies (2S & BAC)">Mathématiques Approfondies (2S &amp; BAC)</option>
-                    <option value="Langue Anglaise (Intensif)">Langue Anglaise (Intensif)</option>
-                    <option value="Langue Française & Communication">Langue Française &amp; Communication</option>
-                    <option value="Sciences Expérimentales & Physique">Sciences Expérimentales &amp; Physique</option>
-                    <option value="Informatique & Développement Web">Informatique &amp; Développement Web</option>
+                    <option value="الرياضيات المتقدمة (2 ثانوي وبكالوريا)">الرياضيات المتقدمة (2 ثانوي وبكالوريا)</option>
+                    <option value="اللغة الإنجليزية (مكثف)">اللغة الإنجليزية (مكثف)</option>
+                    <option value="اللغة الفرنسية والتواصل">اللغة الفرنسية والتواصل</option>
+                    <option value="العلوم التجريبية والفيزياء">العلوم التجريبية والفيزياء</option>
+                    <option value="الإعلام الآلي وتطوير الويب">الإعلام الآلي وتطوير الويب</option>
                   </select>
                 </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
-                    Tarif Mensuel (DA)
+                    الاشتراك الشهري (دج)
                   </label>
                   <input
                     type="number"
@@ -2513,13 +2613,13 @@ export default function Dashboard() {
                   onClick={() => setIsAddStudentOpen(false)}
                   style={{ padding: '10px 18px', borderRadius: '12px', background: '#F3F4F6', border: 'none', fontWeight: '600', color: '#4B5563', cursor: 'pointer' }}
                 >
-                  Annuler
+                  إلغاء
                 </button>
                 <button
                   type="submit"
                   style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer' }}
                 >
-                  Créer l'Inscription
+                  حفظ وتسجيل الطالب
                 </button>
               </div>
             </form>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 
 export default function Navbar({
-  brandName = 'أكاديمية الخوارزمي',
+  brandName = 'المدرسة',
   ctaText = 'سجّل الآن',
   ctaLink = '/Classes',
 }) {

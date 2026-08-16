@@ -177,8 +177,8 @@ export default function ClassEnrollModal({ classItem, isOpen, onClose }) {
         parentName: cleanSubmission.parentName,
         phone: cleanSubmission.phone,
         email: cleanSubmission.email,
-        courseName: classItem?.title || 'Cours Spécialisé',
-        teacherName: classItem?.teacher || 'Professeur Principal',
+        courseName: classItem?.title || 'دورة متخصصة',
+        teacherName: classItem?.teacher || 'أستاذ رئيسي',
         monthlyPrice: parseInt(classItem?.price?.replace(/\D/g, '')) || 3000,
         sessionsPerMonth: 4,
       })
@@ -222,16 +222,34 @@ export default function ClassEnrollModal({ classItem, isOpen, onClose }) {
             {/* Header / Summary of selected class */}
             <div className="modal-class-preview">
               <div className="preview-img-wrap">
-                <img
-                  src={classItem.image}
-                  alt={classItem.title}
-                  className="preview-img"
-                />
+                {classItem.image ? (
+                  <img
+                    src={classItem.image}
+                    alt={classItem.title}
+                    className="preview-img"
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      minHeight: '120px',
+                      background: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#FFFFFF',
+                      borderRadius: '16px',
+                    }}
+                  >
+                    <GraduationCap size={44} />
+                  </div>
+                )}
                 <span
                   className="preview-ribbon"
                   style={{ backgroundColor: classItem.ribbonColor || '#3B82F6' }}
                 >
-                  {classItem.category}
+                  {classItem.category || 'فصل دراسي'}
                 </span>
               </div>
 
@@ -465,20 +483,20 @@ export default function ClassEnrollModal({ classItem, isOpen, onClose }) {
 
             <h3 className="success-title">تم تسجيل طلبك المبدئي بنجاح!</h3>
             <p className="success-subtitle no-print">
-              تم استلام معلوماتك وحفظ طلب التسجيل في نظام الأكاديمية بنجاح.
+              تم استلام معلوماتك وحفظ طلب التسجيل في نظام المدرسة بنجاح.
             </p>
 
             {/* CRITICAL ALERT BOX: MUST PAY AT SCHOOL TO CONFIRM */}
             <div className="mandatory-payment-alert">
               <div className="alert-badge">
                 <AlertTriangle size={20} className="alert-icon" />
-                <span>تأكيد إجباري في مقر الأكاديمية</span>
+                <span>تأكيد إجباري في مقر المدرسة</span>
               </div>
               <p className="alert-main-text">
                 ⚠️ <strong>تنبيه هام :</strong> حجز مقعدك في دورة <strong>{classItem.title}</strong> مؤقت لمدة <strong>48 ساعة</strong> فقط.
               </p>
               <p className="alert-action-text">
-                لـ <strong>تأكيد التسجيل النهائي وتثبيت المقعد</strong>، يرجى التوجه شخصياً إلى إدارة الأكاديمية لدفع رسوم التسجيل قبل انتهاء المهلة.
+                لـ <strong>تأكيد التسجيل النهائي وتثبيت المقعد</strong>، يرجى التوجه شخصياً إلى إدارة المدرسة لدفع رسوم التسجيل قبل انتهاء المهلة.
               </p>
             </div>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import Navbar from './common/Navbar'
 import ClassEnrollModal from './classes/ClassEnrollModal'
+import ClassAdsBanner from './common/ClassAdsBanner'
 import { classesData as defaultClassesList } from './home/homeData'
 import './Classes.css'
 import {
@@ -157,6 +158,11 @@ export default function Classes({ classesList = defaultClassesList }) {
           </div>
         </div>
       </section>
+
+      {/* ===== Class Ads & Announcements Section ===== */}
+      <div style={{ marginTop: '20px' }}>
+        <ClassAdsBanner onEnrollClick={handleOpenEnrollModal} title="📢 إعلانات الأفواج المفتوحة للتسجيل المباشر" />
+      </div>
 
       {/* ===== Classes Catalog Grid ===== */}
       <section className="classes-catalog-section">

@@ -1,294 +1,309 @@
 /**
  * ============================================================
- * Student Enrollment, Approval & Monthly Payment Management Service
- * Supports physical school verification, session tracking (0/4 -> 4/4),
- * automated payment required triggers, and immutable payment transactions.
+ * خدمة إدارة الطلاب، التسجيلات، والمدفوعات وإعلانات الفصول
+ * تتيح للإدارة إنشاء إعلانات للأفواج والدروس لتظهر في الموقع
+ * (الرئيسية وصفحة الفصول) للتسجيل المباشر للطلاب.
  * ============================================================
  */
 
-const STORAGE_KEY_STUDENTS = 'ecole_students_data_v2'
-const STORAGE_KEY_NOTIFICATIONS = 'ecole_notifications_data_v2'
-const STORAGE_KEY_ANNOUNCEMENTS = 'ecole_announcements_data_v2'
+const STORAGE_KEY_STUDENTS = 'ecole_students_data_v5'
+const STORAGE_KEY_NOTIFICATIONS = 'ecole_notifications_data_v5'
+const STORAGE_KEY_ANNOUNCEMENTS = 'ecole_class_ads_data_v5'
 
-// Initial Seed Data for Announcements
-const DEFAULT_ANNOUNCEMENTS = [
+// إعلانات الأفواج والفصول الدراسية الافتراضية
+const DEFAULT_CLASS_ADS = [
   {
-    id: 'ANN-101',
-    title: 'Rappel des Échéances de Paiement Mensuel (Cycle Octobre)',
-    content: 'Chers parents et élèves, nous vous rappelons que le règlement des mensualités doit s\'effectuer dès la 4ème séance complétée pour garantir la continuité des cours et l\'accès aux supports pédagogiques.',
-    category: 'Paiements', // 'Important' | 'Paiements' | 'Pédagogique' | 'Événements'
-    targetAudience: 'Tous les parents & élèves',
-    date: '2026-09-16',
-    author: 'Direction des Études',
+    id: 'CAD-101',
+    title: 'فوج الرياضيات المتقدمة (2 ثانوي وبكالوريا)',
+    content: 'افتتاح فوج جديد لمادة الرياضيات مع الأستاذ أحمد بن علي. حل تمارين نموذجية، منهجية التعامل مع أسئلة البكالوريا، ومتابعة فردية دقيقة.',
+    category: 'الرياضيات',
+    targetAudience: 'السنة الثانية ثانوي ومترشحو البكالوريا',
+    courseName: 'الرياضيات المتقدمة',
+    teacherName: 'الأستاذ أحمد بن علي',
+    schedule: 'السبت والثلاثاء : 14:00 - 16:00',
+    groupName: 'فوج نهاية الأسبوع (المجموعة أ)',
+    room: 'القاعة ب2 - جناح العلوم',
+    price: '4,500 دج / شهر',
+    spotsLeft: 6,
     isPinned: true,
-    views: 142,
+    date: '2026-09-16',
+    author: 'إدارة المدرسة',
+    views: 280,
   },
   {
-    id: 'ANN-102',
-    title: 'Nouveaux Emplois du Temps - Préparation BAC & Lycée',
-    content: 'Les plannings actualisés pour les filières Mathématiques, Sciences et Langues sont disponibles au secrétariat et sur l\'espace élève. Les séances du samedi débutent à 08h30 précises.',
-    category: 'Pédagogique',
-    targetAudience: 'Classes de 2S et Terminale',
+    id: 'CAD-102',
+    title: 'فوج المحادثة والإنجليزية المكثفة',
+    content: 'دورة تفاعلية في اللغة الإنجليزية تركز على الطلاقة الشفهية، القواعد الأساسية، والتحضير للامتحانات والشهادات الدولية مع الأستاذ داود.',
+    category: 'اللغات',
+    targetAudience: 'المستوى الثانوي واليافعين',
+    courseName: 'اللغة الإنجليزية (مكثف)',
+    teacherName: 'الأستاذ داود مورو',
+    schedule: 'الأحد والأربعاء : 16:00 - 18:00',
+    groupName: 'فوج الفترة المسائية',
+    room: 'القاعة ل1 - جناح اللغات',
+    price: '4,000 دج / شهر',
+    spotsLeft: 4,
+    isPinned: true,
     date: '2026-09-14',
-    author: 'Prof. Sarah Benali',
-    isPinned: false,
-    views: 98,
+    author: 'إدارة المدرسة',
+    views: 195,
   },
   {
-    id: 'ANN-103',
-    title: 'Atelier Spécial : Initiation au Développement Web & IA',
-    content: 'Un atelier gratuit de 3 heures sera organisé ce vendredi matin au Lab Informatique pour tous les élèves inscrits en formation technologique.',
-    category: 'Événements',
-    targetAudience: 'Tous les apprenants',
+    id: 'CAD-103',
+    title: 'فوج العلوم الفيزيائية والتجارب المخبرية',
+    content: 'دروس دعم معمقة في الفيزياء والكيمياء مع الأستاذة أميرة المنصور تشمل حل المسائل المعقدة وتجارب تطبيقية داخل المخبر.',
+    category: 'العلوم',
+    targetAudience: 'شعب العلوم التجريبية والرياضيات',
+    courseName: 'العلوم الفيزيائية',
+    teacherName: 'الأستاذة أميرة المنصور',
+    schedule: 'السبت : 09:00 - 12:00',
+    groupName: 'فوج صباح السبت',
+    room: 'المخبر رقم 01',
+    price: '4,500 دج / شهر',
+    spotsLeft: 5,
+    isPinned: true,
     date: '2026-09-12',
-    author: 'Prof. Marcus Chen',
+    author: 'إدارة المدرسة',
+    views: 160,
+  },
+  {
+    id: 'CAD-104',
+    title: 'فوج البرمجة وتطوير الويب الحديث',
+    content: 'ورشة تطبيقية عملية 100% لتعلم تصميم المواقع، لغات HTML/CSS/JS وبناء أول موقع إلكتروني احترافي تحت إشراف الأستاذ ماركوس.',
+    category: 'التكنولوجيا',
+    targetAudience: 'الطور الثانوي والمهتمون بالتكنولوجيا',
+    courseName: 'الإعلام الآلي وتطوير الويب',
+    teacherName: 'الأستاذ ماركوس تشن',
+    schedule: 'الجمعة : 09:00 - 12:00',
+    groupName: 'فوج يوم الجمعة',
+    room: 'مخبر الإعلام الآلي 1',
+    price: '5,000 دج / شهر',
+    spotsLeft: 3,
     isPinned: false,
-    views: 76,
+    date: '2026-09-10',
+    author: 'إدارة المدرسة',
+    views: 140,
   },
 ]
 
-// Initial Seed Data reflecting realistic Algerian school context
+// بيانات الطلاب الافتراضية
 const DEFAULT_STUDENTS = [
   {
     id: 'STU-1001',
-    fullName: 'Ahmed Benali',
-    parentName: 'Mohamed Benali',
+    fullName: 'أحمد بن علي',
+    parentName: 'محمد بن علي',
     phone: '0555 12 34 56',
     email: 'ahmed.benali@gmail.com',
-    address: '14 Rue Didouche Mourad, Alger',
+    address: '14 شارع ديدوش مراد، الجزائر الوسطى',
     dob: '2008-05-14',
     courseId: 'CLS-ENG-01',
-    courseName: 'Langue Anglaise (Intensif)',
+    courseName: 'اللغة الإنجليزية (مكثف)',
     teacherId: 'T-102',
-    teacherName: 'Prof. David Moreau',
+    teacherName: 'أ. داود مورو',
     monthlyPrice: 2500,
     sessionsPerMonth: 4,
-    sessionsCompleted: 4, // Completed 4th session -> Payment Required!
-    currentCycle: 'Septembre 2026',
-    paymentStatus: 'Payment Required', // 'Paid' | 'Payment Required' | 'Overdue' | 'Pending Approval'
-    status: 'Active', // 'Active' | 'Pending Approval' | 'Approved - Payment Pending' | 'Suspended' | 'Cancelled'
+    sessionsCompleted: 4,
+    currentCycle: 'سبتمبر 2026',
+    paymentStatus: 'Payment Required',
+    status: 'Active',
     enrollmentDate: '2026-08-01',
-    nextPaymentDate: "Aujourd'hui",
+    nextPaymentDate: 'اليوم (الحصص مكتملة)',
     paymentHistory: [
       {
         id: 'PAY-801',
         amount: 2500,
         paymentDate: '2026-08-01',
-        paymentMethod: 'Espèces (Cash)',
-        cycle: 'Août 2026',
-        recordedBy: 'Admin',
-        status: 'Validé',
+        paymentMethod: 'نقداً (في الإدارة)',
+        cycle: 'أوت 2026',
+        recordedBy: 'المدير',
+        status: 'مؤكد',
       },
       {
         id: 'PAY-802',
         amount: 2500,
         paymentDate: '2026-09-01',
-        paymentMethod: 'Espèces (Cash)',
-        cycle: 'Septembre 2026',
-        recordedBy: 'Admin',
-        status: 'Validé',
+        paymentMethod: 'نقداً (في الإدارة)',
+        cycle: 'سبتمبر 2026',
+        recordedBy: 'المدير',
+        status: 'مؤكد',
       },
     ],
     sessionHistory: [
-      { sessionNumber: 1, date: '2026-09-03', topic: 'Grammar & Conversation', status: 'Présent' },
-      { sessionNumber: 2, date: '2026-09-10', topic: 'Reading Comprehension', status: 'Présent' },
-      { sessionNumber: 3, date: '2026-09-17', topic: 'Listening & TOEFL Prep', status: 'Présent' },
-      { sessionNumber: 4, date: '2026-09-24', topic: 'Final Speaking Workshop', status: 'Présent' },
+      { sessionNumber: 1, date: '2026-09-03', topic: 'قواعد ومحادثة تفاعلية', status: 'حاضر' },
+      { sessionNumber: 2, date: '2026-09-10', topic: 'فهم وتحليل النصوص', status: 'حاضر' },
+      { sessionNumber: 3, date: '2026-09-17', topic: 'الاستماع والتحضير للامتحانات', status: 'حاضر' },
+      { sessionNumber: 4, date: '2026-09-24', topic: 'ورشة التعبير الشفهي الختامية', status: 'حاضر' },
     ],
   },
   {
     id: 'STU-1002',
-    fullName: 'Mohamed Ali Zerrouki',
-    parentName: 'Karim Zerrouki',
+    fullName: 'محمد علي زروقي',
+    parentName: 'كريم زروقي',
     phone: '0661 22 33 44',
     email: 'mohamed.ali@gmail.com',
-    address: '08 Boulevard Zighoud Youcef, Alger',
+    address: '08 نهج زيغود يوسف، الجزائر',
     dob: '2007-11-20',
     courseId: 'CLS-MATH-01',
-    courseName: 'Mathématiques Approfondies (2S & BAC)',
+    courseName: 'الرياضيات المتقدمة (2 ثانوي وبكالوريا)',
     teacherId: 'T-101',
-    teacherName: 'Prof. Sarah Benali',
+    teacherName: 'أ. أحمد بن علي',
     monthlyPrice: 3000,
     sessionsPerMonth: 4,
-    sessionsCompleted: 2, // 2/4 sessions attended -> Paid
-    currentCycle: 'Septembre 2026',
+    sessionsCompleted: 2,
+    currentCycle: 'سبتمبر 2026',
     paymentStatus: 'Paid',
     status: 'Active',
     enrollmentDate: '2026-08-10',
-    nextPaymentDate: '28 Septembre 2026',
+    nextPaymentDate: '28 سبتمبر 2026',
     paymentHistory: [
       {
         id: 'PAY-803',
         amount: 3000,
         paymentDate: '2026-09-05',
-        paymentMethod: 'Espèces (Cash)',
-        cycle: 'Septembre 2026',
-        recordedBy: 'Admin',
-        status: 'Validé',
+        paymentMethod: 'نقداً (في الإدارة)',
+        cycle: 'سبتمبر 2026',
+        recordedBy: 'المدير',
+        status: 'مؤكد',
       },
     ],
     sessionHistory: [
-      { sessionNumber: 1, date: '2026-09-06', topic: 'Fonctions et Limites', status: 'Présent' },
-      { sessionNumber: 2, date: '2026-09-13', topic: 'Dérivation et Tangentes', status: 'Présent' },
+      { sessionNumber: 1, date: '2026-09-06', topic: 'الدوال والنهايات وتطبيقاتها', status: 'حاضر' },
+      { sessionNumber: 2, date: '2026-09-13', topic: 'الاشتقاق والمماسات', status: 'حاضر' },
     ],
   },
   {
     id: 'STU-1003',
-    fullName: 'Yasmine Mansouri',
-    parentName: 'Fatima Mansouri',
-    phone: '0669028265', // Example test number provided by user
+    fullName: 'ياسمين منصوري',
+    parentName: 'فاطمة منصوري',
+    phone: '0669028265',
     email: 'yasmine.m@yahoo.fr',
-    address: '22 Rue des Frères Bouadou, Bir Mourad Raïs',
+    address: '22 شارع الإخوة بوعدو، بئر مراد رايس',
     dob: '2009-03-15',
     courseId: 'CLS-FRN-01',
-    courseName: 'Langue Française & Communication',
+    courseName: 'اللغة الفرنسية والتواصل',
     teacherId: 'T-102',
-    teacherName: 'Prof. David Moreau',
+    teacherName: 'أ. داود مورو',
     monthlyPrice: 2200,
     sessionsPerMonth: 4,
-    sessionsCompleted: 4, // 4/4 completed -> Payment Required!
-    currentCycle: 'Septembre 2026',
+    sessionsCompleted: 4,
+    currentCycle: 'سبتمبر 2026',
     paymentStatus: 'Payment Required',
     status: 'Active',
     enrollmentDate: '2026-08-15',
-    nextPaymentDate: "Aujourd'hui",
+    nextPaymentDate: 'اليوم (الحصص مكتملة)',
     paymentHistory: [
       {
         id: 'PAY-804',
         amount: 2200,
         paymentDate: '2026-09-02',
-        paymentMethod: 'BaridiMob / CCP',
-        cycle: 'Septembre 2026',
-        recordedBy: 'Admin',
-        status: 'Validé',
+        paymentMethod: 'بريدي موب / CCP',
+        cycle: 'سبتمبر 2026',
+        recordedBy: 'المدير',
+        status: 'مؤكد',
       },
     ],
     sessionHistory: [
-      { sessionNumber: 1, date: '2026-09-04', topic: 'Expression écrite', status: 'Présent' },
-      { sessionNumber: 2, date: '2026-09-11', topic: 'Syntaxe et Grammaire', status: 'Présent' },
-      { sessionNumber: 3, date: '2026-09-18', topic: 'Vocabulaire académique', status: 'Présent' },
-      { sessionNumber: 4, date: '2026-09-25', topic: 'Débat et Expression orale', status: 'Présent' },
+      { sessionNumber: 1, date: '2026-09-04', topic: 'التعبير والتحرير الكتابي', status: 'حاضر' },
+      { sessionNumber: 2, date: '2026-09-11', topic: 'قواعد اللغة والتركيب النحوي', status: 'حاضر' },
+      { sessionNumber: 3, date: '2026-09-18', topic: 'المصطلحات الأكاديمية والإنشاء', status: 'حاضر' },
+      { sessionNumber: 4, date: '2026-09-25', topic: 'المناقشة والتعبير الشفهي المباشر', status: 'حاضر' },
     ],
   },
   {
     id: 'STU-1004',
-    fullName: 'Rayane Haddad',
-    parentName: 'Brahim Haddad',
+    fullName: 'ريان حداد',
+    parentName: 'إبراهيم حداد',
     phone: '0550 44 55 66',
     email: 'rayane.haddad@hotmail.com',
-    address: '05 Cité El Hayat, Kouba',
+    address: '05 حي الحياة، القبة',
     dob: '2008-08-28',
     courseId: 'CLS-SCI-01',
-    courseName: 'Sciences Expérimentales & Physique',
+    courseName: 'العلوم التجريبية والفيزياء',
     teacherId: 'T-103',
-    teacherName: 'Prof. Amira Al-Mansour',
+    teacherName: 'أ. أميرة المنصور',
     monthlyPrice: 2800,
     sessionsPerMonth: 4,
     sessionsCompleted: 4,
-    currentCycle: 'Août 2026',
-    paymentStatus: 'Overdue', // Payment overdue
+    currentCycle: 'أوت 2026',
+    paymentStatus: 'Overdue',
     status: 'Payment Overdue',
     enrollmentDate: '2026-07-20',
-    nextPaymentDate: '15 Septembre 2026 (En retard)',
+    nextPaymentDate: '15 سبتمبر 2026 (متأخر)',
     paymentHistory: [
       {
         id: 'PAY-805',
         amount: 2800,
         paymentDate: '2026-08-05',
-        paymentMethod: 'Espèces (Cash)',
-        cycle: 'Août 2026',
-        recordedBy: 'Admin',
-        status: 'Validé',
+        paymentMethod: 'نقداً (في الإدارة)',
+        cycle: 'أوت 2026',
+        recordedBy: 'المدير',
+        status: 'مؤكد',
       },
     ],
     sessionHistory: [
-      { sessionNumber: 1, date: '2026-08-08', topic: 'Lois de Newton', status: 'Présent' },
-      { sessionNumber: 2, date: '2026-08-15', topic: 'Circuits RC/RL', status: 'Présent' },
-      { sessionNumber: 3, date: '2026-08-22', topic: 'Cinétique Chimique', status: 'Présent' },
-      { sessionNumber: 4, date: '2026-08-29', topic: 'Dosages Acido-Basiques', status: 'Présent' },
+      { sessionNumber: 1, date: '2026-08-08', topic: 'قوانين نيوتن وحركة الأجسام', status: 'حاضر' },
+      { sessionNumber: 2, date: '2026-08-15', topic: 'الدارات الكهربائية RC و RL', status: 'حاضر' },
+      { sessionNumber: 3, date: '2026-08-22', topic: 'الحركية الكيميائية وسرعة التفاعل', status: 'حاضر' },
+      { sessionNumber: 4, date: '2026-08-29', topic: 'المعايرة اللونية حمض - أساس', status: 'حاضر' },
     ],
   },
   {
     id: 'STU-1005',
-    fullName: 'Sarah Belkacem',
-    parentName: 'Samir Belkacem',
+    fullName: 'سارة بلقاسم',
+    parentName: 'سمير بلقاسم',
     phone: '0663 77 88 99',
     email: 'sarah.b@gmail.com',
-    address: '11 Rue Tripoli, Hussein Dey',
+    address: '11 شارع طرابلس، حسين داي',
     dob: '2008-01-10',
     courseId: 'CLS-INF-01',
-    courseName: 'Informatique & Développement Web',
+    courseName: 'الإعلام الآلي وتطوير الويب',
     teacherId: 'T-104',
-    teacherName: 'Prof. Marcus Chen',
+    teacherName: 'أ. ماركوس تشن',
     monthlyPrice: 3500,
-    sessionsPerMonth: 8, // Configurable: 8 sessions/month
-    sessionsCompleted: 3, // 3/8 sessions
-    currentCycle: 'Septembre 2026',
+    sessionsPerMonth: 8,
+    sessionsCompleted: 3,
+    currentCycle: 'سبتمبر 2026',
     paymentStatus: 'Paid',
     status: 'Active',
     enrollmentDate: '2026-08-25',
-    nextPaymentDate: '05 Octobre 2026',
+    nextPaymentDate: '05 أكتوبر 2026',
     paymentHistory: [
       {
         id: 'PAY-806',
         amount: 3500,
         paymentDate: '2026-09-01',
-        paymentMethod: 'Virement Bancaire',
-        cycle: 'Septembre 2026',
-        recordedBy: 'Admin',
-        status: 'Validé',
+        paymentMethod: 'تحويل بنكي',
+        cycle: 'سبتمبر 2026',
+        recordedBy: 'المدير',
+        status: 'مؤكد',
       },
     ],
     sessionHistory: [
-      { sessionNumber: 1, date: '2026-09-02', topic: 'HTML5 & Sémantique', status: 'Présent' },
-      { sessionNumber: 2, date: '2026-09-09', topic: 'CSS3 & Flexbox Layouts', status: 'Présent' },
-      { sessionNumber: 3, date: '2026-09-16', topic: 'JavaScript DOM & Events', status: 'Présent' },
+      { sessionNumber: 1, date: '2026-09-02', topic: 'أساسيات HTML5 والبنية الدلالية', status: 'حاضر' },
+      { sessionNumber: 2, date: '2026-09-09', topic: 'تنسيق الصفحات CSS3 و Flexbox', status: 'حاضر' },
+      { sessionNumber: 3, date: '2026-09-16', topic: 'برمجة التفاعل بلغة JavaScript', status: 'حاضر' },
     ],
   },
-  // Pending Enrollments (Registered online from website -> Pending Physical Verification & 1st Payment)
   {
     id: 'STU-1006',
-    fullName: 'Karim Boukhalfa',
-    parentName: 'Nacer Boukhalfa',
+    fullName: 'كريم بوخالفة',
+    parentName: 'ناصر بوخالفة',
     phone: '0555 99 00 11',
     email: 'karim.boukhalfa@gmail.com',
-    address: 'Cité 1000 Logements, Bab Ezzouar',
+    address: 'حي 1000 مسكن، باب الزوار',
     dob: '2009-06-12',
     courseId: 'CLS-MATH-01',
-    courseName: 'Mathématiques Approfondies (2S & BAC)',
+    courseName: 'الرياضيات المتقدمة (2 ثانوي وبكالوريا)',
     teacherId: 'T-101',
-    teacherName: 'Prof. Sarah Benali',
+    teacherName: 'أ. أحمد بن علي',
     monthlyPrice: 3000,
     sessionsPerMonth: 4,
     sessionsCompleted: 0,
-    currentCycle: 'Octobre 2026',
+    currentCycle: 'أكتوبر 2026',
     paymentStatus: 'Pending Approval',
     status: 'Pending Approval',
     enrollmentDate: '2026-09-15',
-    nextPaymentDate: 'À la confirmation physique',
-    paymentHistory: [],
-    sessionHistory: [],
-  },
-  {
-    id: 'STU-1007',
-    fullName: 'Ines Chaouche',
-    parentName: 'Meriem Chaouche',
-    phone: '0772 11 22 33',
-    email: 'ines.chaouche@gmail.com',
-    address: '03 Rue Larbi Ben M\'hidi, Alger',
-    dob: '2008-12-04',
-    courseId: 'CLS-ENG-01',
-    courseName: 'Langue Anglaise (Intensif)',
-    teacherId: 'T-102',
-    teacherName: 'Prof. David Moreau',
-    monthlyPrice: 2500,
-    sessionsPerMonth: 4,
-    sessionsCompleted: 0,
-    currentCycle: 'Octobre 2026',
-    paymentStatus: 'Pending Approval',
-    status: 'Pending Approval',
-    enrollmentDate: '2026-09-16',
-    nextPaymentDate: 'À la confirmation physique',
+    nextPaymentDate: 'عند التأكيد الفعلي بالمدرسة',
     paymentHistory: [],
     sessionHistory: [],
   },
@@ -309,7 +324,7 @@ function notifyListeners(students) {
 
 export const studentService = {
   /**
-   * Subscribe to live state updates
+   * الاشتراك في التحديثات اللحظية
    */
   subscribe(callback) {
     listeners.add(callback)
@@ -317,7 +332,7 @@ export const studentService = {
   },
 
   /**
-   * Get all students from storage
+   * جلب جميع الطلاب من التخزين المحلي
    */
   getStudents() {
     try {
@@ -328,13 +343,12 @@ export const studentService = {
     } catch (e) {
       console.error('Failed reading students from storage:', e)
     }
-    // Initialize storage with defaults
     this.saveStudents(DEFAULT_STUDENTS)
     return DEFAULT_STUDENTS
   },
 
   /**
-   * Save students to storage & notify subscribers
+   * حفظ قائمة الطلاب وإخطار المكونات
    */
   saveStudents(students) {
     try {
@@ -346,7 +360,7 @@ export const studentService = {
   },
 
   /**
-   * Add Online Enrollment request from public website or admin
+   * إضافة تسجيل جديد عبر الموقع أو لوحة الإدارة
    */
   addOnlineEnrollment(data) {
     const students = this.getStudents()
@@ -355,23 +369,23 @@ export const studentService = {
     const newEnrollment = {
       id: randomId,
       fullName: data.studentName || data.fullName,
-      parentName: data.parentName || 'Tuteur Légal',
+      parentName: data.parentName || 'الولي / الوصي',
       phone: data.phone || '',
       email: data.email || '',
-      address: data.address || 'Alger, Algérie',
+      address: data.address || 'الجزائر، الجزائر',
       dob: data.dob || '2008-01-01',
       courseId: data.courseId || 'CLS-GEN',
-      courseName: data.courseName || data.className || 'Cours Spécialisé',
+      courseName: data.courseName || data.className || 'دورة متخصصة',
       teacherId: data.teacherId || 'T-101',
-      teacherName: data.teacherName || 'Prof. Sarah Benali',
-      monthlyPrice: Number(data.monthlyPrice) || Number(data.price) || 2500,
+      teacherName: data.teacherName || 'أ. أحمد بن علي',
+      monthlyPrice: Number(data.monthlyPrice) || Number(data.price) || 3000,
       sessionsPerMonth: Number(data.sessionsPerMonth) || 4,
       sessionsCompleted: 0,
-      currentCycle: data.currentCycle || 'Octobre 2026',
+      currentCycle: data.currentCycle || 'أكتوبر 2026',
       paymentStatus: 'Pending Approval',
-      status: 'Pending Approval', // Starts as Pending Physical Verification
+      status: 'Pending Approval',
       enrollmentDate: new Date().toISOString().split('T')[0],
-      nextPaymentDate: 'À la confirmation physique',
+      nextPaymentDate: 'عند التأكيد الفعلي بالمدرسة',
       paymentHistory: [],
       sessionHistory: [],
     }
@@ -382,14 +396,14 @@ export const studentService = {
   },
 
   /**
-   * Physical School Approval: Confirms registration, records 1st payment, activates student
+   * التأكيد الفعلي في مقر المدرسة وتسجيل أول دفعة
    */
   approveEnrollment(studentId, {
     paymentAmount,
-    paymentMethod = 'Espèces (Cash)',
+    paymentMethod = 'نقداً (في الإدارة)',
     sessionsPerMonth = 4,
-    cycle = 'Octobre 2026',
-    recordedBy = 'Admin',
+    cycle = 'أكتوبر 2026',
+    recordedBy = 'المدير',
     notes = '',
   }) {
     const students = this.getStudents()
@@ -403,7 +417,7 @@ export const studentService = {
       paymentMethod,
       cycle,
       recordedBy,
-      status: 'Validé',
+      status: 'مؤكد',
       notes,
     }
 
@@ -416,7 +430,7 @@ export const studentService = {
           sessionsPerMonth: Number(sessionsPerMonth) || s.sessionsPerMonth || 4,
           sessionsCompleted: 0,
           currentCycle: cycle,
-          nextPaymentDate: 'Dans 1 mois (après 4 séances)',
+          nextPaymentDate: 'خلال شهر (بعد 4 حصص)',
           paymentHistory: [paymentRecord, ...(s.paymentHistory || [])],
         }
       }
@@ -428,14 +442,13 @@ export const studentService = {
   },
 
   /**
-   * Record Monthly Payment for next cycle:
-   * Resets sessions completed to 0/N, advances cycle, marks Paid, keeps Active
+   * تسجيل الدفعة الشهرية للدورة الجديدة
    */
   recordMonthlyPayment(studentId, {
     amount,
-    paymentMethod = 'Espèces (Cash)',
-    cycle = 'Nouveau Mois',
-    recordedBy = 'Admin',
+    paymentMethod = 'نقداً (في الإدارة)',
+    cycle = 'شهر جديد',
+    recordedBy = 'المدير',
     notes = '',
   }) {
     const students = this.getStudents()
@@ -449,7 +462,7 @@ export const studentService = {
       paymentMethod,
       cycle,
       recordedBy,
-      status: 'Validé',
+      status: 'مؤكد',
       notes,
     }
 
@@ -459,9 +472,9 @@ export const studentService = {
           ...s,
           paymentStatus: 'Paid',
           status: 'Active',
-          sessionsCompleted: 0, // Reset to 0/4 for new cycle!
+          sessionsCompleted: 0,
           currentCycle: cycle,
-          nextPaymentDate: 'À la fin du cycle',
+          nextPaymentDate: 'عند نهاية الدورة',
           paymentHistory: [paymentRecord, ...(s.paymentHistory || [])],
         }
       }
@@ -473,11 +486,9 @@ export const studentService = {
   },
 
   /**
-   * Automatic Session Engine:
-   * Automatically advances sessions based on elapsed schedule or course cadence.
-   * When sessions reach sessionsPerMonth (e.g. 4/4), automatically sets Payment Required!
+   * تسجيل حضور حصة تلقائياً لكامل الفوج
    */
-  autoAdvanceClassSessions(courseName, topic = 'Séance de cours programmée') {
+  autoAdvanceClassSessions(courseName, topic = 'حصة دراسية مجدولة') {
     const students = this.getStudents()
     let advancedCount = 0
 
@@ -495,15 +506,15 @@ export const studentService = {
           const newSessionRecord = {
             sessionNumber: newCompleted,
             date: new Date().toISOString().split('T')[0],
-            topic: `${topic} #${newCompleted}`,
-            status: 'Présent (Automatique)',
+            topic: `${topic} رقم ${newCompleted}`,
+            status: 'حاضر (تلقائي)',
           }
 
           return {
             ...student,
             sessionsCompleted: newCompleted,
             paymentStatus: isCycleComplete ? 'Payment Required' : 'Paid',
-            nextPaymentDate: isCycleComplete ? "Aujourd'hui (Séances terminées)" : student.nextPaymentDate,
+            nextPaymentDate: isCycleComplete ? 'اليوم (اكتملت الحصص)' : student.nextPaymentDate,
             sessionHistory: [newSessionRecord, ...(student.sessionHistory || [])],
           }
         }
@@ -518,11 +529,9 @@ export const studentService = {
   },
 
   /**
-   * Attendance / Session Tracking: Increments student session by +1
-   * When sessionsCompleted reaches sessionsPerMonth (e.g. 4/4),
-   * automatically triggers paymentStatus = "Payment Required"!
+   * زيادة حصة حضور واحدة لطالب محدد
    */
-  incrementStudentSession(studentId, topic = 'Séance de cours standard') {
+  incrementStudentSession(studentId, topic = 'حصة دراسية نظامية') {
     const students = this.getStudents()
     const student = students.find((s) => s.id === studentId)
     if (!student) return null
@@ -534,7 +543,7 @@ export const studentService = {
       sessionNumber: newCompleted,
       date: new Date().toISOString().split('T')[0],
       topic,
-      status: 'Présent',
+      status: 'حاضر',
     }
 
     const updated = students.map((s) => {
@@ -543,7 +552,7 @@ export const studentService = {
           ...s,
           sessionsCompleted: newCompleted,
           paymentStatus: isCycleComplete ? 'Payment Required' : s.paymentStatus,
-          nextPaymentDate: isCycleComplete ? "Aujourd'hui (Cycle terminé)" : s.nextPaymentDate,
+          nextPaymentDate: isCycleComplete ? 'اليوم (اكتملت الدورة)' : s.nextPaymentDate,
           sessionHistory: [newSessionRecord, ...(s.sessionHistory || [])],
         }
       }
@@ -555,7 +564,7 @@ export const studentService = {
   },
 
   /**
-   * Update student status (Active, Suspended, Payment Overdue, Cancelled)
+   * تحديث حالة الطالب
    */
   updateStudentStatus(studentId, newStatus) {
     const students = this.getStudents()
@@ -573,7 +582,7 @@ export const studentService = {
   },
 
   /**
-   * Delete student
+   * حذف ملف طالب
    */
   deleteStudent(studentId) {
     const students = this.getStudents()
@@ -582,18 +591,16 @@ export const studentService = {
   },
 
   /**
-   * Reset data to defaults (for testing/demo)
+   * إعادة ضبط البيانات الافتراضية
    */
   resetToDefaults() {
     this.saveStudents(DEFAULT_STUDENTS)
-    this.saveAnnouncements(DEFAULT_ANNOUNCEMENTS)
-    return { students: DEFAULT_STUDENTS, announcements: DEFAULT_ANNOUNCEMENTS }
+    this.saveAnnouncements(DEFAULT_CLASS_ADS)
+    return { students: DEFAULT_STUDENTS, announcements: DEFAULT_CLASS_ADS }
   },
 
   /**
-   * ==========================================
-   * ANNOUNCEMENTS MANAGEMENT METHODS
-   * ==========================================
+   * جلب إعلانات الفصول
    */
   getAnnouncements() {
     try {
@@ -602,10 +609,10 @@ export const studentService = {
         return JSON.parse(stored)
       }
     } catch (e) {
-      console.error('Failed reading announcements from storage:', e)
+      console.error('Failed reading class ads from storage:', e)
     }
-    this.saveAnnouncements(DEFAULT_ANNOUNCEMENTS)
-    return DEFAULT_ANNOUNCEMENTS
+    this.saveAnnouncements(DEFAULT_CLASS_ADS)
+    return DEFAULT_CLASS_ADS
   },
 
   saveAnnouncements(announcements) {
@@ -613,33 +620,50 @@ export const studentService = {
       localStorage.setItem(STORAGE_KEY_ANNOUNCEMENTS, JSON.stringify(announcements))
       notifyListeners(this.getStudents())
     } catch (e) {
-      console.error('Failed saving announcements:', e)
+      console.error('Failed saving class ads:', e)
     }
   },
 
+  /**
+   * إنشاء إعلان فصل / فوج جديد
+   */
   addAnnouncement({
     title,
     content,
-    category = 'Général',
-    targetAudience = 'Tous les élèves',
-    isPinned = false,
-    author = 'Direction de l\'école',
+    category = 'الرياضيات',
+    targetAudience = 'جميع المستويات',
+    courseName = 'الرياضيات المتقدمة',
+    teacherName = 'الأستاذ أحمد بن علي',
+    schedule = 'السبت والثلاثاء : 14:00 - 16:00',
+    groupName = 'فوج نهاية الأسبوع',
+    room = 'القاعة الرئيسية',
+    price = '4,500 دج / شهر',
+    spotsLeft = 8,
+    isPinned = true,
+    author = 'إدارة المدرسة',
   }) {
     const announcements = this.getAnnouncements()
-    const newAnn = {
-      id: `ANN-${Math.floor(100 + Math.random() * 900)}`,
-      title: title.trim(),
+    const newClassAd = {
+      id: `CAD-${Math.floor(100 + Math.random() * 900)}`,
+      title: title.trim() || `فوج ${courseName} مع ${teacherName}`,
       content: content.trim(),
       category,
       targetAudience,
+      courseName,
+      teacherName,
+      schedule,
+      groupName,
+      room,
+      price,
+      spotsLeft: spotsLeft ? Number(spotsLeft) : 8,
+      isPinned: Boolean(isPinned),
       date: new Date().toISOString().split('T')[0],
       author,
-      isPinned: Boolean(isPinned),
       views: 1,
     }
-    const updated = [newAnn, ...announcements]
+    const updated = [newClassAd, ...announcements]
     this.saveAnnouncements(updated)
-    return newAnn
+    return newClassAd
   },
 
   togglePinAnnouncement(id) {
@@ -649,10 +673,15 @@ export const studentService = {
     return updated
   },
 
+  deleteAnnouncement(id) {
+    const announcements = this.getAnnouncements()
+    const updated = announcements.filter((a) => a.id !== id)
+    this.saveAnnouncements(updated)
+    return updated
+  },
+
   /**
-   * ==========================================
-   * WHATSAPP AUTOMATION METHODS
-   * ==========================================
+   * تنسيق رقم الواتساب الجزائري
    */
   formatWhatsAppNumber(phone) {
     if (!phone) return ''
@@ -682,18 +711,18 @@ export const studentService = {
     sessionsPerMonth = 4,
     adminPhone = '0667158842',
   }) {
-    return `Salam / Bonjour ${parentName ? 'Mr/Mme ' + parentName : 'cher parent'},
+    return `السلام عليكم ورحمة الله وبركاته ${parentName ? 'السيد/ة ' + parentName : 'ولي أمر التلميذ المحترم'}،
 
-L'école *Nawafid Éducation* vous informe que l'élève *${studentName}* a complété la totalité des *${sessionsCompleted}/${sessionsPerMonth} séances* de son cycle mensuel pour le cours de *${courseName}* (${teacherName}).
+تتشرف إدارة *المدرسة* بإعلامكم أن التلميذ(ة) *${studentName}* قد أتم(ت) بنجاح كامل الحصص الشهرية (*${sessionsCompleted}/${sessionsPerMonth} حصص*) لمادة *${courseName}* تحت إشراف ${teacherName}.
 
-📌 *Montant à régler :* ${monthlyPrice} DA
-📅 *Cycle :* Nouveau mois à renouveler
-⚠️ *Statut :* Paiement requis pour confirmer la place au prochain cours.
+📌 *المبلغ المستحق للتجديد :* ${monthlyPrice} دج
+📅 *الدورة :* شهر جديد
+⚠️ *ملاحظة :* يرجى تسديد الاشتراك لتثبيت المقعد والحضور في الحصة القادمة.
 
-Vous pouvez régler en espèces au secrétariat de l'école ou par BaridiMob.
+يمكنكم الدفع نقداً على مستوى أمانة المدرسة أو عبر تطبيق بريدي موب BaridiMob.
 
-📞 *Contact Administration :* ${adminPhone}
-📍 *Nawafid Éducation*`
+📞 *هاتف الإدارة والاستفسار :* ${adminPhone}
+📍 *المدرسة - فضاء التميز التعليمي*`
   },
 
   openWhatsAppPaymentReminder(student, adminPhone = '0667158842') {
@@ -710,8 +739,6 @@ Vous pouvez régler en espèces au secrétariat de l'école ou par BaridiMob.
       adminPhone,
     })
 
-    // Frontend demo & simulation mode (no external window.open popup)
     return { formattedPhone, text, simulated: true }
   },
 }
-
