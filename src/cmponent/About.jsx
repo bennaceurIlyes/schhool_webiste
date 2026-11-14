@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router'
 import Navbar from './common/Navbar'
+import Footer from './common/Footer'
 import {
   GraduationCap,
   Award,
   Users,
   Target,
   BookOpen,
-  Sparkles,
   CheckCircle2,
   ArrowLeft,
 } from 'lucide-react'
@@ -48,9 +48,8 @@ export default function About() {
         <div className="hero-shape-blob blob-2" aria-hidden="true" />
 
         <div className="classes-page-container">
-          <div className="classes-hero-badge">
-            <Sparkles size={16} />
-            <span>عن المدرسة</span>
+          <div className="section-plain-kicker">
+            مرافقة تربوية معتمدة • أكثر من 1,200 متفوق
           </div>
 
           <h1 className="classes-page-title">
@@ -230,6 +229,8 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   )
 }

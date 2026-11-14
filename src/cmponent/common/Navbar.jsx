@@ -58,22 +58,10 @@ export default function Navbar({
         })}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div className="nav-actions">
         <Link
           to="/dashboard"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '8px 16px',
-            background: '#EEF4FF',
-            color: '#2563EB',
-            borderRadius: '999px',
-            fontSize: '13px',
-            fontWeight: '700',
-            border: '1px solid #BFDBFE',
-            textDecoration: 'none',
-          }}
+          className="nav-dashboard-link"
           id="btn-test-dashboard"
           onClick={closeMobileMenu}
         >

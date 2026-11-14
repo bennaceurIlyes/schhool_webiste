@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import Navbar from './common/Navbar'
+import Footer from './common/Footer'
 import ClassEnrollModal from './classes/ClassEnrollModal'
 import ClassAdsBanner from './common/ClassAdsBanner'
 import { classesData as defaultClassesList } from './home/homeData'
@@ -12,7 +13,7 @@ import {
   Clock,
   MapPin,
   Calendar,
-  Sparkles,
+  ShieldCheck,
   ArrowLeft,
   GraduationCap,
 } from 'lucide-react'
@@ -105,9 +106,8 @@ export default function Classes({ classesList = defaultClassesList }) {
         <div className="hero-shape-blob blob-2" aria-hidden="true" />
 
         <div className="classes-page-container">
-          <div className="classes-hero-badge">
-            <GraduationCap size={16} />
-            <span>السنة الدراسية 2026 / 2027</span>
+          <div className="section-plain-kicker">
+            السنة الدراسية 2026 / 2027
           </div>
 
           <h1 className="classes-page-title">
@@ -173,7 +173,7 @@ export default function Classes({ classesList = defaultClassesList }) {
               {filteredClasses.length} {filteredClasses.length > 1 ? 'فصول متاحة' : 'فصل متاح'}
             </h2>
             <div className="payment-notice-pill">
-              <Sparkles size={14} />
+              <ShieldCheck size={14} />
               <span>تسجيل أولي عبر الموقع + تأكيد الحجز في إدارة المدرسة</span>
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function Classes({ classesList = defaultClassesList }) {
                     />
                     <div
                       className="catalog-bookmark-ribbon"
-                      style={{ backgroundColor: item.ribbonColor || '#3B82F6' }}
+                      style={{ backgroundColor: item.ribbonColor || '#2C4870' }}
                     >
                       <span className="ribbon-text">{item.category}</span>
                     </div>
@@ -209,7 +209,7 @@ export default function Classes({ classesList = defaultClassesList }) {
                   <div className="catalog-card-body">
                     <div className="catalog-card-header">
                       <h3 className="catalog-subject-title">{item.title}</h3>
-                      <span className={`catalog-level-badge theme-text--${item.categoryTheme || 'blue'}`}>
+                      <span className={`catalog-level-badge theme-text--${item.categoryTheme || 'slate'}`}>
                         {item.level}
                       </span>
                       <p className="catalog-desc">{item.description}</p>
@@ -287,6 +287,8 @@ export default function Classes({ classesList = defaultClassesList }) {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
+
+      <Footer />
     </div>
   )
 }

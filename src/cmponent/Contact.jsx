@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Navbar from './common/Navbar'
+import Footer from './common/Footer'
 import {
   Phone,
   Mail,
@@ -7,7 +8,6 @@ import {
   Clock,
   Send,
   CheckCircle2,
-  Sparkles,
   MessageSquare,
   User,
   AlertCircle,
@@ -119,9 +119,8 @@ export default function Contact() {
         <div className="hero-shape-blob blob-2" aria-hidden="true" />
 
         <div className="classes-page-container">
-          <div className="classes-hero-badge">
-            <Sparkles size={16} />
-            <span>تواصل معنا</span>
+          <div className="section-plain-kicker">
+            مكتب الاستقبال مفتوح: السبت إلى الخميس من 08:30 إلى 17:30
           </div>
 
           <h1 className="classes-page-title">
@@ -163,8 +162,8 @@ export default function Contact() {
                     width: '44px',
                     height: '44px',
                     borderRadius: '12px',
-                    background: 'rgba(59, 130, 246, 0.1)',
-                    color: '#3B82F6',
+                    background: 'rgba(23, 32, 51, 0.06)',
+                    color: 'var(--color-navy, #172033)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -183,8 +182,8 @@ export default function Contact() {
                     width: '44px',
                     height: '44px',
                     borderRadius: '12px',
-                    background: 'rgba(16, 185, 129, 0.1)',
-                    color: '#10B981',
+                    background: '#E3F0EA',
+                    color: '#2F6E58',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -203,8 +202,8 @@ export default function Contact() {
                     width: '44px',
                     height: '44px',
                     borderRadius: '12px',
-                    background: 'rgba(217, 164, 65, 0.1)',
-                    color: '#D9A441',
+                    background: 'rgba(217, 164, 65, 0.12)',
+                    color: 'var(--color-primary, #D9A441)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -223,8 +222,8 @@ export default function Contact() {
                     width: '44px',
                     height: '44px',
                     borderRadius: '12px',
-                    background: 'rgba(139, 92, 246, 0.1)',
-                    color: '#8B5CF6',
+                    background: '#E4EAF3',
+                    color: '#2C4870',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -242,11 +241,11 @@ export default function Contact() {
 
             {/* School In-Person Notice */}
             <div style={{
-              background: '#FFFBEB',
-              border: '1px solid #FDE68A',
+              background: '#F8E9C7',
+              border: '1px solid #E8CF93',
               padding: '24px',
               borderRadius: '18px',
-              color: '#92400E',
+              color: '#8A5A00',
             }}>
               <strong style={{ display: 'block', fontSize: '15px', marginBottom: '8px' }}>
                 💡 زيارة مقر المدرسة
@@ -449,6 +448,8 @@ export default function Contact() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   )
 }

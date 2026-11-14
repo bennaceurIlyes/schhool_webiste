@@ -9,14 +9,38 @@
   /* Typography */
   --font-sans:              'Cairo', 'Tajawal', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Brand Colors — Warm Amber/Gold & Academic Navy */
-  --color-primary:          #D9A441; /* Warm Amber/Gold (Full Potential highlight, active underlines, accents) */
+  /* Brand Colors: Warm Amber/Gold & Academic Navy */
+  --color-primary:          #D9A441; /* Warm Amber/Gold */
   --color-primary-hover:    #c49033; /* Darker amber hover state */
-  --color-navy:             #172033; /* Deep Academic Navy (Headings, primary CTA, dark buttons) */
+  --color-navy:             #172033; /* Deep Academic Navy */
   --color-navy-hover:       #25334e; /* Navy hover state */
-  --color-accent-secondary: #F0DCA8; /* Soft Honey Tint (Icon backgrounds, decorative fills, hero blob) */
-  --color-pill-bg:          #F5E9D0; /* Warm Cream-Gold Tint for calm secondary badges/pills */
+  --color-accent-secondary: #F0DCA8; /* Soft Honey Tint */
+  --color-pill-bg:          #F5E9D0; /* Warm Cream-Gold Tint */
   --color-pill-text:        #172033; /* Deep Navy text for pills */
+
+  /* Subject System Tokens (Hand-tuned, WCAG AA compliant) */
+  --subject-math-bg:        #F3E4D0;
+  --subject-math-text:      #9C5B22;
+  --subject-math-icon:      #C9752F;
+  --subject-math-border:    #E8C9A0;
+
+  --subject-lang-bg:        #EDE3F0;
+  --subject-lang-text:      #6B3F79;
+  --subject-lang-icon:      #8C5A9E;
+  --subject-lang-border:    #DCC7E0;
+
+  --subject-tech-bg:        #DCEAE3;
+  --subject-tech-text:      #2F6E58;
+  --subject-tech-icon:      #3F8F71;
+  --subject-tech-border:    #B9D9CB;
+
+  --subject-sci-bg:         #DDE3EE;
+  --subject-sci-text:       #2A4470;
+  --subject-sci-icon:       #3E5F94;
+  --subject-sci-border:     #C3CFE0;
+
+  --status-alert-bg:        #F5DEDA;
+  --status-alert-text:      #B23B2E;
 
   /* Surfaces & Backgrounds */
   --bg-page:                #F7EFE3; /* Warm Cream / Ivory base canvas */
@@ -43,6 +67,7 @@
   --shadow-lg:              0 16px 36px rgba(23, 32, 51, 0.09);
   --shadow-cta:             0 4px 14px rgba(23, 32, 51, 0.18);
   --shadow-cta-hover:       0 6px 20px rgba(23, 32, 51, 0.26);
+  --footer-bg:              var(--color-navy, #172033); /* Brand academic navy footer */
   --shadow-nav-cta-hover:   0 4px 16px rgba(23, 32, 51, 0.20);
   --shadow-teacher:         0 2px 10px rgba(23, 32, 51, 0.05);
   --shadow-teacher-hover:   0 10px 24px rgba(23, 32, 51, 0.09);

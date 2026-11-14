@@ -1,0 +1,134 @@
+/* ============================================================
+   FIRST-LOAD SPLASH SCREEN (Task 3)
+   Fixed, full-viewport, solid background var(--color-navy)
+   Progress track rgba(255,255,255,0.15), fill #2A3A5C -> #D9A441
+   ============================================================ */
+
+.splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background-color: var(--color-navy, #172033);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  pointer-events: auto;
+}
+
+.splash-overlay.splash-fade-out {
+  opacity: 0;
+  transform: scale(1.03);
+  pointer-events: none;
+}
+
+.splash-center-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+}
+
+/* Reserved fixed dimensions for mark container to prevent CLS */
+.splash-mark-container {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary, #D9A441);
+  background: rgba(217, 164, 65, 0.08);
+  border: 1px solid rgba(217, 164, 65, 0.3);
+  border-radius: 18px;
+  margin-bottom: 16px;
+  animation: splashPulse 2.4s ease-in-out infinite alternate;
+}
+
+.splash-mark-svg {
+  display: block;
+}
+
+.splash-title {
+  font-family: var(--font-display, 'Cairo', sans-serif);
+  font-size: 26px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.splash-subtitle {
+  font-family: var(--font-body, 'Tajawal', sans-serif);
+  font-size: 13.5px;
+  color: rgba(247, 239, 227, 0.7);
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+
+/* 1px Gold Divider below mark in --color-primary */
+.splash-divider {
+  width: 54px;
+  height: 1px;
+  background-color: var(--color-primary, #D9A441);
+  opacity: 0.7;
+  margin-bottom: 22px;
+}
+
+/* 2.5px Progress Bar Track */
+.splash-progress-track {
+  width: 100%;
+  max-width: 220px;
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+/* Fill Gradient: #2A3A5C (academic slate) -> #D9A441 (gold) */
+.splash-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2A3A5C 0%, var(--color-primary, #D9A441) 100%);
+  border-radius: 999px;
+  transition: width 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Status Line in --bg-page Warm Ivory */
+.splash-status-text {
+  font-family: var(--font-body, 'Tajawal', sans-serif);
+  font-size: 13px;
+  color: var(--bg-page, #F7EFE3);
+  opacity: 0.85;
+  letter-spacing: 0.01em;
+}
+
+@keyframes splashPulse {
+  0% {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 0 rgba(217, 164, 65, 0.15);
+  }
+  100% {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(217, 164, 65, 0.2);
+  }
+}
+
+/* Respect prefers-reduced-motion: Instant show/hide, no animated fill */
+@media (prefers-reduced-motion: reduce) {
+  .splash-overlay {
+    transition: none !important;
+  }
+  .splash-mark-container {
+    animation: none !important;
+  }
+  .splash-progress-fill {
+    transition: none !important;
+  }
+}

@@ -52,10 +52,10 @@ export default function ClassCard({ classItem }) {
     teacher,
     hours,
     category,
-    categoryTheme = 'blue',
+    categoryTheme = 'slate',
     iconType,
     image,
-    ribbonColor = '#3B82F6',
+    ribbonColor = '#2C4870',
   } = classItem
 
   return (

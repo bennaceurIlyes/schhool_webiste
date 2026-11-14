@@ -32,7 +32,6 @@ import {
   AlertCircle,
   MapPin,
   Layers,
-  Sparkles,
   CreditCard,
   Send,
   RotateCcw,
@@ -410,12 +409,12 @@ export default function Dashboard() {
             <div className="sidebar-brand" onClick={() => setActiveTab('student')}>
               <div className="brand-logo-icon">
                 <svg width="40" height="40" viewBox="0 0 44 44" fill="none">
-                  <path d="M22 6C20.5 9 17 11 13 11C13 15 16 18 20 18C22 15 22 10 22 6Z" fill="#10B981" />
-                  <path d="M22 6C23.5 9 27 11 31 11C31 15 28 18 24 18C22 15 22 10 22 6Z" fill="#34D399" />
-                  <circle cx="22" cy="14" r="3" fill="#2563EB" />
-                  <path d="M8 22C13 20 18 21 22 24C26 21 31 20 36 22C34 27 29 29 22 29C15 29 10 27 8 22Z" fill="#2563EB" />
-                  <path d="M6 31C12 29 18 30 22 33C26 30 32 29 38 31C36 34 30 36 22 36C14 36 8 34 6 31Z" fill="#3B82F6" />
-                  <rect x="20.5" y="24" width="3" height="12" rx="1.5" fill="#1D4ED8" />
+                  <path d="M22 6C20.5 9 17 11 13 11C13 15 16 18 20 18C22 15 22 10 22 6Z" fill="#3F8F71" />
+                  <path d="M22 6C23.5 9 27 11 31 11C31 15 28 18 24 18C22 15 22 10 22 6Z" fill="#28624E" />
+                  <circle cx="22" cy="14" r="3" fill="#D9A441" />
+                  <path d="M8 22C13 20 18 21 22 24C26 21 31 20 36 22C34 27 29 29 22 29C15 29 10 27 8 22Z" fill="#172033" />
+                  <path d="M6 31C12 29 18 30 22 33C26 30 32 29 38 31C36 34 30 36 22 36C14 36 8 34 6 31Z" fill="#2C4870" />
+                  <rect x="20.5" y="24" width="3" height="12" rx="1.5" fill="#172033" />
                 </svg>
               </div>
               <div className="brand-text-wrap">
@@ -461,7 +460,7 @@ export default function Dashboard() {
               >
                 <Megaphone size={19} className="nav-item-icon" />
                 <span>إعلانات الفصول</span>
-                <span className="sidebar-badge-count" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                <span className="sidebar-badge-count" style={{ background: '#E4EAF3', color: '#2C4870' }}>
                   {announcements.length}
                 </span>
                 {activeTab === 'announcements' && <span className="nav-active-dot" />}
@@ -620,14 +619,14 @@ export default function Dashboard() {
                     {topPinnedAnnouncement && (
                       <div
                         style={{
-                          background: '#EFF6FF',
+                          background: '#E4EAF3',
                           padding: '10px 12px',
                           borderRadius: '10px',
                           fontSize: '12px',
-                          color: '#1D4ED8',
+                          color: 'var(--color-navy, #172033)',
                           marginBottom: '8px',
                           fontWeight: '600',
-                          border: '1px solid #BFDBFE',
+                          border: '1px solid #C3CFE0',
                         }}
                       >
                         📢 <strong>{topPinnedAnnouncement.title}</strong>
@@ -653,7 +652,7 @@ export default function Dashboard() {
                 <div className="summary-kpi-card" onClick={() => setSelectedAnnCategory('all')}>
                   <div className="kpi-top-row">
                     <span className="kpi-label-text">إجمالي إعلانات الفصول</span>
-                    <div className="kpi-icon-square" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                    <div className="kpi-icon-square" style={{ background: '#E4EAF3', color: '#2C4870' }}>
                       <Megaphone size={16} />
                     </div>
                   </div>
@@ -676,26 +675,26 @@ export default function Dashboard() {
 
                 <div className="summary-kpi-card">
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text" style={{ color: '#D97706' }}>المقاعد المتاحة</span>
-                    <div className="kpi-icon-square" style={{ background: '#FEF3C7', color: '#D97706' }}>
+                    <span className="kpi-label-text" style={{ color: '#8D4C17' }}>المقاعد المتاحة</span>
+                    <div className="kpi-icon-square" style={{ background: '#F3E4D0', color: '#8D4C17' }}>
                       <Users size={16} />
                     </div>
                   </div>
-                  <div className="kpi-number-display" style={{ color: '#D97706' }}>
+                  <div className="kpi-number-display" style={{ color: '#8D4C17' }}>
                     {announcements.reduce((acc, a) => acc + (Number(a.spotsLeft) || 0), 0)} مقعد
                   </div>
-                  <span className="kpi-sub-badge" style={{ color: '#D97706' }}>جاهزة لاستقبال الطلاب</span>
+                  <span className="kpi-sub-badge" style={{ color: '#C9752F' }}>جاهزة لاستقبال الطلاب</span>
                 </div>
 
                 <div className="summary-kpi-card">
                   <div className="kpi-top-row">
-                    <span className="kpi-label-text" style={{ color: '#7C3AED' }}>التسجيل الفوري</span>
-                    <div className="kpi-icon-square" style={{ background: '#F5F3FF', color: '#7C3AED' }}>
-                      <Sparkles size={16} />
+                    <span className="kpi-label-text" style={{ color: '#6B3F79' }}>التسجيل الفوري</span>
+                    <div className="kpi-icon-square" style={{ background: '#EDE3F0', color: '#6B3F79' }}>
+                      <Zap size={16} />
                     </div>
                   </div>
-                  <div className="kpi-number-display" style={{ color: '#7C3AED' }}>نشط 🟢</div>
-                  <span className="kpi-sub-badge" style={{ color: '#7C3AED' }}>متاح في الموقع للزوار</span>
+                  <div className="kpi-number-display" style={{ color: '#6B3F79' }}>نشط 🟢</div>
+                  <span className="kpi-sub-badge" style={{ color: '#6B3F79' }}>متاح في الموقع للزوار</span>
                 </div>
               </div>
 
@@ -724,7 +723,7 @@ export default function Dashboard() {
                           fontSize: '12.5px',
                           fontWeight: '700',
                           cursor: 'pointer',
-                          background: selectedAnnCategory === cat ? '#2563EB' : 'transparent',
+                          background: selectedAnnCategory === cat ? 'var(--admin-primary, #2C4870)' : 'transparent',
                           color: selectedAnnCategory === cat ? '#FFFFFF' : '#4B5563',
                         }}
                         onClick={() => setSelectedAnnCategory(cat)}
@@ -791,7 +790,7 @@ export default function Dashboard() {
                             border: '1px solid #E2E8F0',
                           }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#1E40AF', fontWeight: '700' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-navy, #172033)', fontWeight: '700' }}>
                             <User size={14} />
                             <span>{ann.teacherName || 'أستاذ المادة'}</span>
                           </div>
@@ -820,7 +819,7 @@ export default function Dashboard() {
 
                       <div className="ann-card-footer">
                         <div className="ann-author-info">
-                          <User size={13} color="#2563EB" />
+                          <User size={13} color="var(--admin-primary, #2C4870)" />
                           <span>{ann.author}</span>
                         </div>
 
@@ -910,14 +909,14 @@ export default function Dashboard() {
                 >
                   <div className="kpi-top-row">
                     <span className="kpi-label-text">قيد الانتظار</span>
-                    <div className="kpi-icon-square" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                    <div className="kpi-icon-square" style={{ background: '#E4EAF3', color: '#2C4870' }}>
                       <Clock size={16} />
                     </div>
                   </div>
-                  <div className="kpi-number-display" style={{ color: '#2563EB' }}>
+                  <div className="kpi-number-display" style={{ color: '#2C4870' }}>
                     {pendingEnrollmentsCount}
                   </div>
-                  <span className="kpi-sub-badge" style={{ color: '#2563EB' }}>
+                  <span className="kpi-sub-badge" style={{ color: '#2C4870' }}>
                     🔵 قيد التأكيد الفعلي
                   </span>
                 </div>
@@ -1076,7 +1075,7 @@ export default function Dashboard() {
                         fontSize: '12.5px',
                         fontWeight: '700',
                         cursor: 'pointer',
-                        background: selectedFilterCategory === 'all' ? '#2563EB' : 'transparent',
+                        background: selectedFilterCategory === 'all' ? 'var(--admin-primary, #2C4870)' : 'transparent',
                         color: selectedFilterCategory === 'all' ? '#FFFFFF' : '#4B5563',
                       }}
                       onClick={() => setSelectedFilterCategory('all')}
@@ -1156,7 +1155,7 @@ export default function Dashboard() {
                     }}
                     type="button"
                   >
-                    <Sparkles size={14} />
+                    <ClipboardCheck size={14} />
                     <span>تسجيل حضور حصة اليوم</span>
                   </button>
 
@@ -1204,16 +1203,16 @@ export default function Dashboard() {
                                     style={{
                                       background:
                                         student.status === 'Active'
-                                          ? '#DBEAFE'
+                                          ? '#DDE3EE'
                                           : student.status === 'Pending Approval'
-                                          ? '#E0E7FF'
-                                          : '#FEE2E2',
+                                            ? '#E4EAF3'
+                                            : '#F5DEDA',
                                       color:
                                         student.status === 'Active'
-                                          ? '#1D4ED8'
+                                          ? '#172033'
                                           : student.status === 'Pending Approval'
-                                          ? '#4338CA'
-                                          : '#DC2626',
+                                            ? '#2C4870'
+                                            : '#B23B2E',
                                     }}
                                   >
                                     {student.fullName
@@ -1252,9 +1251,8 @@ export default function Dashboard() {
                                   </div>
                                   <div className="session-progress-track">
                                     <div
-                                      className={`session-progress-fill ${
-                                        isComplete ? 'fill-progress-complete' : 'fill-progress-active'
-                                      }`}
+                                      className={`session-progress-fill ${isComplete ? 'fill-progress-complete' : 'fill-progress-active'
+                                        }`}
                                       style={{ width: `${percent}%` }}
                                     />
                                   </div>
@@ -1289,7 +1287,7 @@ export default function Dashboard() {
                               </td>
 
                               <td>
-                                <div style={{ fontSize: '13px', fontWeight: '600', color: isComplete ? '#DC2626' : '#334155' }}>
+                                <div style={{ fontSize: '13px', fontWeight: '600', color: isComplete ? '#B23B2E' : '#334155' }}>
                                   {student.nextPaymentDate}
                                 </div>
                                 <div style={{ fontSize: '11px', color: '#94A3B8' }}>
@@ -1303,29 +1301,29 @@ export default function Dashboard() {
                                   style={{
                                     background:
                                       student.status === 'Active'
-                                        ? '#ECFDF5'
+                                        ? '#DCEAE3'
                                         : student.status === 'Pending Approval'
-                                        ? '#EFF6FF'
-                                        : student.status === 'Payment Overdue'
-                                        ? '#FEF2F2'
-                                        : '#F3F4F6',
+                                          ? '#E4EAF3'
+                                          : student.status === 'Payment Overdue'
+                                            ? '#F5DEDA'
+                                            : '#F1EDE5',
                                     color:
                                       student.status === 'Active'
-                                        ? '#059669'
+                                        ? '#28624E'
                                         : student.status === 'Pending Approval'
-                                        ? '#2563EB'
-                                        : student.status === 'Payment Overdue'
-                                        ? '#DC2626'
-                                        : '#4B5563',
+                                          ? '#2C4870'
+                                          : student.status === 'Payment Overdue'
+                                            ? '#B23B2E'
+                                            : '#5A6270',
                                   }}
                                 >
                                   {student.status === 'Active'
                                     ? 'نشط'
                                     : student.status === 'Pending Approval'
-                                    ? 'قيد الانتظار'
-                                    : student.status === 'Payment Overdue'
-                                    ? 'اشتراك متأخر'
-                                    : student.status}
+                                      ? 'قيد الانتظار'
+                                      : student.status === 'Payment Overdue'
+                                        ? 'اشتراك متأخر'
+                                        : student.status}
                                 </span>
                               </td>
 
@@ -1434,7 +1432,7 @@ export default function Dashboard() {
                   </div>
                   <button
                     className="btn-add-student-primary"
-                    style={{ background: '#1E40AF', padding: '8px 16px', fontSize: '12.5px', whiteSpace: 'nowrap' }}
+                    style={{ background: 'var(--admin-primary, #2C4870)', padding: '8px 16px', fontSize: '12.5px', whiteSpace: 'nowrap' }}
                     onClick={() => setActiveTab('announcements')}
                     type="button"
                   >
@@ -1587,7 +1585,7 @@ export default function Dashboard() {
                   </div>
                   <div className="kpi-value-row">
                     <span className="kpi-main-number">{totalRevenueCollected.toLocaleString()} دج</span>
-                    <span className="kpi-sub-trend" style={{ color: '#10B981' }}>
+                    <span className="kpi-sub-trend" style={{ color: '#28624E' }}>
                       ↑ في الصندوق والحسابات البنكية
                     </span>
                   </div>
@@ -1596,13 +1594,13 @@ export default function Dashboard() {
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
                     <span className="kpi-title">المداخيل الشهرية المتوقعة</span>
-                    <div className="kpi-icon-pill" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                    <div className="kpi-icon-pill" style={{ background: '#E4EAF3', color: '#2C4870' }}>
                       <TrendingUp size={18} />
                     </div>
                   </div>
                   <div className="kpi-value-row">
                     <span className="kpi-main-number">{expectedMonthlyRevenue.toLocaleString()} دج</span>
-                    <span className="kpi-sub-trend" style={{ color: '#2563EB' }}>
+                    <span className="kpi-sub-trend" style={{ color: '#2C4870' }}>
                       للطلاب في حالة نشط
                     </span>
                   </div>
@@ -1611,7 +1609,7 @@ export default function Dashboard() {
                 <div className="stats-kpi-card">
                   <div className="kpi-card-header">
                     <span className="kpi-title">مدفوعات مستحقة (4/4)</span>
-                    <div className="kpi-icon-pill" style={{ background: '#FEF3C7', color: '#D97706' }}>
+                    <div className="kpi-icon-pill" style={{ background: '#F3E4D0', color: '#8D4C17' }}>
                       <AlertCircle size={18} />
                     </div>
                   </div>
@@ -1712,19 +1710,19 @@ export default function Dashboard() {
 
                     <div className="level-dist-card">
                       <span className="level-dist-title">مدفوعات مستحقة (4/4)</span>
-                      <span className="level-dist-count" style={{ color: '#D97706' }}>{paymentsDueCount}</span>
+                      <span className="level-dist-count" style={{ color: '#8D4C17' }}>{paymentsDueCount}</span>
                       <span className="level-dist-meta">بحاجة لتجديد الاشتراك</span>
                     </div>
 
                     <div className="level-dist-card">
                       <span className="level-dist-title">قيد التأكيد الفعلي</span>
-                      <span className="level-dist-count" style={{ color: '#2563EB' }}>{pendingEnrollmentsCount}</span>
+                      <span className="level-dist-count" style={{ color: '#2C4870' }}>{pendingEnrollmentsCount}</span>
                       <span className="level-dist-meta">بانتظار التأكيد بالمدرسة</span>
                     </div>
 
                     <div className="level-dist-card">
                       <span className="level-dist-title">مدفوعات متأخرة</span>
-                      <span className="level-dist-count" style={{ color: '#DC2626' }}>{overduePaymentsCount}</span>
+                      <span className="level-dist-count" style={{ color: '#B23B2E' }}>{overduePaymentsCount}</span>
                       <span className="level-dist-meta">ملفات قيد المتابعة</span>
                     </div>
                   </div>
@@ -1768,7 +1766,7 @@ export default function Dashboard() {
                             </div>
                           </td>
                           <td>
-                            <span className="badge-class-pill" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                            <span className="badge-class-pill" style={{ background: '#E4EAF3', color: '#2C4870' }}>
                               {t.subject}
                             </span>
                           </td>
@@ -2071,7 +2069,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="submit"
-                  style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  style={{ padding: '10px 22px', borderRadius: '12px', background: 'var(--admin-primary, #2C4870)', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
                   <Send size={15} />
                   <span>نشر الإعلان في الموقع</span>
@@ -2122,7 +2120,7 @@ export default function Dashboard() {
               <button
                 type="button"
                 onClick={() => setViewingAnnouncement(null)}
-                style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '700', cursor: 'pointer' }}
+                style={{ padding: '10px 22px', borderRadius: '12px', background: 'var(--admin-primary, #2C4870)', color: '#FFFFFF', border: 'none', fontWeight: '700', cursor: 'pointer' }}
               >
                 إغلاق
               </button>
@@ -2347,7 +2345,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="submit"
-                  style={{ padding: '10px 24px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  style={{ padding: '10px 24px', borderRadius: '12px', background: 'var(--admin-primary, #2C4870)', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
                   <CreditCard size={16} />
                   <span>تسجيل الدفعة الآن</span>
@@ -2419,10 +2417,10 @@ export default function Dashboard() {
 
             <div className="profile-current-cycle-card">
               <div>
-                <div style={{ fontSize: '12px', color: '#1E40AF', fontWeight: '700', textTransform: 'uppercase' }}>
+                <div style={{ fontSize: '12px', color: 'var(--admin-primary, #2C4870)', fontWeight: '700', textTransform: 'uppercase' }}>
                   الدورة الحالية : {viewingStudent.currentCycle}
                 </div>
-                <div style={{ fontSize: '20px', fontWeight: '800', color: '#1E3A8A', marginTop: '4px' }}>
+                <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--color-navy, #172033)', marginTop: '4px' }}>
                   {viewingStudent.sessionsCompleted} من أصل {viewingStudent.sessionsPerMonth} حصص مكتملة
                 </div>
                 <div style={{ fontSize: '12.5px', color: '#475569', marginTop: '2px' }}>
@@ -2459,30 +2457,32 @@ export default function Dashboard() {
                 سجل المدفوعات السابقة ({viewingStudent.paymentHistory?.length || 0})
               </h4>
               {viewingStudent.paymentHistory && viewingStudent.paymentHistory.length > 0 ? (
-                <table className="payment-history-table">
-                  <thead>
-                    <tr>
-                      <th>التاريخ</th>
-                      <th>المبلغ</th>
-                      <th>الدورة / الشهر</th>
-                      <th>طريقة الدفع</th>
-                      <th>الحالة</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {viewingStudent.paymentHistory.map((p, idx) => (
-                      <tr key={idx}>
-                        <td style={{ fontWeight: '600' }}>{p.paymentDate}</td>
-                        <td style={{ fontWeight: '800', color: '#059669' }}>{p.amount} دج</td>
-                        <td>{p.cycle}</td>
-                        <td>{p.paymentMethod}</td>
-                        <td>
-                          <span className="badge-status-pill status-paid">مؤكد</span>
-                        </td>
+                <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                  <table className="payment-history-table">
+                    <thead>
+                      <tr>
+                        <th>التاريخ</th>
+                        <th>المبلغ</th>
+                        <th>الدورة / الشهر</th>
+                        <th>طريقة الدفع</th>
+                        <th>الحالة</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {viewingStudent.paymentHistory.map((p, idx) => (
+                        <tr key={idx}>
+                          <td style={{ fontWeight: '600' }}>{p.paymentDate}</td>
+                          <td style={{ fontWeight: '800', color: '#28624E' }}>{p.amount} دج</td>
+                          <td>{p.cycle}</td>
+                          <td>{p.paymentMethod}</td>
+                          <td>
+                            <span className="badge-status-pill status-paid">مؤكد</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
                 <div style={{ background: '#F9FAFB', padding: '16px', borderRadius: '10px', textAlign: 'center', color: '#6B7280', fontSize: '13px' }}>
                   لا توجد مدفوعات مسجلة حتى الآن.
@@ -2617,7 +2617,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="submit"
-                  style={{ padding: '10px 22px', borderRadius: '12px', background: '#2563EB', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer' }}
+                  style={{ padding: '10px 22px', borderRadius: '12px', background: 'var(--admin-primary, #2C4870)', color: '#FFFFFF', border: 'none', fontWeight: '800', cursor: 'pointer' }}
                 >
                   حفظ وتسجيل الطالب
                 </button>

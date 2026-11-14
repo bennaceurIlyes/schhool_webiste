@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Printer,
-  Sparkles,
   Info,
   DollarSign,
   GraduationCap,
@@ -234,7 +233,7 @@ export default function ClassEnrollModal({ classItem, isOpen, onClose }) {
                       width: '100%',
                       height: '100%',
                       minHeight: '120px',
-                      background: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
+                      background: '#172033',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -247,7 +246,7 @@ export default function ClassEnrollModal({ classItem, isOpen, onClose }) {
                 )}
                 <span
                   className="preview-ribbon"
-                  style={{ backgroundColor: classItem.ribbonColor || '#3B82F6' }}
+                  style={{ backgroundColor: classItem.ribbonColor || '#3E5F94' }}
                 >
                   {classItem.category || 'فصل دراسي'}
                 </span>
@@ -466,7 +465,7 @@ export default function ClassEnrollModal({ classItem, isOpen, onClose }) {
                     <span>جاري التحقق وتسجيل الطلب...</span>
                   ) : (
                     <>
-                      <Sparkles size={17} />
+                      <CheckCircle2 size={17} />
                       <span>تأكيد التسجيل المبدئي</span>
                     </>
                   )}

@@ -24,14 +24,10 @@ export default function ClassesSection({
 
         {/* Section Header */}
         <div className="classes-header" data-animate>
-          <div className="classes-top-badge" aria-hidden="true">
-            <GraduationCap size={20} className="classes-badge-icon" />
-          </div>
+          <div className="section-plain-kicker">برامج الموسم الدراسي</div>
 
           <h2 className="classes-title">
-            <span className="sparkle-ornament ornament-left">✦</span>
             {title}
-            <span className="sparkle-ornament ornament-right">✦</span>
           </h2>
 
           <p className="classes-subtitle">{subtitle}</p>

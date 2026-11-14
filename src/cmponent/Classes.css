@@ -47,22 +47,19 @@
   right: -10%;
   width: 450px;
   height: 450px;
-  background: rgba(59, 130, 246, 0.12);
+  background: rgba(46, 90, 172, 0.08);
 }
 
+.section-plain-kicker,
 .classes-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #FFFFFF;
-  padding: 8px 18px;
-  border-radius: var(--radius-pill);
-  font-size: 13px;
+  display: inline-block;
+  font-family: var(--font-body, 'Tajawal', sans-serif);
+  font-size: 13.5px;
   font-weight: 700;
-  color: var(--color-navy);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-pill);
-  margin-bottom: 20px;
+  letter-spacing: 0.06em;
+  color: var(--color-primary, #D9A441);
+  text-transform: uppercase;
+  margin-bottom: 14px;
 }
 
 .classes-page-title {
@@ -196,12 +193,12 @@
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
-  background: #FEF3C7;
-  color: #92400E;
+  background: #F3E4D0;
+  color: #8D4C17;
   border-radius: var(--radius-pill);
   font-size: 12.5px;
   font-weight: 600;
-  border: 1px solid #FDE68A;
+  border: 1px solid #E8C9A0;
 }
 
 .catalog-grid {
@@ -281,7 +278,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10B981;
+  background: #3F8F71;
 }
 
 .catalog-card-body {
@@ -472,10 +469,13 @@
   width: 100%;
   max-width: 620px;
   max-height: 90vh;
+  max-height: 90dvh;
   background: #FFFFFF;
   border-radius: 24px;
   box-shadow: 0 25px 60px rgba(15, 23, 42, 0.3);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
   border: 1px solid rgba(23, 32, 51, 0.08);
   animation: modalZoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -602,9 +602,9 @@
 }
 
 .info-chip.chip-price {
-  background: #EFF6FF;
-  border-color: #BFDBFE;
-  color: #1D4ED8;
+  background: rgba(217, 164, 65, 0.12);
+  border-color: rgba(217, 164, 65, 0.3);
+  color: #8A5A00;
   font-weight: 700;
 }
 
@@ -613,22 +613,22 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
+  background: #F8EFE4;
+  border: 1px solid #E8C9A0;
   border-radius: 12px;
   padding: 12px 14px;
   margin-bottom: 22px;
 }
 
 .modal-info-banner .info-icon {
-  color: #D97706;
+  color: #9C5B22;
   flex-shrink: 0;
   margin-top: 1px;
 }
 
 .modal-info-banner p {
   font-size: 12.5px;
-  color: #92400E;
+  color: #8D4C17;
   line-height: 1.5;
 }
 
@@ -767,10 +767,10 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #ECFDF5;
-  color: #10B981;
+  background: #DCEAE3;
+  color: #28624E;
   margin-bottom: 14px;
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 6px 20px rgba(40, 98, 78, 0.16);
 }
 
 .success-title {
@@ -786,22 +786,22 @@
   margin-bottom: 20px;
 }
 
-/* The High-Priority Warning / Alert Box */
+/* The High-Priority Warning / Alert Box - Brand Aligned Solid */
 .mandatory-payment-alert {
-  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-  border: 2px solid #F59E0B;
+  background: #FDF6ED;
+  border: 1.5px solid #E8C9A0;
   border-radius: 16px;
   padding: 18px 20px;
   margin-bottom: 22px;
   text-align: left;
-  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 8px 24px rgba(141, 76, 23, 0.08);
 }
 
 .alert-badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: #D97706;
+  background: #C9752F;
   color: #FFFFFF;
   padding: 4px 12px;
   border-radius: var(--radius-pill);
@@ -818,20 +818,20 @@
 
 .alert-main-text {
   font-size: 14px;
-  color: #78350F;
+  color: #8D4C17;
   margin-bottom: 8px;
   line-height: 1.5;
 }
 
 .alert-action-text {
   font-size: 13.5px;
-  color: #92400E;
+  color: #9C5B22;
   font-weight: 600;
   line-height: 1.5;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   padding: 10px 12px;
   border-radius: 10px;
-  border-left: 4px solid #D97706;
+  border-left: 4px solid #C9752F;
 }
 
 /* Receipt Summary Box */
@@ -869,11 +869,12 @@
 
 .receipt-code {
   font-family: monospace;
-  background: #EFF6FF;
-  color: #1D4ED8;
+  background: rgba(23, 32, 51, 0.06);
+  color: var(--color-navy, #172033);
   padding: 2px 8px;
   border-radius: 6px;
   font-size: 14px;
+  font-weight: 700;
 }
 
 .receipt-price {

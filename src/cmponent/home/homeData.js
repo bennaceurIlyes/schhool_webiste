@@ -14,10 +14,10 @@ import classPhysicsImg from '../../assets/class-physics.jpg'
 import classComputerImg from '../../assets/class-computer.jpg'
 
 export const heroData = {
-  eyebrow: 'موضع ثقة العائلات والمهنيين',
+  eyebrow: 'تسجيلات الموسم الدراسي 2026 / 2027 مفتوحة',
   title: 'تمكين كل متعلّم\nلتحقيق ',
   titleAccent: 'أقصى إمكاناته',
-  description: 'تعليم عالي الجودة، دروس دعم وتقوية مدرسية، دورات لغات حية، وتكوين مهني تطبيقي لجميع الفئات والأعمار — أطفال، متمدرسون، وكبار.',
+  description: 'تعليم عالي الجودة، دروس دعم وتقوية مدرسية، دورات لغات حية، وتكوين مهني تطبيقي لجميع الفئات والأعمار: للأطفال، المتمدرسين، والكبار.',
   primaryCta: {
     label: 'استكشف برامجنا',
     link: '/Classes',
@@ -55,7 +55,7 @@ export const programsData = [
     actionType: 'arrow',
     link: '/Classes',
     ariaLabel: 'استكشف الدعم المدرسي',
-    description: 'نساعد التلاميذ على تجاوز التعثر الدراسي والارتقاء إلى الامتياز والتفوق — خلال نفس الفصل الدراسي. نركز بدقة على المواد ونقاط الضعف الفردية.',
+    description: 'نساعد التلاميذ على تجاوز التعثر الدراسي وتحقيق الامتياز والتفوق خلال نفس الفصل الدراسي، مع تركيز دقيق على معالجة نقاط الضعف الفردية لكل تلميذ.',
     bulletClass: 'bullet-gold',
     features: [
       'مرافقة فردية وتحديد دقيق لنقاط الضعف',
@@ -75,7 +75,7 @@ export const programsData = [
     actionValue: '3',
     link: '/Classes',
     ariaLabel: 'استكشف دورات اللغات',
-    description: 'الإنجليزية، الفرنسية، أو العربية — التحدث بطلاقة وثقة بعد فصل واحد. برامج تفاعلية ومحفزة للأطفال، اليافعين، والمبتدئين من الكبار.',
+    description: 'الإنجليزية، الفرنسية، أو العربية: تمكين المتعلم من التحدث بطلاقة وثقة بعد فصل واحد، عبر برامج تفاعلية ومحفزة للأطفال، اليافعين، والكبار.',
     bulletClass: 'bullet-purple',
     features: [
       'برامج للأطفال، المراهقين والكبار',
@@ -161,10 +161,10 @@ export const classesData = [
     room: 'القاعة ب2 - جناح العلوم',
     spotsLeft: 6,
     category: 'الرياضيات',
-    categoryTheme: 'blue',
+    categoryTheme: 'amber',
     iconType: 'math',
     image: classMathImg,
-    ribbonColor: '#3B82F6',
+    ribbonColor: '#C9752F',
   },
   {
     id: 'class-english',
@@ -178,10 +178,10 @@ export const classesData = [
     room: 'القاعة ل1 - جناح اللغات',
     spotsLeft: 4,
     category: 'اللغات',
-    categoryTheme: 'green',
+    categoryTheme: 'purple',
     iconType: 'english',
     image: classEnglishImg,
-    ribbonColor: '#10B981',
+    ribbonColor: '#8C5A9E',
   },
   {
     id: 'class-arabic',
@@ -198,7 +198,7 @@ export const classesData = [
     categoryTheme: 'rose',
     iconType: 'arabic',
     image: classArabicImg,
-    ribbonColor: '#F43F5E',
+    ribbonColor: '#B23B2E',
   },
   {
     id: 'class-physics',
@@ -212,10 +212,10 @@ export const classesData = [
     room: 'المخبر رقم 01 - جناح التجارب',
     spotsLeft: 5,
     category: 'العلوم',
-    categoryTheme: 'purple',
+    categoryTheme: 'blue',
     iconType: 'physics',
     image: classPhysicsImg,
-    ribbonColor: '#8B5CF6',
+    ribbonColor: '#3E5F94',
   },
   {
     id: 'class-computer',
@@ -229,10 +229,10 @@ export const classesData = [
     room: 'قاعة الإعلام الآلي 1',
     spotsLeft: 3,
     category: 'التكنولوجيا',
-    categoryTheme: 'amber',
+    categoryTheme: 'green',
     iconType: 'computer',
     image: classComputerImg,
-    ribbonColor: '#F59E0B',
+    ribbonColor: '#3F8F71',
   },
 ]
 
@@ -240,7 +240,7 @@ export const schoolInfo = {
   name: 'المدرسة',
   address: '12 شارع الحرية، الجزائر الوسطى، الجزائر',
   phone: '+213 (0) 555 12 34 56',
-  email: 'contact@academie-alkhwarizmi.dz',
+  email: 'contact@almadrasa.edu.dz',
   hours: 'من الأحد إلى الخميس : 08:30 - 17:30 | السبت : 09:00 - 14:00',
 }
 

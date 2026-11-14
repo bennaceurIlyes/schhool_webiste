@@ -34,10 +34,7 @@ export default function GrowthSection({
 
         {/* Section Header */}
         <div className="growth-header" data-animate>
-          <div className="growth-eyebrow">
-            <span className="growth-eyebrow-icon">{eyebrowIcon}</span>
-            <span>{eyebrowText}</span>
-          </div>
+          <div className="section-plain-kicker">{eyebrowText}</div>
           <h2 className="growth-title">
             {titlePrefix}
             <span className="title-highlight">{titleHighlight}</span>
@@ -65,8 +62,8 @@ export default function GrowthSection({
 
           <div className="growth-doodle doodle-plane" aria-hidden="true">
             <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-              <path d="M6 26L46 6L32 46L24 30L6 26Z" stroke="#3B82F6" strokeWidth="2" strokeLinejoin="round" fill="rgba(219, 234, 254, 0.3)" />
-              <path d="M46 6L24 30" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" />
+              <path d="M6 26L46 6L32 46L24 30L6 26Z" stroke="#3E5F94" strokeWidth="2" strokeLinejoin="round" fill="rgba(221, 227, 238, 0.4)" />
+              <path d="M46 6L24 30" stroke="#3E5F94" strokeWidth="2" strokeLinecap="round" />
               <path d="M12 36C18 42 28 44 38 40" stroke="#64748B" strokeWidth="1.5" strokeDasharray="3 3" strokeLinecap="round" />
             </svg>
           </div>
@@ -74,8 +71,8 @@ export default function GrowthSection({
           {/* Connecting Curving Dashed Lines (SVG) */}
           <svg className="growth-connectors-svg" viewBox="0 0 1000 600" fill="none" preserveAspectRatio="none" aria-hidden="true">
             <path d="M500 190 C 500 240, 500 280, 500 320" stroke="#D9A441" strokeWidth="2" strokeDasharray="6 6" strokeOpacity="0.4" />
-            <path d="M280 340 C 350 350, 420 370, 470 410" stroke="#8B5CF6" strokeWidth="2" strokeDasharray="6 6" strokeOpacity="0.4" />
-            <path d="M720 340 C 650 350, 580 370, 530 410" stroke="#10B981" strokeWidth="2" strokeDasharray="6 6" strokeOpacity="0.4" />
+            <path d="M280 340 C 350 350, 420 370, 470 410" stroke="#8C5A9E" strokeWidth="2" strokeDasharray="6 6" strokeOpacity="0.4" />
+            <path d="M720 340 C 650 350, 580 370, 530 410" stroke="#3F8F71" strokeWidth="2" strokeDasharray="6 6" strokeOpacity="0.4" />
           </svg>
 
           {/* Program Cards */}
